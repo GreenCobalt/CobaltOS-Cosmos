@@ -45,8 +45,8 @@ namespace CosmosKernel1
 
         private static int calcLocX = 150;
         private static int calcLocY = 50;
-        private static int calcSizeX = 190;
-        private static int calcSizeY = 270;
+        private static int calcSizeX = 260;
+        private static int calcSizeY = 330;
 
         private static int cancelX = 200;
         private static int offX;

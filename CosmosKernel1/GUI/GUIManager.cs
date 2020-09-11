@@ -9,6 +9,7 @@ using Cosmos.System.FileSystem;
 using Cosmos.System.FileSystem.Listing;
 using System.IO;
 using Cosmos.Debug.Kernel;
+using System.Linq;
 
 namespace CosmosKernel1
 {
@@ -47,6 +48,7 @@ namespace CosmosKernel1
         private static int calcLocY = 100;
         private static int calcSizeX = 260;
         private static int calcSizeY = 330;
+        private static Boolean calcAnswer;
 
         private static int cancelX = 200;
         private static int offX;
@@ -296,6 +298,7 @@ namespace CosmosKernel1
                 if (startMenuOpen && (x > 20 && x < 280) && (y > 295 && y < 320))
                 {
                     startMenuOpen = false;
+                    calcChars.Clear();
                     activeApp = 3;
                 }
                 if (startMenuOpen && (x > 20 && x < 280) && (y > 470 && y < 505))
@@ -335,38 +338,143 @@ namespace CosmosKernel1
                     }
                     else if ((x > calcLocX + 10 && x < calcLocX + 60) && (y > calcLocY + 90 && y < calcLocY + 140))
                     {
+                        if (calcAnswer)
+                        {
+                            calcAnswer = false;
+                            calcChars.Clear();
+                        }
                         calcChars.Add('7');
                     }
                     else if ((x > calcLocX + 70 && x < calcLocX + 120) && (y > calcLocY + 90 && y < calcLocY + 140))
                     {
+                        if (calcAnswer)
+                        {
+                            calcAnswer = false;
+                            calcChars.Clear();
+                        }
                         calcChars.Add('8');
                     }
                     else if ((x > calcLocX + 130 && x < calcLocX + 180) && (y > calcLocY + 90 && y < calcLocY + 140))
                     {
+                        if (calcAnswer)
+                        {
+                            calcAnswer = false;
+                            calcChars.Clear();
+                        }
                         calcChars.Add('9');
                     }
                     else if ((x > calcLocX + 200 && x < calcLocX + 250) && (y > calcLocY + 90 && y < calcLocY + 140))
                     {
+                        if (calcAnswer)
+                        {
+                            calcAnswer = false;
+                            calcChars.Clear();
+                        }
                         calcChars.Add('/');
                     }
                     else if ((x > calcLocX + 10 && x < calcLocX + 60) && (y > calcLocY + 150 && y < calcLocY + 200))
                     {
+                        if (calcAnswer)
+                        {
+                            calcAnswer = false;
+                            calcChars.Clear();
+                        }
                         calcChars.Add('4');
                     }
                     else if ((x > calcLocX + 70 && x < calcLocX + 120) && (y > calcLocY + 150 && y < calcLocY + 200))
                     {
+                        if (calcAnswer)
+                        {
+                            calcAnswer = false;
+                            calcChars.Clear();
+                        }
                         calcChars.Add('5');
                     }
                     else if ((x > calcLocX + 130 && x < calcLocX + 180) && (y > calcLocY + 150 && y < calcLocY + 200))
                     {
+                        if (calcAnswer)
+                        {
+                            calcAnswer = false;
+                            calcChars.Clear();
+                        }
                         calcChars.Add('6');
                     }
                     else if ((x > calcLocX + 200 && x < calcLocX + 250) && (y > calcLocY + 150 && y < calcLocY + 200))
                     {
+                        if (calcAnswer)
+                        {
+                            calcAnswer = false;
+                            calcChars.Clear();
+                        }
                         calcChars.Add('x');
                     }
-
-                    //double result = Convert.ToDouble(new DataTable().Compute("1 + 2 * 7", null));
+                    else if ((x > calcLocX + 10 && x < calcLocX + 60) && (y > calcLocY + 210 && y < calcLocY + 260))
+                    {
+                        if (calcAnswer)
+                        {
+                            calcAnswer = false;
+                            calcChars.Clear();
+                        }
+                        calcChars.Add('1');
+                    }
+                    else if ((x > calcLocX + 70 && x < calcLocX + 120) && (y > calcLocY + 210 && y < calcLocY + 260))
+                    {
+                        if (calcAnswer)
+                        {
+                            calcAnswer = false;
+                            calcChars.Clear();
+                        }
+                        calcChars.Add('2');
+                    }
+                    else if ((x > calcLocX + 130 && x < calcLocX + 180) && (y > calcLocY + 210 && y < calcLocY + 260))
+                    {
+                        if (calcAnswer)
+                        {
+                            calcAnswer = false;
+                            calcChars.Clear();
+                        }
+                        calcChars.Add('3');
+                    }
+                    else if ((x > calcLocX + 200 && x < calcLocX + 250) && (y > calcLocY + 210 && y < calcLocY + 260))
+                    {
+                        if (calcAnswer)
+                        {
+                            calcAnswer = false;
+                            calcChars.Clear();
+                        }
+                        calcChars.Add('-');
+                    }
+                    else if ((x > calcLocX + 10 && x < calcLocX + 60) && (y > calcLocY + 270 && y < calcLocY + 320))
+                    {
+                        if (calcAnswer)
+                        {
+                            calcAnswer = false;
+                            calcChars.Clear();
+                        }
+                        calcChars.Add('0');
+                    }
+                    else if ((x > calcLocX + 70 && x < calcLocX + 120) && (y > calcLocY + 270 && y < calcLocY + 320))
+                    {
+                        if (calcAnswer)
+                        {
+                            calcAnswer = false;
+                            calcChars.Clear();
+                        }
+                        calcChars.Add('.');
+                    }
+                    else if ((x > calcLocX + 130 && x < calcLocX + 180) && (y > calcLocY + 270 && y < calcLocY + 320))
+                    {
+                        executeCalc();
+                    }
+                    else if ((x > calcLocX + 200 && x < calcLocX + 250) && (y > calcLocY + 270 && y < calcLocY + 320))
+                    {
+                        calcChars.Add('+');
+                        if (calcAnswer)
+                        {
+                            calcAnswer = false;
+                            calcChars.Clear();
+                        }
+                    }
                 }
 
                 if (activeApp == 1)
@@ -768,6 +876,12 @@ namespace CosmosKernel1
                     }
                 }
             }
+        }
+        private static void executeCalc()
+        {
+            double result = Convert.ToDouble(new System.Data.DataTable().Compute(new string(calcChars.ToArray()), null));
+            calcChars = result.ToString().ToCharArray().ToList();
+            calcAnswer = true;
         }
     }
 }

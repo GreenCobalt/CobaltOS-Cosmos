@@ -880,7 +880,6 @@ namespace CosmosKernel1
         private static void executeCalc()
         {
             double result = Convert.ToDouble(new System.Data.DataTable().Compute(new string(calcChars.ToArray()), null));
-            calcChars = result.ToString().ToCharArray().ToList();
             calcAnswer = true;
         }
     }

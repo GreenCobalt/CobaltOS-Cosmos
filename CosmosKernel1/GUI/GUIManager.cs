@@ -10,6 +10,11 @@ using Cosmos.System.FileSystem.Listing;
 using System.IO;
 using Cosmos.Debug.Kernel;
 using System.Linq;
+using System.Data;
+using System.Xml.XPath;
+using System.Text.RegularExpressions;
+using org.mariuszgromada.math.mxparser;
+using System.Reflection.Metadata;
 
 namespace CosmosKernel1
 {
@@ -92,7 +97,7 @@ namespace CosmosKernel1
                 DisplayDriver.addText((timeFormat ? 675 : 625), 560, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")));
                 if (activeApp == 0)
                 {
-                    DisplayDriver.addText(10, 10, Color.White, "Welcome to the CobaltOS Desktop!\u000DThere is a full text engine and mouse support!");
+                    //DisplayDriver.addText(10, 10, Color.White, "Welcome to the CobaltOS Desktop!\u000DThere is a full text engine and mouse support!");
                 }
             }
 
@@ -879,8 +884,58 @@ namespace CosmosKernel1
         }
         private static void executeCalc()
         {
-            double result = Convert.ToDouble(new System.Data.DataTable().Compute(new string(calcChars.ToArray()), null));
+            double r = calcNumber(calcChars.ToArray().ToString());
+            calcChars.Clear();
+            foreach (Char c in r.ToString())
+            {
+                calcChars.Add(c);
+            }
             calcAnswer = true;
+        }
+
+        private static double calcNumber(String input)
+        {
+            Char sign = '-';
+            int signLoc = 0;
+            int i = 0;
+
+            if (input.Length != 3)
+            {
+                return 0.0;
+            }
+
+            foreach (Char c in input)
+            {
+                if (c == '/' || c == '+' || c == '-' || c == '*')
+                {
+                    sign = c;
+                    signLoc = i;
+                }
+                i++;
+            }
+
+            calcChars.Add(sign);
+
+            if (sign == '/')
+            {
+                return input[signLoc - 1] / input[signLoc + 1];
+            }
+            else if (sign == '*')
+            {
+                return input[signLoc - 1] * input[signLoc + 1];
+            }
+            else if (sign == '-')
+            {
+                return input[signLoc - 1] - input[signLoc + 1];
+            }
+            else if (sign == '+')
+            {
+                return input[signLoc - 1] + input[signLoc + 1];
+            }
+            else
+            {
+                return 0.0;
+            }
         }
     }
 }

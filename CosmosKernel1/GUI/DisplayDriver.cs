@@ -17,6 +17,7 @@ namespace CosmosKernel1
 
         public static Color[] SBuffer = new Color[480000];
         public static Color[] SBufferOld = new Color[480000];
+
         private static Canvas canvas;
 
         public static Canvas initScreen()

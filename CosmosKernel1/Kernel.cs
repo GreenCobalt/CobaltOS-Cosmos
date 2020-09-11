@@ -29,11 +29,11 @@ namespace CosmosKernel1
             WaitSeconds(1);
 
             Console.Clear();
-            Console.WriteLine("##### ##### #####   ##### #####");
-            Console.WriteLine("#     #   # # # #   #   # #    ");
-            Console.WriteLine("##### ##### #   #   #   # #####");
-            Console.WriteLine("    # #   # #   #   #   #     #");
-            Console.WriteLine("##### #   # #   #   ##### #####");
+            Console.WriteLine("    ##### ##### ####  ##### #    #####     ##### #####");
+            Console.WriteLine("   #     #   # #  #  #   # #      #       #   # #    ");
+            Console.WriteLine("  #     #   # ####  ##### #      #       #   # #####");
+            Console.WriteLine(" #     #   # #   # #   # #      #       #   #     #");
+            Console.WriteLine("##### ##### ##### #   # #####  #       ##### #####");
             Console.WriteLine("Enter 'help' for help.");
             Cosmos.System.PCSpeaker.Beep();
         }
@@ -171,7 +171,7 @@ namespace CosmosKernel1
             }
             while (Cosmos.HAL.RTC.Second != EndSec)
             {
-                // Loop round
+                ;
             }
         }
     }

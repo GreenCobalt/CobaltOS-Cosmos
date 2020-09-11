@@ -43,8 +43,8 @@ namespace CosmosKernel1
         private static int settingsSizeX = 600;
         private static int settingsSizeY = 400;
 
-        private static int calcLocX = 150;
-        private static int calcLocY = 50;
+        private static int calcLocX = 100;
+        private static int calcLocY = 100;
         private static int calcSizeX = 260;
         private static int calcSizeY = 330;
 
@@ -64,6 +64,7 @@ namespace CosmosKernel1
         private static Color backgroundColor = Color.DarkBlue;
         private static List<Char> notePadChars = new List<Char>();
         private static List<Char> dirChars = new List<Char>();
+        private static List<Char> calcChars = new List<Char>();
         private static List<int> notePadCharSizes = new List<int>();
         private static CosmosVFS fs = Kernel.fs;
 
@@ -89,7 +90,7 @@ namespace CosmosKernel1
                 DisplayDriver.addText((timeFormat ? 675 : 625), 560, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")));
                 if (activeApp == 0)
                 {
-                    DisplayDriver.addText(10, 10, Color.White, "Welcome to the SamOS Desktop!\u000DThere is a full text engine and mouse support!");
+                    DisplayDriver.addText(10, 10, Color.White, "Welcome to the CobaltOS Desktop!\u000DThere is a full text engine and mouse support!");
                 }
             }
 
@@ -217,7 +218,9 @@ namespace CosmosKernel1
                 DisplayDriver.addFilledRectangle(calcLocX, calcLocY, calcSizeX, 30, Color.Gray);
                 DisplayDriver.addFilledRectangle(calcLocX + (calcSizeX - 25), calcLocY + 5, 20, 20, Color.Red);
 
-                DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 40, 250, 40, Color.White);
+                DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 40, 240, 40, Color.White);
+                DisplayDriver.addText(calcLocX + 15, calcLocY + 45, Color.Black, new string(calcChars.ToArray()));
+
                 DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 90, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 10 + spacingX, calcLocY + 90 + spacingY, Color.Black, "7");
                 DisplayDriver.addFilledRectangle(calcLocX + 70, calcLocY + 90, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 70 + spacingX, calcLocY + 90 + spacingY, Color.Black, "8");
                 DisplayDriver.addFilledRectangle(calcLocX + 130, calcLocY + 90, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 130 + spacingX, calcLocY + 90 + spacingY, Color.Black, "9");
@@ -306,12 +309,64 @@ namespace CosmosKernel1
                     activeApp = 99;
                 }
 
+                /*  
+                    DisplayDriver.addFilledRectangle(, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 10 + spacingX, calcLocY + 90 + spacingY, Color.Black, "7");
+                    DisplayDriver.addFilledRectangle(calcLocX + 70, calcLocY + 90, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 70 + spacingX, calcLocY + 90 + spacingY, Color.Black, "8");
+                    DisplayDriver.addFilledRectangle(calcLocX + 130, calcLocY + 90, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 130 + spacingX, calcLocY + 90 + spacingY, Color.Black, "9");
+                    DisplayDriver.addFilledRectangle(calcLocX + 200, calcLocY + 90, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 200 + spacingX, calcLocY + 90 + spacingY, Color.Black, "/");
+                    DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 150, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 10 + spacingX, calcLocY + 150 + spacingY, Color.Black, "4");
+                    DisplayDriver.addFilledRectangle(calcLocX + 70, calcLocY + 150, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 70 + spacingX, calcLocY + 150 + spacingY, Color.Black, "5");
+                    DisplayDriver.addFilledRectangle(calcLocX + 130, calcLocY + 150, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 130 + spacingX, calcLocY + 150 + spacingY, Color.Black, "6");
+                    DisplayDriver.addFilledRectangle(calcLocX + 200, calcLocY + 150, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 200 + spacingX, calcLocY + 150 + spacingY - 8, Color.Black, "x");
+                    DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 210, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 10 + spacingX, calcLocY + 210 + spacingY, Color.Black, "1");
+                    DisplayDriver.addFilledRectangle(calcLocX + 70, calcLocY + 210, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 70 + spacingX, calcLocY + 210 + spacingY, Color.Black, "2");
+                    DisplayDriver.addFilledRectangle(calcLocX + 130, calcLocY + 210, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 130 + spacingX, calcLocY + 210 + spacingY, Color.Black, "3");
+                    DisplayDriver.addFilledRectangle(calcLocX + 200, calcLocY + 210, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 200 + spacingX, calcLocY + 210 + spacingY, Color.Black, "-");
+                    DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 270, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 10 + spacingX, calcLocY + 270 + spacingY, Color.Black, "0");
+                    DisplayDriver.addFilledRectangle(calcLocX + 70, calcLocY + 270, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 70 + spacingX, calcLocY + 270 + spacingY, Color.Black, ".");
+                    DisplayDriver.addFilledRectangle(calcLocX + 130, calcLocY + 270, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 130 + spacingX, calcLocY + 270 + spacingY, Color.Black, "=");
+                    DisplayDriver.addFilledRectangle(calcLocX + 200, calcLocY + 270, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 200 + spacingX, calcLocY + 270 + spacingY, Color.Black, "+");
+                */
                 if (activeApp == 3)
                 {
                     if ((x > calcLocX + calcSizeX - 25 && x < calcLocX + calcSizeX - 5) && (y > calcLocY + 5 && y < calcLocY + 25))
                     {
                         activeApp = 0;
                     }
+                    else if ((x > calcLocX + 10 && x < calcLocX + 60) && (y > calcLocY + 90 && y < calcLocY + 140))
+                    {
+                        calcChars.Add('7');
+                    }
+                    else if ((x > calcLocX + 70 && x < calcLocX + 120) && (y > calcLocY + 90 && y < calcLocY + 140))
+                    {
+                        calcChars.Add('8');
+                    }
+                    else if ((x > calcLocX + 130 && x < calcLocX + 180) && (y > calcLocY + 90 && y < calcLocY + 140))
+                    {
+                        calcChars.Add('9');
+                    }
+                    else if ((x > calcLocX + 200 && x < calcLocX + 250) && (y > calcLocY + 90 && y < calcLocY + 140))
+                    {
+                        calcChars.Add('/');
+                    }
+                    else if ((x > calcLocX + 10 && x < calcLocX + 60) && (y > calcLocY + 150 && y < calcLocY + 200))
+                    {
+                        calcChars.Add('4');
+                    }
+                    else if ((x > calcLocX + 70 && x < calcLocX + 120) && (y > calcLocY + 150 && y < calcLocY + 200))
+                    {
+                        calcChars.Add('5');
+                    }
+                    else if ((x > calcLocX + 130 && x < calcLocX + 180) && (y > calcLocY + 150 && y < calcLocY + 200))
+                    {
+                        calcChars.Add('6');
+                    }
+                    else if ((x > calcLocX + 200 && x < calcLocX + 250) && (y > calcLocY + 150 && y < calcLocY + 200))
+                    {
+                        calcChars.Add('x');
+                    }
+
+                    //double result = Convert.ToDouble(new DataTable().Compute("1 + 2 * 7", null));
                 }
 
                 if (activeApp == 1)
@@ -479,6 +534,7 @@ namespace CosmosKernel1
                 }
             }
         }
+
         private static void checkKeyboard()
         {
             if (System.Console.KeyAvailable == true)

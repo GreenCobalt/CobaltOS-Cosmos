@@ -132,7 +132,7 @@ namespace CosmosKernel1
             int yLoc = y;
             for (int i = 0; i < s.Length; i++)
             {
-                if (s[i] == '*')
+                if (s[i] == '\u000D')
                 {
                     yLoc =+ 40;
                     xLoc = x;

@@ -89,7 +89,7 @@ namespace CosmosKernel1
                 DisplayDriver.addText((timeFormat ? 675 : 625), 560, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")));
                 if (activeApp == 0)
                 {
-                    DisplayDriver.addText(10, 10, Color.White, "Welcome to the SamOS Desktop!*There is a full text engine and mouse support!");
+                    DisplayDriver.addText(10, 10, Color.White, "Welcome to the SamOS Desktop!\u000DThere is a full text engine and mouse support!");
                 }
             }
 
@@ -671,6 +671,10 @@ namespace CosmosKernel1
                 else if (key.KeyChar == '?')
                 {
                     currentChar = '?';
+                }
+                else if (key.KeyChar == '\u000D')
+                {
+                    currentChar = '\u000D';
                 }
                 else
                 {

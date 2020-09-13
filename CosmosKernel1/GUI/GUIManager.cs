@@ -13,7 +13,6 @@ using System.Linq;
 using System.Data;
 using System.Xml.XPath;
 using System.Text.RegularExpressions;
-using org.mariuszgromada.math.mxparser;
 using System.Reflection.Metadata;
 
 namespace CosmosKernel1
@@ -895,47 +894,7 @@ namespace CosmosKernel1
 
         private static double calcNumber(String input)
         {
-            Char sign = '-';
-            int signLoc = 0;
-            int i = 0;
-
-            if (input.Length != 3)
-            {
-                return 0.0;
-            }
-
-            foreach (Char c in input)
-            {
-                if (c == '/' || c == '+' || c == '-' || c == '*')
-                {
-                    sign = c;
-                    signLoc = i;
-                }
-                i++;
-            }
-
-            calcChars.Add(sign);
-
-            if (sign == '/')
-            {
-                return input[signLoc - 1] / input[signLoc + 1];
-            }
-            else if (sign == '*')
-            {
-                return input[signLoc - 1] * input[signLoc + 1];
-            }
-            else if (sign == '-')
-            {
-                return input[signLoc - 1] - input[signLoc + 1];
-            }
-            else if (sign == '+')
-            {
-                return input[signLoc - 1] + input[signLoc + 1];
-            }
-            else
-            {
-                return 0.0;
-            }
+            return 1.3;
         }
     }
 }

@@ -133,7 +133,6 @@ namespace CosmosKernel1
 
                 DisplayDriver.addFilledRectangle(notepadLocX, notepadLocY + 36, notepadSizeX, 36, Color.LightGray);
                 DisplayDriver.addFilledRectangle(notepadLocX, notepadLocY + 36, 80, 36, (notepadFileMenu ? Color.DarkGray : Color.LightGray));
-                DisplayDriver.addFilledRectangle(notepadLocX, notepadLocY + 36, 80, 36, (notepadFileMenu ? Color.DarkGray : Color.LightGray));
                 DisplayDriver.addText(notepadLocX + 5, notepadLocY + 39, Color.Black, "File");
 
                 notePadCharSizes.Clear();

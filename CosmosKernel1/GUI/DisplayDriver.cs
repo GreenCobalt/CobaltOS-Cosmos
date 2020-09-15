@@ -1966,6 +1966,53 @@ namespace CosmosKernel1
                     return 8;
                 case ' ':
                     return 8;
+                case '�':
+                    setPixel(x, y, c);
+                    setPixel(x + 2, y, c);
+                    setPixel(x + 4, y, c);
+                    setPixel(x + 6, y, c);
+                    setPixel(x + 8, y, c);
+                    setPixel(x + 10, y, c);
+                    setPixel(x + 12, y, c);
+                    setPixel(x + 12, y + 2, c);
+                    setPixel(x + 12, y + 4, c);
+                    setPixel(x + 12, y + 6, c);
+                    setPixel(x + 12, y + 8, c);
+                    setPixel(x + 12, y + 10, c);
+                    setPixel(x + 12, y + 12, c);
+                    setPixel(x + 12, y + 14, c);
+                    setPixel(x + 12, y + 16, c);
+                    setPixel(x + 10, y + 16, c);
+                    setPixel(x + 8, y + 16, c);
+                    setPixel(x + 6, y + 16, c);
+                    setPixel(x + 6, y + 18, c);
+                    setPixel(x + 6, y + 20, c);
+                    setPixel(x + 6, y + 24, c);
+                    setPixel(x + 12, y, c);
+                    setPixel(x + 12, y + 2, c);
+                    setPixel(x + 12, y + 4, c);
+                    setPixel(x + 12, y + 6, c);
+                    setPixel(x + 12, y + 8, c);
+                    setPixel(x + 12, y + 10, c);
+                    setPixel(x + 12, y + 12, c);
+                    setPixel(x + 12, y + 14, c);
+                    setPixel(x + 12, y + 16, c);
+                    setPixel(x + 12, y + 18, c);
+                    setPixel(x + 12, y + 20, c);
+                    setPixel(x + 12, y + 22, c);
+                    setPixel(x , y, c);
+                    setPixel(x , y + 2, c);
+                    setPixel(x , y + 4, c);
+                    setPixel(x , y + 6, c);
+                    setPixel(x , y + 8, c);
+                    setPixel(x , y + 10, c);
+                    setPixel(x , y , c);
+                    setPixel(x , y + 14, c);
+                    setPixel(x , y + 16, c);
+                    setPixel(x , y + 18, c);
+                    setPixel(x , y + 20, c);
+                    setPixel(x , y + 22, c);
+                    return 16;
                 default:
                     return 0;
             }

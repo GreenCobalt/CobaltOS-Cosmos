@@ -28,8 +28,6 @@ namespace CosmosKernel1
          * 
          * 99 = Power Menu
          */
-        PerformanceCounter cpuCounter = new PerformanceCounter();
-        
         private static int activeApp = 0;
         private static List<int> openApps = new List<int>();
 
@@ -39,6 +37,9 @@ namespace CosmosKernel1
          */
         private static int settingsPage = 0;
         private static Boolean startMenuOpen = false;
+        
+        PerformanceCounter cpuCounter;
+        PerformanceCounter ramCounter;
 
         private static int notepadLocX = 250;
         private static int notepadLocY = 10;
@@ -87,9 +88,12 @@ namespace CosmosKernel1
         private static Boolean dirSelectOpen;
 
         public static void init() {
-            cpuCounter.CategoryName = "Processor";
-            cpuCounter.CounterName = "% Processor Time";
-            cpuCounter.InstanceName = "_Total";
+            initCounters();
+        }
+        
+        private static void initCounters() {
+            cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total", true);
+            ramCounter = new PerformanceCounter("Memory", "Available MBytes", true);
         }
         
         public static void tick()
@@ -105,7 +109,8 @@ namespace CosmosKernel1
                 DisplayDriver.addText((timeFormat ? 675 : 625), 560, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")));
                 if (activeApp == 0)
                 {
-                    DisplayDriver.addText(10, 10, Color.White, cpuCounter.NextValue());
+                    DisplayDriver.addText(10, 10, Color.White, "CPU Usage: " + Convert.ToInt32(cpuCounter.NextValue()).ToString() + "%";
+                    DisplayDriver.addText(10, 30, Color.White, "RAM Usage: " + Convert.ToInt32(ramCounter.NextValue()).ToString() + "MB";
                 }
             }
 

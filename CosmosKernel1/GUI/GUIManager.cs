@@ -826,7 +826,7 @@ namespace CosmosKernel1
                 }
                 else if (key.Key == ConsoleKey.Backspace)
                 {
-                    currentChar = '�';
+                    currentChar = '◄';
                 }
                 else if (key.KeyChar == '\u005C')
                 {
@@ -846,14 +846,14 @@ namespace CosmosKernel1
                 }
                 else
                 {
-                    currentChar = '￼';
+                    currentChar = '￼�';
                 }
 
                 if (activeApp == 1)
                 {
                     if (!dirSelectOpen)
                     {
-                        if (currentChar == '�')
+                        if (currentChar == '◄')
                         {
                             if (notePadChars.Count > 0)
                             {
@@ -866,7 +866,7 @@ namespace CosmosKernel1
                         }
                     } else
                     {
-                        if (currentChar == '�')
+                        if (currentChar == '◄')
                         {
                             if (dirChars.Count > 0)
                             {

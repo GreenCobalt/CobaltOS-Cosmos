@@ -10,6 +10,7 @@ using Cosmos.System.FileSystem.Listing;
 using System.IO;
 using Cosmos.Debug.Kernel;
 using System.Linq;
+using System.Diagnostics;
 using System.Data;
 using System.Xml.XPath;
 using System.Text.RegularExpressions;
@@ -27,6 +28,8 @@ namespace CosmosKernel1
          * 
          * 99 = Power Menu
          */
+        PerformanceCounter cpuCounter = new PerformanceCounter();
+        
         private static int activeApp = 0;
         private static List<int> openApps = new List<int>();
 
@@ -83,6 +86,12 @@ namespace CosmosKernel1
         private static String dirSelectContent;
         private static Boolean dirSelectOpen;
 
+        public static void init() {
+            cpuCounter.CategoryName = "Processor";
+            cpuCounter.CounterName = "% Processor Time";
+            cpuCounter.InstanceName = "_Total";
+        }
+        
         public static void tick()
         {
             if (activeApp == 99)
@@ -96,7 +105,7 @@ namespace CosmosKernel1
                 DisplayDriver.addText((timeFormat ? 675 : 625), 560, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")));
                 if (activeApp == 0)
                 {
-                    //DisplayDriver.addText(10, 10, Color.White, "Welcome to the CobaltOS Desktop!\u000DThere is a full text engine and mouse support!");
+                    DisplayDriver.addText(10, 10, Color.White, cpuCounter.NextValue());
                 }
             }
 

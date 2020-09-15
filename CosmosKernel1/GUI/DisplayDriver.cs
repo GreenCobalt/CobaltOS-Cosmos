@@ -22,9 +22,6 @@ namespace CosmosKernel1
 
         public static Canvas initScreen()
         {
-            for (int i=0;s=480000;i<h+1;i++) {
-                SBuffer[i] = Color.Black;  
-            }
             canvas = FullScreenCanvas.GetFullScreenCanvas();
             return canvas;
         }

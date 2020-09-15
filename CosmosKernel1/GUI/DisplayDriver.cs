@@ -1966,7 +1966,7 @@ namespace CosmosKernel1
                     return 8;
                 case ' ':
                     return 8;
-                case '�':
+                default:
                     setPixel(x, y, c);
                     setPixel(x + 2, y, c);
                     setPixel(x + 4, y, c);
@@ -2013,8 +2013,6 @@ namespace CosmosKernel1
                     setPixel(x , y + 20, c);
                     setPixel(x , y + 22, c);
                     return 16;
-                default:
-                    return 0;
             }
         }
     }

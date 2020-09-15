@@ -846,7 +846,7 @@ namespace CosmosKernel1
                 }
                 else
                 {
-                    currentChar = '￼�';
+                    currentChar = '�';
                 }
 
                 if (activeApp == 1)

@@ -32,24 +32,19 @@ namespace CosmosKernel1
             {
                 for (int x=0,w=screenW; x < w; x++)
                 {
-                    if (SBuffer[(y * screenW) + x] == SBufferOld[(y * screenW) + x])
+                    if (!(SBuffer[(y * screenW) + x] == SBufferOld[(y * screenW) + x]))
                     {
-                        continue;
+                        Pen pen = new Pen(SBuffer[(y * screenW) + x]);
+                        canvas.DrawPoint(pen, x, y);
                     }
-                    Pen pen = new Pen(SBuffer[(y * screenW) + x]);
-                    canvas.DrawPoint(pen, x, y);
                 }
             }
-
             copyArray(SBuffer, SBufferOld);
         }
 
         private static void copyArray(Color[] from, Color[] to)
         {
-            for (int i = 0, len = from.Length; i < len; i++)
-            {
-                to[i] = from[i];
-            }
+            Array.Copy(from, 0, to , 0, from.Length);
         }
 
         private static void setPixel(int x, int y, Color color)
@@ -1967,7 +1962,52 @@ namespace CosmosKernel1
                 case ' ':
                     return 8;
                 default:
-                    return 0;
+                    setPixel(x, y, c);
+                    setPixel(x + 2, y, c);
+                    setPixel(x + 4, y, c);
+                    setPixel(x + 6, y, c);
+                    setPixel(x + 8, y, c);
+                    setPixel(x + 10, y, c);
+                    setPixel(x + 12, y, c);
+                    setPixel(x + 12, y + 2, c);
+                    setPixel(x + 12, y + 4, c);
+                    setPixel(x + 12, y + 6, c);
+                    setPixel(x + 12, y + 8, c);
+                    setPixel(x + 12, y + 10, c);
+                    setPixel(x + 12, y + 12, c);
+                    setPixel(x + 12, y + 14, c);
+                    setPixel(x + 12, y + 16, c);
+                    setPixel(x + 10, y + 16, c);
+                    setPixel(x + 8, y + 16, c);
+                    setPixel(x + 6, y + 16, c);
+                    setPixel(x + 6, y + 18, c);
+                    setPixel(x + 6, y + 20, c);
+                    setPixel(x + 6, y + 24, c);
+                    setPixel(x + 12, y, c);
+                    setPixel(x + 12, y + 2, c);
+                    setPixel(x + 12, y + 4, c);
+                    setPixel(x + 12, y + 6, c);
+                    setPixel(x + 12, y + 8, c);
+                    setPixel(x + 12, y + 10, c);
+                    setPixel(x + 12, y + 12, c);
+                    setPixel(x + 12, y + 14, c);
+                    setPixel(x + 12, y + 16, c);
+                    setPixel(x + 12, y + 18, c);
+                    setPixel(x + 12, y + 20, c);
+                    setPixel(x + 12, y + 22, c);
+                    setPixel(x , y, c);
+                    setPixel(x , y + 2, c);
+                    setPixel(x , y + 4, c);
+                    setPixel(x , y + 6, c);
+                    setPixel(x , y + 8, c);
+                    setPixel(x , y + 10, c);
+                    setPixel(x , y , c);
+                    setPixel(x , y + 14, c);
+                    setPixel(x , y + 16, c);
+                    setPixel(x , y + 18, c);
+                    setPixel(x , y + 20, c);
+                    setPixel(x , y + 22, c);
+                    return 16;
             }
         }
     }

@@ -10,6 +10,7 @@ using Cosmos.System.FileSystem.Listing;
 using System.IO;
 using Cosmos.Debug.Kernel;
 using System.Linq;
+using System.Diagnostics;
 using System.Data;
 using System.Xml.XPath;
 using System.Text.RegularExpressions;
@@ -37,6 +38,9 @@ namespace CosmosKernel1
          */
         private static int settingsPage = 0;
         private static Boolean startMenuOpen = false;
+        
+        PerformanceCounter cpuCounter;
+        PerformanceCounter ramCounter;
 
         private static int notepadLocX = 250;
         private static int notepadLocY = 10;
@@ -84,6 +88,15 @@ namespace CosmosKernel1
         private static String dirSelectContent;
         private static Boolean dirSelectOpen;
 
+        public static void init() {
+            initCounters();
+        }
+        
+        private static void initCounters() {
+            cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total", true);
+            ramCounter = new PerformanceCounter("Memory", "Available MBytes", true);
+        }
+        
         public static void tick()
         {
             if (activeApp == 99)
@@ -97,7 +110,8 @@ namespace CosmosKernel1
                 DisplayDriver.addText((timeFormat ? 675 : 625), 560, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")));
                 if (activeApp == 0)
                 {
-                    //DisplayDriver.addText(10, 10, Color.White, "Welcome to the CobaltOS Desktop!\u000DThere is a full text engine and mouse support!");
+                    DisplayDriver.addText(10, 10, Color.White, "CPU Usage: " + Convert.ToInt32(cpuCounter.NextValue()).ToString() + "%";
+                    DisplayDriver.addText(10, 30, Color.White, "RAM Usage: " + Convert.ToInt32(ramCounter.NextValue()).ToString() + "MB";
                 }
             }
 
@@ -119,7 +133,6 @@ namespace CosmosKernel1
                 DisplayDriver.addText(notepadLocX + 5, notepadLocY + 3, Color.White, "Notepad");
 
                 DisplayDriver.addFilledRectangle(notepadLocX, notepadLocY + 36, notepadSizeX, 36, Color.LightGray);
-                DisplayDriver.addFilledRectangle(notepadLocX, notepadLocY + 36, 80, 36, (notepadFileMenu ? Color.DarkGray : Color.LightGray));
                 DisplayDriver.addFilledRectangle(notepadLocX, notepadLocY + 36, 80, 36, (notepadFileMenu ? Color.DarkGray : Color.LightGray));
                 DisplayDriver.addText(notepadLocX + 5, notepadLocY + 39, Color.Black, "File");
 
@@ -827,7 +840,7 @@ namespace CosmosKernel1
                 }
                 else if (key.Key == ConsoleKey.Backspace)
                 {
-                    currentChar = '�';
+                    currentChar = '◄';
                 }
                 else if (key.KeyChar == '\u005C')
                 {
@@ -847,14 +860,14 @@ namespace CosmosKernel1
                 }
                 else
                 {
-                    currentChar = '￼';
+                    currentChar = '�';
                 }
 
                 if (activeApp == 1)
                 {
                     if (!dirSelectOpen)
                     {
-                        if (currentChar == '�')
+                        if (currentChar == '◄')
                         {
                             if (notePadChars.Count > 0)
                             {
@@ -867,7 +880,7 @@ namespace CosmosKernel1
                         }
                     } else
                     {
-                        if (currentChar == '�')
+                        if (currentChar == '◄')
                         {
                             if (dirChars.Count > 0)
                             {

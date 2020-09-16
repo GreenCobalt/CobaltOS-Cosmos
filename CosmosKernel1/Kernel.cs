@@ -59,6 +59,7 @@ namespace CosmosKernel1
             {
                 graphicsMode = true;
 
+                GUIManager.init();
                 DisplayDriver.initScreen();
 
                 Cosmos.System.MouseManager.ScreenWidth = Convert.ToUInt32(DisplayDriver.screenW);

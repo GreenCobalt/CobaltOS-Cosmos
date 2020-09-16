@@ -14,6 +14,7 @@ using System.Data;
 using System.Xml.XPath;
 using System.Text.RegularExpressions;
 using System.Reflection.Metadata;
+using MultiParse;
 
 namespace CosmosKernel1
 {
@@ -883,18 +884,30 @@ namespace CosmosKernel1
         }
         private static void executeCalc()
         {
-            double r = calcNumber(calcChars.ToArray().ToString());
+            String r = calcNumber(charListToString(calcChars));
             calcChars.Clear();
-            foreach (Char c in r.ToString())
+            foreach (Char c in r)
             {
                 calcChars.Add(c);
             }
             calcAnswer = true;
         }
 
-        private static double calcNumber(String input)
+        private static String calcNumber(String input)
         {
-            return 1.3;
+            Expression e = new Expression();
+            String result = (String) e.Evaluate(input);
+            return result;
+        }
+
+        public static String charListToString(List<Char> input)
+        {
+            String r = "";
+            foreach (Char c in input)
+            {
+                r = r + c;
+            }
+            return r;
         }
     }
 }

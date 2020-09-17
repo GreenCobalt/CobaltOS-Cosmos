@@ -75,9 +75,6 @@ namespace CosmosKernel1
         private static String dirSelectContent;
         private static Boolean dirSelectOpen;
 
-        private static int usedRAM = 10;
-        private static int totalRAM = Convert.ToInt32(Cosmos.Core.CPU.GetAmountOfRAM());
-
         public static void init() {
             ;
         }
@@ -95,7 +92,7 @@ namespace CosmosKernel1
                 DisplayDriver.addText((timeFormat ? 675 : 625), 560, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")));
                 if (activeApp == 0)
                 {
-                    DisplayDriver.addText(10, 10, Color.White, "RAM: " + usedRAM + " / " + totalRAM + " MB");
+
                 }
             }
 
@@ -892,7 +889,17 @@ namespace CosmosKernel1
 
         private static String calcNumber(String input)
         {
-            return input + "123";
+            String returnText = "";
+
+            for (int i = 0, len = (input.Length + 1); i < len; i++)
+            {
+                if (input[i] == '+' || input[i] == '-' || input[i] == '/' || input[i] == 'x')
+                {
+                    returnText = input[i] + "";
+                }
+            }
+
+            return returnText;
         }
 
         public static String charListToString(List<Char> input)

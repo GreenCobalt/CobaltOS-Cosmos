@@ -889,7 +889,17 @@ namespace CosmosKernel1
 
         private static String calcNumber(String input)
         {
-            return input + "123";
+            String returnText = "";
+
+            for (int i = 0, len = (input.Length + 1); i < len; i++)
+            {
+                if (input[i] == '+' || input[i] == '-' || input[i] == '/' || input[i] == 'x')
+                {
+                    returnText = input[i] + "";
+                }
+            }
+
+            return returnText;
         }
 
         public static String charListToString(List<Char> input)

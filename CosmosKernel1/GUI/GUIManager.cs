@@ -891,11 +891,22 @@ namespace CosmosKernel1
         {
             String returnText = "";
 
+            double numOne = 0.0;
+            double numTwo = 0.0;
+            Char sign = ' ';
+            int signLoc = 0;
+
+
             for (int i = 0, len = (input.Length + 1); i < len; i++)
             {
                 if (input[i] == '+' || input[i] == '-' || input[i] == '/' || input[i] == 'x')
                 {
-                    returnText = input[i] + "";
+                    if (signLoc == 0)
+                    {
+                        sign = input[i];
+                        signLoc = i;
+
+                    }
                 }
             }
 

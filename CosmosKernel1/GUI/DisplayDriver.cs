@@ -32,11 +32,12 @@ namespace CosmosKernel1
             {
                 for (int x=0,w=screenW; x < w; x++)
                 {
-                    if (!(SBuffer[(y * screenW) + x] == SBufferOld[(y * screenW) + x]))
+                    if (SBuffer[(y * screenW) + x] == SBufferOld[(y * screenW) + x])
                     {
-                        Pen pen = new Pen(SBuffer[(y * screenW) + x]);
-                        canvas.DrawPoint(pen, x, y);
+                        continue;
                     }
+                    Pen pen = new Pen(SBuffer[(y * screenW) + x]);
+                    canvas.DrawPoint(pen, x, y);
                 }
             }
             copyArray(SBuffer, SBufferOld);
@@ -44,7 +45,10 @@ namespace CosmosKernel1
 
         private static void copyArray(Color[] from, Color[] to)
         {
-            Array.Copy(from, 0, to , 0, from.Length);
+            for (int i = 0, len = from.Length; i < len; i++)
+            {
+                to[i] = from[i];
+            }
         }
 
         private static void setPixel(int x, int y, Color color)

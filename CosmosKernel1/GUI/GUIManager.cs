@@ -2,20 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Drawing;
-using Cosmos.Core.IOGroup;
-using Cosmos.HAL;
 using Cosmos.System;
 using Cosmos.System.FileSystem;
 using Cosmos.System.FileSystem.Listing;
 using System.IO;
-using Cosmos.Debug.Kernel;
-using System.Linq;
-using System.Diagnostics;
-using System.Data;
-using System.Xml.XPath;
-using System.Text.RegularExpressions;
-using System.Reflection.Metadata;
-using MultiParse;
 
 namespace CosmosKernel1
 {
@@ -38,9 +28,6 @@ namespace CosmosKernel1
          */
         private static int settingsPage = 0;
         private static Boolean startMenuOpen = false;
-        
-        PerformanceCounter cpuCounter;
-        PerformanceCounter ramCounter;
 
         private static int notepadLocX = 250;
         private static int notepadLocY = 10;
@@ -88,13 +75,11 @@ namespace CosmosKernel1
         private static String dirSelectContent;
         private static Boolean dirSelectOpen;
 
+        private static int usedRAM = 10;
+        private static int totalRAM = Convert.ToInt32(Cosmos.Core.CPU.GetAmountOfRAM());
+
         public static void init() {
-            initCounters();
-        }
-        
-        private static void initCounters() {
-            cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total", true);
-            ramCounter = new PerformanceCounter("Memory", "Available MBytes", true);
+            ;
         }
         
         public static void tick()
@@ -110,8 +95,7 @@ namespace CosmosKernel1
                 DisplayDriver.addText((timeFormat ? 675 : 625), 560, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")));
                 if (activeApp == 0)
                 {
-                    DisplayDriver.addText(10, 10, Color.White, "CPU Usage: " + Convert.ToInt32(cpuCounter.NextValue()).ToString() + "%";
-                    DisplayDriver.addText(10, 30, Color.White, "RAM Usage: " + Convert.ToInt32(ramCounter.NextValue()).ToString() + "MB";
+                    DisplayDriver.addText(10, 10, Color.White, "RAM: " + usedRAM + " / " + totalRAM + " MB");
                 }
             }
 
@@ -908,9 +892,7 @@ namespace CosmosKernel1
 
         private static String calcNumber(String input)
         {
-            Expression e = new Expression();
-            String result = (String) e.Evaluate(input);
-            return result;
+            return input + "123";
         }
 
         public static String charListToString(List<Char> input)

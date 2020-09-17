@@ -889,10 +889,10 @@ namespace CosmosKernel1
 
         private static String calcNumber(String input)
         {
-            String returnText = "";
+            Double returnNum = 0.0;
 
-            double numOne = 0.0;
-            double numTwo = 0.0;
+            String numOne = "";
+            String numTwo = "";
             Char sign = ' ';
             int signLoc = 0;
 
@@ -905,12 +905,35 @@ namespace CosmosKernel1
                     {
                         sign = input[i];
                         signLoc = i;
-
+                        numOne = input.Substring(0, i) + "";
+                        numTwo = input.Substring(i + 1, input.Length - (i + 1)) + "";
                     }
                 }
             }
 
-            return returnText;
+            if (numOne == "" || numTwo == "")
+            {
+                return "0.0";
+            }
+            
+            if (sign == '+')
+            {
+                returnNum = double.Parse(numOne) + double.Parse(numTwo);
+            }
+            else if (sign == '-')
+            {
+                returnNum = double.Parse(numOne) - double.Parse(numTwo);
+            }
+            else if (sign == 'x')
+            {
+                returnNum = double.Parse(numOne) * double.Parse(numTwo);
+            }
+            else if (sign == '/')
+            {
+                returnNum = double.Parse(numOne) / double.Parse(numTwo);
+            }
+
+            return returnNum + "";
         }
 
         public static String charListToString(List<Char> input)

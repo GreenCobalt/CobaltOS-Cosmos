@@ -890,24 +890,18 @@ namespace CosmosKernel1
         private static String calcNumber(String input)
         {
             Double returnNum = 0.0;
-
             String numOne = "";
             String numTwo = "";
             Char sign = ' ';
-            int signLoc = 0;
-
 
             for (int i = 0, len = (input.Length + 1); i < len; i++)
             {
                 if (input[i] == '+' || input[i] == '-' || input[i] == '/' || input[i] == 'x')
                 {
-                    if (signLoc == 0)
-                    {
-                        sign = input[i];
-                        signLoc = i;
-                        numOne = input.Substring(0, i) + "";
-                        numTwo = input.Substring(i + 1, input.Length - (i + 1)) + "";
-                    }
+                    sign = input[i];
+                    numOne = input.Substring(0, i) + "";
+                    numTwo = input.Substring(i + 1, input.Length - (i + 1)) + "";
+                    break;
                 }
             }
 

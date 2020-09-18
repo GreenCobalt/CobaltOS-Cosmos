@@ -184,10 +184,7 @@ namespace CosmosKernel1
             {
                 EndSec = StartSec + secNum;
             }
-            while (Cosmos.HAL.RTC.Second != EndSec)
-            {
-                ;
-            }
+            while (Cosmos.HAL.RTC.Second != EndSec) { }
         }
     }
 }

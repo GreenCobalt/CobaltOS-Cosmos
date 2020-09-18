@@ -35,7 +35,7 @@ namespace CosmosKernel1
             Console.WriteLine(" #     #   # #   # #   # #      #       #   #     #");
             Console.WriteLine("##### ##### ##### #   # #####  #       ##### #####");
             Console.WriteLine("Enter 'help' for help.");
-            Cosmos.System.PCSpeaker.Beep();
+            //Cosmos.System.PCSpeaker.Beep();
         }
 
         protected override void Run()
@@ -43,11 +43,14 @@ namespace CosmosKernel1
             if (graphicsMode == true)
             {
                 GUIManager.tick();
-            } else if (fsMode == true)
+            }
+            else if (fsMode == true)
             {
                 Console.Write(cd + " >");
                 processFSConsole(Console.ReadLine());
-            } else {
+            }
+            else
+            {
                 Console.Write("> ");
                 processConsole(Console.ReadLine());
             }
@@ -67,19 +70,23 @@ namespace CosmosKernel1
 
                 return;
 
-            } else if (input == "cpu")
+            }
+            else if (input == "cpu")
             {
                 Console.WriteLine("CPU: " + Cosmos.Core.ProcessorInformation.GetVendorName() + " @ " + (Cosmos.Core.CPU.GetCPUCycleSpeed() / 1000) + "Ghz");
                 return;
-            } else if (input == "mem")
+            }
+            else if (input == "mem")
             {
                 Console.WriteLine("RAM: " + (Cosmos.Core.CPU.GetAmountOfRAM() < 1024 ? Cosmos.Core.CPU.GetAmountOfRAM() + " MB" : Cosmos.Core.CPU.GetAmountOfRAM() / 1024.00 + " GB"));
                 return;
-            } else if (input == "time")
+            }
+            else if (input == "time")
             {
                 Console.WriteLine("Current Date: " + Cosmos.HAL.RTC.Month + "/" + Cosmos.HAL.RTC.DayOfTheMonth + "/" + Cosmos.HAL.RTC.Year + " " + Cosmos.HAL.RTC.Hour + ":" + Cosmos.HAL.RTC.Minute + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0'));
                 return;
-            } else if (input == "help")
+            }
+            else if (input == "help")
             {
                 Console.WriteLine("Help:");
                 Console.WriteLine("    cpu: Returns CPU model and speed.");
@@ -88,12 +95,14 @@ namespace CosmosKernel1
                 Console.WriteLine("    gui: Activates the GUI.");
                 Console.WriteLine("    help: Returns this message.");
                 return;
-            } else if (input == "fs")
+            }
+            else if (input == "fs")
             {
                 fsMode = true;
 
                 return;
-            } else
+            }
+            else
             {
                 Console.WriteLine("Unknown command! Use 'help' for help!");
                 return;
@@ -115,12 +124,14 @@ namespace CosmosKernel1
                     if (directoryEntry.mEntryType == Sys.FileSystem.Listing.DirectoryEntryTypeEnum.File)
                     {
                         Console.WriteLine(" - " + directoryEntry.mName);
-                    } else
+                    }
+                    else
                     {
                         Console.WriteLine(directoryEntry.mName);
                     }
                 }
-            } else if (input == "cd")
+            }
+            else if (input == "cd")
             {
                 String[] inputSplit = input.Split(" ");
                 if (inputSplit.Length > 1)
@@ -131,15 +142,18 @@ namespace CosmosKernel1
                     if (Directory.Exists(pieces[1]))
                     {
                         Console.WriteLine("Exists");
-                    } else
+                    }
+                    else
                     {
                         Console.WriteLine("Not Exists");
                     }
-                } else
+                }
+                else
                 {
                     Console.WriteLine("Invalid syntax! cd [dir] ");
                 }
-            } else if (input == "mkdir")
+            }
+            else if (input == "mkdir")
             {
                 String[] inputSplit = input.Split(" ");
                 if (inputSplit.Length > 1)

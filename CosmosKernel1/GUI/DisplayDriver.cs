@@ -28,9 +28,9 @@ namespace CosmosKernel1
 
         public static void drawScreen()
         {
-            for (int y=0,h=screenH; y < h; y++)
+            for (int y = 0, h = screenH; y < h; y++)
             {
-                for (int x=0,w=screenW; x < w; x++)
+                for (int x = 0, w = screenW; x < w; x++)
                 {
                     if (SBuffer[(y * screenW) + x] == SBufferOld[(y * screenW) + x])
                     {
@@ -134,7 +134,7 @@ namespace CosmosKernel1
             {
                 if (s[i] == '\u000D')
                 {
-                    yLoc =+ 40;
+                    yLoc = +40;
                     xLoc = x;
                     continue;
                 }
@@ -377,7 +377,7 @@ namespace CosmosKernel1
                     setPixel(x + 10, y + 20, c);
                     setPixel(x + 10, y + 22, c);
                     setPixel(x + 10, y + 24, c);
-                    setPixel(x , y + 14, c);
+                    setPixel(x, y + 14, c);
                     setPixel(x, y + 16, c);
                     setPixel(x, y + 18, c);
                     setPixel(x, y + 20, c);
@@ -647,7 +647,7 @@ namespace CosmosKernel1
                     setPixel(x, y + 24, c);
                     setPixel(x + 2, y + 24, c);
                     setPixel(x + 4, y + 24, c);
-                    setPixel(x + 6 , y + 24, c);
+                    setPixel(x + 6, y + 24, c);
                     setPixel(x + 8, y + 24, c);
                     setPixel(x + 10, y + 24, c);
                     setPixel(x + 12, y + 24, c);
@@ -1305,43 +1305,43 @@ namespace CosmosKernel1
                     setPixel(x + 12, y + 24, c);
                     return 16;
                 case 'V':
-                    setPixel(x, y + 2, c); 
+                    setPixel(x, y + 2, c);
                     setPixel(x + 8, y + 2, c);
-                    setPixel(x, y + 4, c); 
+                    setPixel(x, y + 4, c);
                     setPixel(x + 8, y + 4, c);
-                    setPixel(x, y + 6, c); 
+                    setPixel(x, y + 6, c);
                     setPixel(x + 8, y + 6, c);
-                    setPixel(x, y + 8, c); 
+                    setPixel(x, y + 8, c);
                     setPixel(x + 8, y + 8, c);
-                    setPixel(x + 2, y + 10, c); 
+                    setPixel(x + 2, y + 10, c);
                     setPixel(x + 6, y + 10, c);
-                    setPixel(x + 2, y + 12, c); 
+                    setPixel(x + 2, y + 12, c);
                     setPixel(x + 6, y + 12, c);
-                    setPixel(x + 2, y + 14, c); 
+                    setPixel(x + 2, y + 14, c);
                     setPixel(x + 6, y + 14, c);
-                    setPixel(x + 2, y + 16, c); 
+                    setPixel(x + 2, y + 16, c);
                     setPixel(x + 6, y + 16, c);
-                    setPixel(x + 4, y + 18, c); 
                     setPixel(x + 4, y + 18, c);
-                    setPixel(x + 4, y + 20, c); 
+                    setPixel(x + 4, y + 18, c);
                     setPixel(x + 4, y + 20, c);
-                    setPixel(x + 4, y + 22, c); 
+                    setPixel(x + 4, y + 20, c);
                     setPixel(x + 4, y + 22, c);
-                    setPixel(x + 4, y + 24, c); 
+                    setPixel(x + 4, y + 22, c);
+                    setPixel(x + 4, y + 24, c);
                     setPixel(x + 4, y + 24, c);
                     return 12;
                 case 'v':
-                    setPixel(x, y + 12, c);     
+                    setPixel(x, y + 12, c);
                     setPixel(x + 12, y + 12, c);
-                    setPixel(x, y + 14, c);     
+                    setPixel(x, y + 14, c);
                     setPixel(x + 12, y + 14, c);
-                    setPixel(x + 2, y + 16, c); 
+                    setPixel(x + 2, y + 16, c);
                     setPixel(x + 10, y + 16, c);
-                    setPixel(x + 2, y + 18, c); 
+                    setPixel(x + 2, y + 18, c);
                     setPixel(x + 10, y + 18, c);
-                    setPixel(x + 4, y + 20, c); 
+                    setPixel(x + 4, y + 20, c);
                     setPixel(x + 8, y + 20, c);
-                    setPixel(x + 4, y + 22, c); 
+                    setPixel(x + 4, y + 22, c);
                     setPixel(x + 8, y + 22, c);
                     setPixel(x + 6, y + 24, c);
                     return 16;
@@ -1400,17 +1400,17 @@ namespace CosmosKernel1
                     setPixel(x + 12, y + 24, c);
                     return 16;
                 case 'X':
-                    setPixel(x, y + 2, c); 
-                    setPixel(x, y + 4, c); 
-                    setPixel(x + 2, y + 6, c); 
-                    setPixel(x + 2, y + 8, c); 
-                    setPixel(x + 4, y + 10, c); 
-                    setPixel(x + 4, y + 12, c); 
-                    setPixel(x + 6, y + 14, c); 
-                    setPixel(x + 6, y + 16, c); 
-                    setPixel(x + 8, y + 18, c); 
-                    setPixel(x + 8, y + 20, c); 
-                    setPixel(x + 10, y + 22, c); 
+                    setPixel(x, y + 2, c);
+                    setPixel(x, y + 4, c);
+                    setPixel(x + 2, y + 6, c);
+                    setPixel(x + 2, y + 8, c);
+                    setPixel(x + 4, y + 10, c);
+                    setPixel(x + 4, y + 12, c);
+                    setPixel(x + 6, y + 14, c);
+                    setPixel(x + 6, y + 16, c);
+                    setPixel(x + 8, y + 18, c);
+                    setPixel(x + 8, y + 20, c);
+                    setPixel(x + 10, y + 22, c);
                     setPixel(x + 10, y + 24, c);
                     setPixel(x + 10, y + 2, c);
                     setPixel(x + 10, y + 4, c);
@@ -1440,20 +1440,20 @@ namespace CosmosKernel1
                     setPixel(x, y + 24, c);
                     return 14;
                 case 'Y':
-                    setPixel(x,         y,      c);
-                    setPixel(x,         y + 2,  c);
-                    setPixel(x + 2,     y + 4,  c);
-                    setPixel(x + 2,     y + 6,  c);
-                    setPixel(x + 4,     y + 8,  c);
-                    setPixel(x + 4,     y + 10, c);
-                    setPixel(x + 6,     y + 12, c);
-                    setPixel(x + 6,     y + 12, c);
-                    setPixel(x + 8,     y + 10, c);
-                    setPixel(x + 8,     y + 8,  c);
-                    setPixel(x + 10,    y + 6,  c);
-                    setPixel(x + 10,    y + 4,  c);
-                    setPixel(x + 12,    y + 2,  c);
-                    setPixel(x + 12,    y,      c);
+                    setPixel(x, y, c);
+                    setPixel(x, y + 2, c);
+                    setPixel(x + 2, y + 4, c);
+                    setPixel(x + 2, y + 6, c);
+                    setPixel(x + 4, y + 8, c);
+                    setPixel(x + 4, y + 10, c);
+                    setPixel(x + 6, y + 12, c);
+                    setPixel(x + 6, y + 12, c);
+                    setPixel(x + 8, y + 10, c);
+                    setPixel(x + 8, y + 8, c);
+                    setPixel(x + 10, y + 6, c);
+                    setPixel(x + 10, y + 4, c);
+                    setPixel(x + 12, y + 2, c);
+                    setPixel(x + 12, y, c);
                     setPixel(x + 6, y + 10, c);
                     setPixel(x + 6, y + 12, c);
                     setPixel(x + 6, y + 14, c);
@@ -1528,8 +1528,8 @@ namespace CosmosKernel1
                     setPixel(x + 8, y + 16, c);
                     setPixel(x + 6, y + 18, c);
                     setPixel(x + 4, y + 20, c);
-                    setPixel(x + 2,y + 22, c);
-                    setPixel(x    ,y + 24, c);
+                    setPixel(x + 2, y + 22, c);
+                    setPixel(x, y + 24, c);
                     return 16;
                 case '0':
                     setPixel(x + 2, y, c);
@@ -1999,18 +1999,18 @@ namespace CosmosKernel1
                     setPixel(x + 12, y + 18, c);
                     setPixel(x + 12, y + 20, c);
                     setPixel(x + 12, y + 22, c);
-                    setPixel(x , y, c);
-                    setPixel(x , y + 2, c);
-                    setPixel(x , y + 4, c);
-                    setPixel(x , y + 6, c);
-                    setPixel(x , y + 8, c);
-                    setPixel(x , y + 10, c);
-                    setPixel(x , y , c);
-                    setPixel(x , y + 14, c);
-                    setPixel(x , y + 16, c);
-                    setPixel(x , y + 18, c);
-                    setPixel(x , y + 20, c);
-                    setPixel(x , y + 22, c);
+                    setPixel(x, y, c);
+                    setPixel(x, y + 2, c);
+                    setPixel(x, y + 4, c);
+                    setPixel(x, y + 6, c);
+                    setPixel(x, y + 8, c);
+                    setPixel(x, y + 10, c);
+                    setPixel(x, y, c);
+                    setPixel(x, y + 14, c);
+                    setPixel(x, y + 16, c);
+                    setPixel(x, y + 18, c);
+                    setPixel(x, y + 20, c);
+                    setPixel(x, y + 22, c);
                     return 16;
             }
         }

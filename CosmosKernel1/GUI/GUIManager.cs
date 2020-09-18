@@ -6,6 +6,8 @@ using Cosmos.System;
 using Cosmos.System.FileSystem;
 using Cosmos.System.FileSystem.Listing;
 using System.IO;
+using System.Linq;
+using CosmosKernel1.Utils;
 
 namespace CosmosKernel1
 {
@@ -75,16 +77,18 @@ namespace CosmosKernel1
         private static String dirSelectContent;
         private static Boolean dirSelectOpen;
 
-        public static void init() {
+        public static void init()
+        {
             ;
         }
-        
+
         public static void tick()
         {
             if (activeApp == 99)
             {
                 DisplayDriver.setFullBuffer(Color.DarkGray);
-            } else
+            }
+            else
             {
                 DisplayDriver.setFullBuffer(backgroundColor);
                 DisplayDriver.addFilledRectangle(0, 550, 800, 50, Color.FromArgb(255, 50, 50, 50));
@@ -131,7 +135,8 @@ namespace CosmosKernel1
 
                     notePadCharSizes.Add(size);
                     int totalSize = 0;
-                    foreach (int charSize in notePadCharSizes) {
+                    foreach (int charSize in notePadCharSizes)
+                    {
                         totalSize = totalSize + charSize;
                         if ((totalSize + 40) - (newLines * (notepadSizeX - 20)) > notepadSizeX)
                         {
@@ -179,7 +184,7 @@ namespace CosmosKernel1
                 DisplayDriver.addText(settingsLocX + 25, settingsLocY + 90, Color.White, "General");
 
                 DisplayDriver.addFilledRectangle(settingsLocX + 20, settingsLocY + 125, 130, 40, (settingsPage == 1 ? Color.LightGray : Color.DarkGray));
-                DisplayDriver.addText(settingsLocX + 25, settingsLocY + 130, Color.White, "Colors"); 
+                DisplayDriver.addText(settingsLocX + 25, settingsLocY + 130, Color.White, "Colors");
 
                 if (settingsPage == 0)
                 {
@@ -187,7 +192,8 @@ namespace CosmosKernel1
                     DisplayDriver.addText(settingsLocX + 350, settingsLocY + 120, Color.Black, (timeFormat ? "24 Hour" : "12 Hour"));
                     timeFormatToggleSize = DisplayDriver.addText(settingsLocX + 480, settingsLocY + 120, Color.Black, "Toggle") + 20;
                     DisplayDriver.addRectangle(settingsLocX + 460, settingsLocY + 100, timeFormatToggleSize, settingsLocY + 170, Color.Black);
-                } else if (settingsPage == 1)
+                }
+                else if (settingsPage == 1)
                 {
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 120, Color.Black, "Background Color:");
                     DisplayDriver.addFilledRectangle(settingsLocX + 410, settingsLocY + 120, 30, 30, backgroundColor);
@@ -311,24 +317,6 @@ namespace CosmosKernel1
                     activeApp = 99;
                 }
 
-                /*  
-                    DisplayDriver.addFilledRectangle(, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 10 + spacingX, calcLocY + 90 + spacingY, Color.Black, "7");
-                    DisplayDriver.addFilledRectangle(calcLocX + 70, calcLocY + 90, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 70 + spacingX, calcLocY + 90 + spacingY, Color.Black, "8");
-                    DisplayDriver.addFilledRectangle(calcLocX + 130, calcLocY + 90, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 130 + spacingX, calcLocY + 90 + spacingY, Color.Black, "9");
-                    DisplayDriver.addFilledRectangle(calcLocX + 200, calcLocY + 90, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 200 + spacingX, calcLocY + 90 + spacingY, Color.Black, "/");
-                    DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 150, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 10 + spacingX, calcLocY + 150 + spacingY, Color.Black, "4");
-                    DisplayDriver.addFilledRectangle(calcLocX + 70, calcLocY + 150, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 70 + spacingX, calcLocY + 150 + spacingY, Color.Black, "5");
-                    DisplayDriver.addFilledRectangle(calcLocX + 130, calcLocY + 150, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 130 + spacingX, calcLocY + 150 + spacingY, Color.Black, "6");
-                    DisplayDriver.addFilledRectangle(calcLocX + 200, calcLocY + 150, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 200 + spacingX, calcLocY + 150 + spacingY - 8, Color.Black, "x");
-                    DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 210, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 10 + spacingX, calcLocY + 210 + spacingY, Color.Black, "1");
-                    DisplayDriver.addFilledRectangle(calcLocX + 70, calcLocY + 210, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 70 + spacingX, calcLocY + 210 + spacingY, Color.Black, "2");
-                    DisplayDriver.addFilledRectangle(calcLocX + 130, calcLocY + 210, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 130 + spacingX, calcLocY + 210 + spacingY, Color.Black, "3");
-                    DisplayDriver.addFilledRectangle(calcLocX + 200, calcLocY + 210, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 200 + spacingX, calcLocY + 210 + spacingY, Color.Black, "-");
-                    DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 270, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 10 + spacingX, calcLocY + 270 + spacingY, Color.Black, "0");
-                    DisplayDriver.addFilledRectangle(calcLocX + 70, calcLocY + 270, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 70 + spacingX, calcLocY + 270 + spacingY, Color.Black, ".");
-                    DisplayDriver.addFilledRectangle(calcLocX + 130, calcLocY + 270, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 130 + spacingX, calcLocY + 270 + spacingY, Color.Black, "=");
-                    DisplayDriver.addFilledRectangle(calcLocX + 200, calcLocY + 270, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 200 + spacingX, calcLocY + 270 + spacingY, Color.Black, "+");
-                */
                 if (activeApp == 3)
                 {
                     if ((x > calcLocX + calcSizeX - 25 && x < calcLocX + calcSizeX - 5) && (y > calcLocY + 5 && y < calcLocY + 25))
@@ -463,7 +451,7 @@ namespace CosmosKernel1
                     }
                     else if ((x > calcLocX + 130 && x < calcLocX + 180) && (y > calcLocY + 270 && y < calcLocY + 320))
                     {
-                        executeCalc();
+                        calcAnswer = Calculator.executeCalc(calcChars);
                     }
                     else if ((x > calcLocX + 200 && x < calcLocX + 250) && (y > calcLocY + 270 && y < calcLocY + 320))
                     {
@@ -523,7 +511,8 @@ namespace CosmosKernel1
                                 fileStream.Write(toWrite, 0, toWrite.Length);
                             }
                             dirSelectOpen = false;
-                        } else if (dirSelectPurpose == 1)
+                        }
+                        else if (dirSelectPurpose == 1)
                         {
                             DirectoryEntry file = fs.GetFile(new string(dirChars.ToArray()));
                             Stream fileStream = file.GetFileStream();
@@ -560,7 +549,7 @@ namespace CosmosKernel1
                     else if (settingsPage == 1 && (x > settingsLocX + 460 && x < backgroundColorSize) && (y > settingsLocY + 100 && y < settingsLocY + 170) && !bgColorChangeMenu)
                     {
                         bgColorChangeMenu = true;
-                    } 
+                    }
                     else if ((x > settingsLocX + 20 && x < settingsLocX + 150) && (y > settingsLocY + 85 && y < settingsLocY + 125))
                     {
                         settingsPage = 0;
@@ -569,7 +558,7 @@ namespace CosmosKernel1
                     else if ((x > settingsLocX + 20 && x < settingsLocX + 150) && (y > settingsLocY + 125 && y < settingsLocY + 165))
                     {
                         settingsPage = 1;
-                    } 
+                    }
                     else if (bgColorChangeMenu)
                     {
                         if ((x > settingsLocX + 490 && x < settingsLocX + 510) && (y > settingsLocY + 130 && y < settingsLocY + 150))
@@ -854,12 +843,13 @@ namespace CosmosKernel1
                             {
                                 notePadChars.RemoveAt(notePadChars.Count - 1);
                             }
-                        } 
+                        }
                         else
                         {
                             notePadChars.Add(currentChar);
                         }
-                    } else
+                    }
+                    else
                     {
                         if (currentChar == '◄')
                         {
@@ -875,69 +865,6 @@ namespace CosmosKernel1
                     }
                 }
             }
-        }
-        private static void executeCalc()
-        {
-            String r = calcNumber(charListToString(calcChars));
-            calcChars.Clear();
-            foreach (Char c in r)
-            {
-                calcChars.Add(c);
-            }
-            calcAnswer = true;
-        }
-
-        private static String calcNumber(String input)
-        {
-            Double returnNum = 0.0;
-            String numOne = "";
-            String numTwo = "";
-            Char sign = ' ';
-
-            for (int i = 0, len = (input.Length + 1); i < len; i++)
-            {
-                if (input[i] == '+' || input[i] == '-' || input[i] == '/' || input[i] == 'x')
-                {
-                    sign = input[i];
-                    numOne = input.Substring(0, i) + "";
-                    numTwo = input.Substring(i + 1, input.Length - (i + 1)) + "";
-                    break;
-                }
-            }
-
-            if (numOne == "" || numTwo == "")
-            {
-                return "0.0";
-            }
-            
-            if (sign == '+')
-            {
-                returnNum = double.Parse(numOne) + double.Parse(numTwo);
-            }
-            else if (sign == '-')
-            {
-                returnNum = double.Parse(numOne) - double.Parse(numTwo);
-            }
-            else if (sign == 'x')
-            {
-                returnNum = double.Parse(numOne) * double.Parse(numTwo);
-            }
-            else if (sign == '/')
-            {
-                returnNum = double.Parse(numOne) / double.Parse(numTwo);
-            }
-
-            return returnNum + "";
-        }
-
-        public static String charListToString(List<Char> input)
-        {
-            String r = "";
-            foreach (Char c in input)
-            {
-                r = r + c;
-            }
-            return r;
         }
     }
 }

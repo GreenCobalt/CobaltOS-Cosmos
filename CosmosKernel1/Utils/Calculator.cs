@@ -32,7 +32,14 @@ namespace CosmosKernel1.Utils
                 if (input[i] == '+' || input[i] == '-' || input[i] == '/' || input[i] == 'x')
                 {
                     sign.Add(input[i]);
-                    nums.Add(input.Substring(lastSignIndex, lastSignIndex + 2 - i));
+
+                    try
+                    {
+                        nums.Add(input.Substring(lastSignIndex, lastSignIndex + 2 - i));
+                    } catch {
+                        return "Calc Error 1!";
+                    }
+
                     signLoc.Add(i);
                     lastSignIndex = i;
                 }
@@ -40,26 +47,33 @@ namespace CosmosKernel1.Utils
             nums.Add(input.Substring(lastSignIndex + 1, input.Length - 2));
             signLoc.RemoveAt(0);
 
-            if (ListUtils.listContains(nums, ""))
+            try
             {
-                return "0.0";
-            }
+                if (ListUtils.listContains(nums, ""))
+                {
+                    return "0.0";
+                }
 
-            if (sign[0] == '+')
-            {
-                returnNum = double.Parse(nums[0]) + double.Parse(nums[1]);
+                if (sign[0] == '+')
+                {
+                    returnNum = double.Parse(nums[0]) + double.Parse(nums[1]);
+                }
+                else if (sign[0] == '-')
+                {
+                    returnNum = double.Parse(nums[0]) - double.Parse(nums[1]);
+                }
+                else if (sign[0] == 'x')
+                {
+                    returnNum = double.Parse(nums[0]) * double.Parse(nums[1]);
+                }
+                else if (sign[0] == '/')
+                {
+                    returnNum = double.Parse(nums[0]) / double.Parse(nums[1]);
+                }
             }
-            else if (sign[0] == '-')
+            catch
             {
-                returnNum = double.Parse(nums[0]) - double.Parse(nums[1]);
-            }
-            else if (sign[0] == 'x')
-            {
-                returnNum = double.Parse(nums[0]) * double.Parse(nums[1]);
-            }
-            else if (sign[0] == '/')
-            {
-                returnNum = double.Parse(nums[0]) / double.Parse(nums[1]);
+                return "Calc Error 2!";
             }
 
             return returnNum.ToString().PadRight(1, '0');

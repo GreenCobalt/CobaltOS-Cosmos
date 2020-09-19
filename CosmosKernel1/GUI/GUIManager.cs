@@ -79,7 +79,7 @@ namespace CosmosKernel1
 
         public static void init()
         {
-            ;
+            calcChars.Clear();
         }
 
         public static void tick()

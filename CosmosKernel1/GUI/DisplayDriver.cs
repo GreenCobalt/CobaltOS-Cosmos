@@ -28,16 +28,20 @@ namespace CosmosKernel1
 
         public static void drawScreen()
         {
+            Pen pen = new Pen(Color.Orange);
             for (int y = 0, h = screenH; y < h; y++)
             {
                 for (int x = 0, w = screenW; x < w; x++)
                 {
-                    if (SBuffer[(y * screenW) + x] == SBufferOld[(y * screenW) + x])
+                    if (!(SBuffer[(y * screenW) + x] == SBufferOld[(y * screenW) + x]))
                     {
-                        continue;
+                        if (!(SBuffer[(y * screenW) + x] == pen.Color))
+                        {
+                            pen.Color = SBuffer[(y * screenW) + x];
+                        }
+                        canvas.DrawPoint(pen, x, y);
                     }
-                    Pen pen = new Pen(SBuffer[(y * screenW) + x]);
-                    canvas.DrawPoint(pen, x, y);
+
                 }
             }
             copyArray(SBuffer, SBufferOld);
@@ -47,7 +51,10 @@ namespace CosmosKernel1
         {
             for (int i = 0, len = from.Length; i < len; i++)
             {
-                to[i] = from[i];
+                if (to[i] != from[i])
+                {
+                    to[i] = from[i];
+                }
             }
         }
 

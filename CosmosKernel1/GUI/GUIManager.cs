@@ -94,10 +94,6 @@ namespace CosmosKernel1
                 DisplayDriver.addFilledRectangle(0, 550, 800, 50, Color.FromArgb(255, 50, 50, 50));
                 DisplayDriver.addFilledRectangle(10, 560, 30, 30, Color.Red);
                 DisplayDriver.addText((timeFormat ? 675 : 625), 560, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")));
-                if (activeApp == 0)
-                {
-
-                }
             }
 
             checkKeyboard();
@@ -303,8 +299,8 @@ namespace CosmosKernel1
                 if (startMenuOpen && (x > 20 && x < 280) && (y > 295 && y < 320))
                 {
                     startMenuOpen = false;
-                    calcChars.Clear();
                     activeApp = 3;
+                    calcChars.Clear();
                 }
                 if (startMenuOpen && (x > 20 && x < 280) && (y > 470 && y < 505))
                 {

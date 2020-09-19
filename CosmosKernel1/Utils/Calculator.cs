@@ -62,7 +62,7 @@ namespace CosmosKernel1.Utils
                 returnNum = double.Parse(nums[0]) / double.Parse(nums[1]);
             }
 
-            return returnNum + "";
+            return returnNum.ToString().PadRight(1, '0');
         }
     }
 }

@@ -35,7 +35,7 @@ namespace CosmosKernel1.Utils
 
                     try
                     {
-                        nums.Add(input.Substring(lastSignIndex, lastSignIndex + 2 - i));
+                        nums.Add(input.Substring(lastSignIndex, i - lastSignIndex + 2));
                     } catch {
                         return "Calc Error 1!";
                     }
@@ -44,11 +44,17 @@ namespace CosmosKernel1.Utils
                     lastSignIndex = i;
                 }
             }
-            nums.Add(input.Substring(lastSignIndex + 1, input.Length - 2));
+
+            try {
+                nums.Add(input.Substring(lastSignIndex + 1, input.Length - 2));
+            }
+            catch
+            {
+                return "Calc Error 2!";
+            }
+
             signLoc.RemoveAt(0);
 
-            try
-            {
                 if (ListUtils.listContains(nums, ""))
                 {
                     return "0.0";
@@ -70,13 +76,8 @@ namespace CosmosKernel1.Utils
                 {
                     returnNum = double.Parse(nums[0]) / double.Parse(nums[1]);
                 }
-            }
-            catch
-            {
-                return "Calc Error 2!";
-            }
 
-            return returnNum.ToString().PadRight(1, '0');
+            return returnNum.ToString().PadRight(2, '0');
         }
     }
 }

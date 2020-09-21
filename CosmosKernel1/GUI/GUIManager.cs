@@ -192,6 +192,9 @@ namespace CosmosKernel1
                 DisplayDriver.addFilledRectangle(settingsLocX + 20, settingsLocY + 125, 130, 40, (settingsPage == 1 ? Color.LightGray : Color.DarkGray));
                 DisplayDriver.addText(settingsLocX + 25, settingsLocY + 130, Color.White, "Colors");
 
+                DisplayDriver.addFilledRectangle(settingsLocX + 20, settingsLocY + 325, 130, 40, (settingsPage == 2 ? Color.LightGray : Color.DarkGray));
+                DisplayDriver.addText(settingsLocX + 25, settingsLocY + 330, Color.White, "Info");
+
                 if (settingsPage == 0)
                 {
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 120, Color.Black, "Time Format:");
@@ -205,6 +208,13 @@ namespace CosmosKernel1
                     DisplayDriver.addFilledRectangle(settingsLocX + 410, settingsLocY + 120, 30, 30, backgroundColor);
                     backgroundColorSize = DisplayDriver.addText(settingsLocX + 480, settingsLocY + 120, Color.Black, "Change") + 20;
                     DisplayDriver.addRectangle(settingsLocX + 460, settingsLocY + 100, backgroundColorSize, settingsLocY + 170, Color.Black);
+                }
+                else if (settingsPage == 2)
+                {
+                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 120, Color.Black, "System Information:");
+                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 150, Color.Black, " - CobaltOS Version: " + Kernel.osVersion);
+                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 180, Color.Black, " - CPU: " + Cosmos.Core.ProcessorInformation.GetVendorName() + " @ " + (Cosmos.Core.CPU.GetCPUCycleSpeed() / 1000) + "Ghz")
+                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 210, Color.Black, " - RAM: " + (Cosmos.Core.CPU.GetAmountOfRAM() < 1024 ? Cosmos.Core.CPU.GetAmountOfRAM() + " MB" : Cosmos.Core.CPU.GetAmountOfRAM() / 1024.00 + " GB"));
                 }
 
                 if (bgColorChangeMenu)
@@ -307,7 +317,7 @@ namespace CosmosKernel1
                     activeApp = 1;
                     return;
                 }
-                if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 265 && y < screenH - taskBarHeight - 240))
+                if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 265 && y < screenH - taskBarHeight - 230))
                 {
                     startMenuOpen = false;
                     activeApp = 3;
@@ -568,6 +578,10 @@ namespace CosmosKernel1
                     else if ((x > settingsLocX + 20 && x < settingsLocX + 150) && (y > settingsLocY + 125 && y < settingsLocY + 165))
                     {
                         settingsPage = 1;
+                    }
+                    else if  ((x > settingsLocX + 20 && x < settingsLocX + 150) && (y > settingsLocY + 325 && y < settingsLocY + 365))
+                    {
+                        settingsPage = 2;
                     }
                     else if (bgColorChangeMenu)
                     {

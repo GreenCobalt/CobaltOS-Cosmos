@@ -10,6 +10,7 @@ using System.Linq;
 using CosmosKernel1.Utils;
 using Cosmos.Debug.Kernel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace CosmosKernel1
 {
@@ -68,7 +69,7 @@ namespace CosmosKernel1
         private static List<Char> dirChars = new List<Char>();
         private static List<Char> calcChars = new List<Char>();
         private static List<int> notePadCharSizes = new List<int>();
-        private static CosmosVFS fs = Kernel.fs;
+        private static CosmosVFS fs;
 
         private static int screenW;
         private static int screenH;
@@ -86,10 +87,53 @@ namespace CosmosKernel1
 
         public static void init()
         {
+            fs = Kernel.fs;
             calcChars.Clear();
 
             screenW = DisplayDriver.screenW;
             screenH = DisplayDriver.screenH;
+
+            DirectoryEntry f = fs.GetFile("0:\\config.cfg");
+            if (!(f.GetFileStream().CanRead)) {
+                f = fs.CreateFile("0:\\config.cfg");
+                f.GetFileStream().Write(Encoding.ASCII.GetBytes("false,3"), 0, Encoding.ASCII.GetBytes("false,3").Length);
+            }
+            Stream files = f.GetFileStream();
+            byte[] fread = new byte[files.Length];
+            files.Read(fread, 0, (int) files.Length);
+            String[] options = fread.ToString().Split(',');
+            timeFormat = Boolean.Parse(options[0]);
+            backgroundColor = getColor(int.Parse(options[1]));
+        }
+
+        private static Color getColor(int c)
+        {
+            switch (c)
+            {
+                case 1: return Color.DarkBlue;
+                case 2: return Color.DarkRed;
+                case 3: return Color.DarkGreen;
+                case 4: return Color.Blue;
+                case 5: return Color.Red;
+                case 6: return Color.Green;
+                case 7: return Color.Orange;
+                case 8: return Color.Yellow;
+                case 9: return Color.Purple;
+                default: return Color.Black;
+            }
+        }
+        private static int getInt(Color c)
+        {
+            if (c == Color.DarkBlue) { return 1; }
+            if (c == Color.DarkRed) { return 2; }
+            if (c == Color.DarkGreen) { return 3; }
+            if (c == Color.Blue) { return 4; }
+            if (c == Color.Red) { return 5; }
+            if (c == Color.Green) { return 6; }
+            if (c == Color.Orange) { return 7; }
+            if (c == Color.Yellow) { return 8; }
+            if (c == Color.Purple) { return 9; }
+            return 0;
         }
 
         public static void tick()
@@ -213,7 +257,7 @@ namespace CosmosKernel1
                 {
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 120, Color.Black, "System Information:");
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 150, Color.Black, " - CobaltOS Version: " + Kernel.osVersion);
-                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 180, Color.Black, " - CPU: " + Cosmos.Core.ProcessorInformation.GetVendorName() + " @ " + (Cosmos.Core.CPU.GetCPUCycleSpeed() / 1000) + "Ghz")
+                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 180, Color.Black, " - CPU: " + Cosmos.Core.ProcessorInformation.GetVendorName() + " @ " + (Cosmos.Core.CPU.GetCPUCycleSpeed() / 1000) + "Ghz");
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 210, Color.Black, " - RAM: " + (Cosmos.Core.CPU.GetAmountOfRAM() < 1024 ? Cosmos.Core.CPU.GetAmountOfRAM() + " MB" : Cosmos.Core.CPU.GetAmountOfRAM() / 1024.00 + " GB"));
                 }
 
@@ -565,6 +609,12 @@ namespace CosmosKernel1
                     else if (settingsPage == 0 && (x > settingsLocX + 460 && x < timeFormatToggleSize) && (y > settingsLocY + 100 && y < settingsLocY + 170))
                     {
                         timeFormat = !timeFormat;
+
+                        DirectoryEntry f = fs.GetFile("0:\\config.cfg");
+                        byte[] buffer = new byte[f.GetFileStream().Length];
+                        f.GetFileStream().Read(buffer, 0, (int) f.GetFileStream().Length);
+                        String s = timeFormat.ToString() + "," + buffer.ToString().Split(',')[1];
+                        f.GetFileStream().Write(Encoding.ASCII.GetBytes(s), 0, s.Length);
                     }
                     else if (settingsPage == 1 && (x > settingsLocX + 460 && x < backgroundColorSize) && (y > settingsLocY + 100 && y < settingsLocY + 170) && !bgColorChangeMenu)
                     {
@@ -630,6 +680,12 @@ namespace CosmosKernel1
                             backgroundColor = Color.Purple;
                             bgColorChangeMenu = false;
                         }
+
+                        DirectoryEntry f = fs.GetFile("0:\\config.cfg");
+                        byte[] buffer = new byte[f.GetFileStream().Length];
+                        f.GetFileStream().Read(buffer, 0, (int)f.GetFileStream().Length);
+                        String s = buffer.ToString().Split(',')[0] + "," + getInt(backgroundColor);
+                        f.GetFileStream().Write(Encoding.ASCII.GetBytes(s), 0, s.Length);
                     }
                 }
                 if (activeApp == 99)

@@ -34,27 +34,32 @@ namespace CosmosKernel1.Utils
                 if (input[i] == '+' || input[i] == '-' || input[i] == '/' || input[i] == 'x')
                 {
                     sign.Add(input[i]);
-                    try
-                    {
-                        nums.Add(input.Substring(lastSignIndex, i - lastSignIndex + 2));
-                    } catch {
-                        return "Calc Error 1!";
-                    }
+                    nums.Add(input.Substring(lastSignIndex, i - lastSignIndex + 1));
 
                     signLoc.Add(i);
                     lastSignIndex = i;
                 }
             }
 
-            try {
-                nums.Add(input.Substring(lastSignIndex + 1, input.Length - 2));
-            }
-            catch
+            if (lastSignIndex == 0)
             {
-                return "Calc Error 2!";
+                return "Invalid Syntax!";
             }
 
-            signLoc.RemoveAt(0);
+            //nums.Add(input.Substring(lastSignIndex + 1, input.Length - (lastSignIndex + 1) + 1));
+            try
+            {
+                return stringSubstring(input, lastSignIndex + 1, input.Length);
+            } catch
+            {
+                return "Err2";
+            }
+
+            try
+            {
+                return nums[0] + " " + sign[0] + " " + nums[1];
+
+                signLoc.RemoveAt(0);
 
                 if (ListUtils.listContains(nums, ""))
                 {
@@ -77,8 +82,29 @@ namespace CosmosKernel1.Utils
                 {
                     returnNum = double.Parse(nums[0]) / double.Parse(nums[1]);
                 }
+            }
+            catch
+            {
+                return "Calc Error 3!";
+            }
 
             return returnNum.ToString().PadRight(2, '0');
+        }
+
+        public static String stringSubstring(String input, int start, int end)
+        {
+            StringBuilder sb = new StringBuilder("", 50);
+            int i;
+            for (i = 0; i < input.Length; i++) {
+                if (i > (start - 1))
+                {
+                    if (i < (end + 1))
+                    {
+                        sb.Append(input[i]);
+                    }
+                }
+            }
+            return sb.ToString();
         }
     }
 }

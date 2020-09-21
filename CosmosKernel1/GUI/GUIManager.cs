@@ -305,22 +305,26 @@ namespace CosmosKernel1
                     typeLocX = notepadLocX + 10;
                     typeLocY = notepadLocY + 76;
                     activeApp = 1;
+                    return;
                 }
                 if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 265 && y < screenH - taskBarHeight - 240))
                 {
                     startMenuOpen = false;
                     activeApp = 3;
                     calcChars.Clear();
+                    return;
                 }
                 if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 80 && y < screenH - taskBarHeight - 55))
                 {
                     startMenuOpen = false;
                     activeApp = 2;
+                    return;
                 }
                 if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 55 && y < screenH - taskBarHeight - 30))
                 {
                     startMenuOpen = false;
                     activeApp = 99;
+                    return;
                 }
 
                 if (activeApp == 3)

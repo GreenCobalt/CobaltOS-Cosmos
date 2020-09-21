@@ -26,28 +26,14 @@ namespace CosmosKernel1
         {
             fs = new Sys.FileSystem.CosmosVFS();
             Sys.FileSystem.VFS.VFSManager.RegisterVFS(fs);
-            int dots = 0;
-            int i = 0;
 
-            while (i < 8)
-            {
-                Console.Clear();
-                Console.WriteLine("    ##### ##### ####  ##### #    #####     ##### #####");
-                Console.WriteLine("   #     #   # #  #  #   # #      #       #   # #    ");
-                Console.WriteLine("  #     #   # ####  ##### #      #       #   # #####");
-                Console.WriteLine(" #     #   # #   # #   # #      #       #   #     #");
-                Console.WriteLine("##### ##### ##### #   # #####  #       ##### #####");
-                Console.WriteLine("Loading" + new string('.', dots));
-                WaitSeconds(1);
-                i++;
-                if (dots > 2)
-                {
-                    dots = 0;
-                } else
-                {
-                    dots++;
-                }
-            }
+            Console.Clear();
+            Console.WriteLine("    ##### ##### ####  ##### #    #####     ##### #####");
+            Console.WriteLine("   #     #   # #  #  #   # #      #       #   # #    ");
+            Console.WriteLine("  #     #   # ####  ##### #      #       #   # #####");
+            Console.WriteLine(" #     #   # #   # #   # #      #       #   #     #");
+            Console.WriteLine("##### ##### ##### #   # #####  #       ##### #####");
+            WaitSeconds(1);
 
             initGUI();
         }

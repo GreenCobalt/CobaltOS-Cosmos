@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
@@ -15,15 +16,24 @@ namespace CosmosKernel1
         public static int screenW = 800;
         public static int screenH = 600;
 
-        public static Color[] SBuffer = new Color[480000];
-        public static Color[] SBufferOld = new Color[480000];
+        public static Color[] SBuffer;
+        public static Color[] SBufferOld;
 
         private static Canvas canvas;
 
-        public static Canvas initScreen()
+        public static void initScreen()
         {
+            SBuffer = new Color[(screenW * screenH) + screenW];
+            SBufferOld = new Color[(screenW * screenH) + screenW];
+
+            Cosmos.System.MouseManager.ScreenWidth = Convert.ToUInt32(screenW);
+            Cosmos.System.MouseManager.ScreenHeight = Convert.ToUInt32(screenH);
+
             canvas = FullScreenCanvas.GetFullScreenCanvas();
-            return canvas;
+            Mode canvasMode = new Mode(screenW, screenH, ColorDepth.ColorDepth32);
+            canvas.Mode = canvasMode;
+
+            GUIManager.init();
         }
 
         public static void drawScreen()
@@ -60,6 +70,11 @@ namespace CosmosKernel1
 
         private static void setPixel(int x, int y, Color color)
         {
+            if (x > screenW || y > screenH)
+            {
+                return;
+            }
+
             SBuffer[(y * screenW) + x] = color;
         }
 

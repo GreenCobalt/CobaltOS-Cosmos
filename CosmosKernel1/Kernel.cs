@@ -11,6 +11,7 @@ using Cosmos.Core.IOGroup;
 using System.Drawing;
 using Cosmos.System;
 using Console = System.Console;
+using Cosmos.Debug.Kernel;
 
 namespace CosmosKernel1
 {
@@ -25,17 +26,30 @@ namespace CosmosKernel1
         {
             fs = new Sys.FileSystem.CosmosVFS();
             Sys.FileSystem.VFS.VFSManager.RegisterVFS(fs);
+            int dots = 0;
+            int i = 0;
 
-            WaitSeconds(1);
+            while (i < 8)
+            {
+                Console.Clear();
+                Console.WriteLine("    ##### ##### ####  ##### #    #####     ##### #####");
+                Console.WriteLine("   #     #   # #  #  #   # #      #       #   # #    ");
+                Console.WriteLine("  #     #   # ####  ##### #      #       #   # #####");
+                Console.WriteLine(" #     #   # #   # #   # #      #       #   #     #");
+                Console.WriteLine("##### ##### ##### #   # #####  #       ##### #####");
+                Console.WriteLine("Loading" + new string('.', dots));
+                WaitSeconds(1);
+                i++;
+                if (dots > 2)
+                {
+                    dots = 0;
+                } else
+                {
+                    dots++;
+                }
+            }
 
-            Console.Clear();
-            Console.WriteLine("    ##### ##### ####  ##### #    #####     ##### #####");
-            Console.WriteLine("   #     #   # #  #  #   # #      #       #   # #    ");
-            Console.WriteLine("  #     #   # ####  ##### #      #       #   # #####");
-            Console.WriteLine(" #     #   # #   # #   # #      #       #   #     #");
-            Console.WriteLine("##### ##### ##### #   # #####  #       ##### #####");
-            Console.WriteLine("Enter 'help' for help.");
-            //Cosmos.System.PCSpeaker.Beep();
+            initGUI();
         }
 
         protected override void Run()
@@ -56,20 +70,18 @@ namespace CosmosKernel1
             }
         }
 
+        private void initGUI()
+        {
+            graphicsMode = true;
+            DisplayDriver.initScreen();
+        }
+
         private void processConsole(String input)
         {
             if (input == "gui")
             {
-                graphicsMode = true;
-
-                GUIManager.init();
-                DisplayDriver.initScreen();
-
-                Cosmos.System.MouseManager.ScreenWidth = Convert.ToUInt32(DisplayDriver.screenW);
-                Cosmos.System.MouseManager.ScreenHeight = Convert.ToUInt32(DisplayDriver.screenH);
-
+                initGUI();
                 return;
-
             }
             else if (input == "cpu")
             {

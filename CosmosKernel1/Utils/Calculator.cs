@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Cosmos.Debug.Kernel;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace CosmosKernel1.Utils
@@ -32,7 +34,6 @@ namespace CosmosKernel1.Utils
                 if (input[i] == '+' || input[i] == '-' || input[i] == '/' || input[i] == 'x')
                 {
                     sign.Add(input[i]);
-
                     try
                     {
                         nums.Add(input.Substring(lastSignIndex, i - lastSignIndex + 2));

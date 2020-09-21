@@ -8,6 +8,8 @@ using Cosmos.System.FileSystem.Listing;
 using System.IO;
 using System.Linq;
 using CosmosKernel1.Utils;
+using Cosmos.Debug.Kernel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CosmosKernel1
 {
@@ -31,24 +33,24 @@ namespace CosmosKernel1
         private static int settingsPage = 0;
         private static Boolean startMenuOpen = false;
 
-        private static int notepadLocX = 250;
+        private static int notepadLocX = 10;
         private static int notepadLocY = 10;
-        private static int notepadSizeX = 500;
-        private static int notepadSizeY = 500;
+        private static int notepadSizeX = 600;
+        private static int notepadSizeY = 400;
         private static Boolean notepadFileMenu = false;
 
-        private static int settingsLocX = 150;
+        private static int settingsLocX = 10;
         private static int settingsLocY = 10;
         private static int settingsSizeX = 600;
         private static int settingsSizeY = 400;
 
-        private static int calcLocX = 100;
-        private static int calcLocY = 100;
+        private static int calcLocX = 10;
+        private static int calcLocY = 10;
         private static int calcSizeX = 260;
         private static int calcSizeY = 330;
         private static Boolean calcAnswer;
 
-        private static int cancelX = 200;
+        private static int cancelX = 100;
         private static int offX;
         private static int restartX;
         private static int Y = 200;
@@ -68,6 +70,11 @@ namespace CosmosKernel1
         private static List<int> notePadCharSizes = new List<int>();
         private static CosmosVFS fs = Kernel.fs;
 
+        private static int screenW;
+        private static int screenH;
+
+        private static int taskBarHeight = 50;
+
 
         /*
          * 0 = Save
@@ -80,6 +87,9 @@ namespace CosmosKernel1
         public static void init()
         {
             calcChars.Clear();
+
+            screenW = DisplayDriver.screenW;
+            screenH = DisplayDriver.screenH;
         }
 
         public static void tick()
@@ -91,9 +101,9 @@ namespace CosmosKernel1
             else
             {
                 DisplayDriver.setFullBuffer(backgroundColor);
-                DisplayDriver.addFilledRectangle(0, 550, 800, 50, Color.FromArgb(255, 50, 50, 50));
-                DisplayDriver.addFilledRectangle(10, 560, 30, 30, Color.Red);
-                DisplayDriver.addText((timeFormat ? 675 : 625), 560, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")));
+                DisplayDriver.addFilledRectangle(0, screenH - taskBarHeight, screenW, taskBarHeight, Color.FromArgb(255, 50, 50, 50));
+                DisplayDriver.addFilledRectangle(10, screenH - taskBarHeight + 10, 30, taskBarHeight - 20, Color.Red);
+                DisplayDriver.addText((timeFormat ? screenW - 125 : screenW - 175), screenH - 40, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")));
             }
 
             checkKeyboard();
@@ -261,19 +271,19 @@ namespace CosmosKernel1
 
             if (startMenuOpen)
             {
-                DisplayDriver.addFilledRectangle(10, 250, 300, 300, Color.Gray);
+                DisplayDriver.addFilledRectangle(10, screenH - taskBarHeight - 300, 300, 300, Color.Gray);
 
-                DisplayDriver.addFilledRectangle(20, 260, 20, 20, Color.LightBlue);
-                DisplayDriver.addText(50, 255, Color.White, "Notepad");
+                DisplayDriver.addFilledRectangle(20, screenH - taskBarHeight - 290, 20, 20, Color.LightBlue);
+                DisplayDriver.addText(50, screenH - taskBarHeight - 290, Color.White, "Notepad");
 
-                DisplayDriver.addFilledRectangle(20, 295, 20, 20, Color.SandyBrown);
-                DisplayDriver.addText(50, 295, Color.White, "Calculator");
+                DisplayDriver.addFilledRectangle(20, screenH - taskBarHeight - 255, 20, 20, Color.SandyBrown);
+                DisplayDriver.addText(50, screenH - taskBarHeight - 255, Color.White, "Calculator");
 
-                DisplayDriver.addFilledRectangle(20, 470, 20, 20, Color.DarkGray);
-                DisplayDriver.addText(50, 470, Color.White, "Settings");
+                DisplayDriver.addFilledRectangle(20, screenH - taskBarHeight - 80, 20, 20, Color.DarkGray);
+                DisplayDriver.addText(50, screenH - taskBarHeight - 80, Color.White, "Settings");
 
-                DisplayDriver.addFilledRectangle(20, 505, 20, 20, Color.Red);
-                DisplayDriver.addText(50, 505, Color.White, "Power");
+                DisplayDriver.addFilledRectangle(20, screenH - taskBarHeight - 45, 20, 20, Color.Red);
+                DisplayDriver.addText(50, screenH - taskBarHeight - 45, Color.White, "Power");
             }
         }
 
@@ -284,30 +294,30 @@ namespace CosmosKernel1
                 uint x = Cosmos.System.MouseManager.X;
                 uint y = Cosmos.System.MouseManager.Y;
 
-                if ((x > 10 && x < 40) && (y > 560 && y < 590))
+                if ((x > 10 && x < 40) && (y > screenH - (taskBarHeight - 10) && y < screenH - 10))
                 {
                     startMenuOpen = !startMenuOpen;
                 }
 
-                if (startMenuOpen && (x > 20 && x < 280) && (y > 260 && y < 285))
+                if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 290 && y < screenH - taskBarHeight - 265))
                 {
                     startMenuOpen = false;
                     typeLocX = notepadLocX + 10;
                     typeLocY = notepadLocY + 76;
                     activeApp = 1;
                 }
-                if (startMenuOpen && (x > 20 && x < 280) && (y > 295 && y < 320))
+                if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 265 && y < screenH - taskBarHeight - 240))
                 {
                     startMenuOpen = false;
                     activeApp = 3;
                     calcChars.Clear();
                 }
-                if (startMenuOpen && (x > 20 && x < 280) && (y > 470 && y < 505))
+                if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 80 && y < screenH - taskBarHeight - 55))
                 {
                     startMenuOpen = false;
                     activeApp = 2;
                 }
-                if (startMenuOpen && (x > 20 && x < 280) && (y > 505 && y < 550))
+                if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 55 && y < screenH - taskBarHeight - 30))
                 {
                     startMenuOpen = false;
                     activeApp = 99;

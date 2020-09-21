@@ -22,7 +22,7 @@ namespace CosmosKernel1.Utils
 
         public static String calcNumber(String input)
         {
-            Double returnNum = 1.0;
+            Double returnNum;
             List<string> nums = new List<string>();
             List<Char> sign = new List<Char>();
             List<int> signLoc = new List<int>();
@@ -34,7 +34,7 @@ namespace CosmosKernel1.Utils
                 if (input[i] == '+' || input[i] == '-' || input[i] == '/' || input[i] == 'x')
                 {
                     sign.Add(input[i]);
-                    nums.Add(input.Substring(lastSignIndex, i - lastSignIndex + 1));
+                    nums.Add(stringSubstring(input, lastSignIndex, i - 1));
 
                     signLoc.Add(i);
                     lastSignIndex = i;
@@ -46,49 +46,36 @@ namespace CosmosKernel1.Utils
                 return "Invalid Syntax!";
             }
 
-            //nums.Add(input.Substring(lastSignIndex + 1, input.Length - (lastSignIndex + 1) + 1));
-            try
+            nums.Add(stringSubstring(input, lastSignIndex + 1, input.Length));
+
+            signLoc.RemoveAt(0);
+
+            if (ListUtils.listContains(nums, ""))
             {
-                return stringSubstring(input, lastSignIndex + 1, input.Length);
-            } catch
-            {
-                return "Err2";
+                return "Invalid Syntax!";
             }
 
-            try
+            if (sign[0] == '+')
             {
-                return nums[0] + " " + sign[0] + " " + nums[1];
-
-                signLoc.RemoveAt(0);
-
-                if (ListUtils.listContains(nums, ""))
-                {
-                    return "0.0";
-                }
-
-                if (sign[0] == '+')
-                {
-                    returnNum = double.Parse(nums[0]) + double.Parse(nums[1]);
-                }
-                else if (sign[0] == '-')
-                {
-                    returnNum = double.Parse(nums[0]) - double.Parse(nums[1]);
-                }
-                else if (sign[0] == 'x')
-                {
-                    returnNum = double.Parse(nums[0]) * double.Parse(nums[1]);
-                }
-                else if (sign[0] == '/')
-                {
-                    returnNum = double.Parse(nums[0]) / double.Parse(nums[1]);
-                }
+                returnNum = double.Parse(nums[0]) + double.Parse(nums[1]);
             }
-            catch
+            else if (sign[0] == '-')
             {
-                return "Calc Error 3!";
+                returnNum = double.Parse(nums[0]) - double.Parse(nums[1]);
             }
-
-            return returnNum.ToString().PadRight(2, '0');
+            else if (sign[0] == 'x')
+            {
+                returnNum = double.Parse(nums[0]) * double.Parse(nums[1]);
+            }
+            else if (sign[0] == '/')
+            {
+                returnNum = double.Parse(nums[0]) / double.Parse(nums[1]);
+            } 
+            else
+            {
+                returnNum = 0;
+            }
+            return returnNum.ToString();
         }
 
         public static String stringSubstring(String input, int start, int end)

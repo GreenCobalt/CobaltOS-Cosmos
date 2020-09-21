@@ -153,7 +153,7 @@ namespace CosmosKernel1
                     }
                 }
 
-                DisplayDriver.addFilledRectangle(notepadLocX + 475, notepadLocY + 5, 20, 20, Color.Red);
+                DisplayDriver.addFilledRectangle(notepadLocX + 575, notepadLocY + 5, 20, 20, Color.Red);
                 DisplayDriver.addRectangle(typeLocX, typeLocY, typeLocX + 2, typeLocY + 24, Color.Black);
 
                 if (notepadFileMenu)
@@ -547,7 +547,7 @@ namespace CosmosKernel1
                 }
                 if (activeApp == 2)
                 {
-                    if ((x > notepadLocX + 475 && x < notepadLocX + 495) && (y > notepadLocY + 5 && y < notepadLocY + 25))
+                    if ((x > notepadLocX + 575 && x < notepadLocX + 595) && (y > notepadLocY + 5 && y < notepadLocY + 25))
                     {
                         activeApp = 0;
                         bgColorChangeMenu = false;

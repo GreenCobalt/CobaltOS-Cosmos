@@ -93,19 +93,17 @@ namespace CosmosKernel1
             screenW = DisplayDriver.screenW;
             screenH = DisplayDriver.screenH;
 
-            /*
             DirectoryEntry f = fs.GetFile(@"0:\config.cfg");
-            if (!(f.GetFileStream().CanRead)) {
+            Stream files = f.GetFileStream();
+            if (!(files.CanRead)) {
                 f = fs.CreateFile(@"0:\config.cfg");
                 f.GetFileStream().Write(Encoding.ASCII.GetBytes("false,3"), 0, Encoding.ASCII.GetBytes("false,3").Length);
             }
-            Stream files = f.GetFileStream();
             byte[] fread = new byte[files.Length];
             files.Read(fread, 0, (int) files.Length);
             String[] options = fread.ToString().Split(',');
             timeFormat = Boolean.Parse(options[0]);
             backgroundColor = getColor(int.Parse(options[1]));
-            */
         }
 
         private static Color getColor(int c)
@@ -612,13 +610,11 @@ namespace CosmosKernel1
                     {
                         timeFormat = !timeFormat;
 
-                        /*
                         DirectoryEntry f = fs.GetFile(@"0:\config.cfg");
                         byte[] buffer = new byte[f.GetFileStream().Length];
                         f.GetFileStream().Read(buffer, 0, (int) f.GetFileStream().Length);
                         String s = timeFormat.ToString() + "," + buffer.ToString().Split(',')[1];
                         f.GetFileStream().Write(Encoding.ASCII.GetBytes(s), 0, s.Length);
-                        */
                     }
                     else if (settingsPage == 1 && (x > settingsLocX + 460 && x < backgroundColorSize) && (y > settingsLocY + 100 && y < settingsLocY + 170) && !bgColorChangeMenu)
                     {
@@ -685,13 +681,11 @@ namespace CosmosKernel1
                             bgColorChangeMenu = false;
                         }
 
-                        /*
                         DirectoryEntry f = fs.GetFile(@"0:\config.cfg");
                         byte[] buffer = new byte[f.GetFileStream().Length];
                         f.GetFileStream().Read(buffer, 0, (int)f.GetFileStream().Length);
                         String s = buffer.ToString().Split(',')[0] + "," + getInt(backgroundColor);
                         f.GetFileStream().Write(Encoding.ASCII.GetBytes(s), 0, s.Length);
-                        */
                     }
                 }
                 if (activeApp == 99)

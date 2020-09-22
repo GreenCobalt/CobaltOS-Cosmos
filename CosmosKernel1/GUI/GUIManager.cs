@@ -5,6 +5,7 @@ using System.Drawing;
 using Cosmos.System;
 using Cosmos.System.FileSystem;
 using Cosmos.System.FileSystem.Listing;
+using Sys = Cosmos.System;
 using System.IO;
 using System.Linq;
 using CosmosKernel1.Utils;
@@ -87,23 +88,25 @@ namespace CosmosKernel1
 
         public static void init()
         {
-            fs = Kernel.fs;
-            calcChars.Clear();
+            fs = new Sys.FileSystem.CosmosVFS();
+            Sys.FileSystem.VFS.VFSManager.RegisterVFS(fs);
 
             screenW = DisplayDriver.screenW;
             screenH = DisplayDriver.screenH;
 
+            /*
             DirectoryEntry f = fs.GetFile(@"0:\config.cfg");
             Stream files = f.GetFileStream();
-            if (!(files.CanRead)) {
+            if (f.mSize == 0) {
                 f = fs.CreateFile(@"0:\config.cfg");
-                f.GetFileStream().Write(Encoding.ASCII.GetBytes("false,3"), 0, Encoding.ASCII.GetBytes("false,3").Length);
+                files.Write(Encoding.ASCII.GetBytes("false,3"), 0, Encoding.ASCII.GetBytes("false,3").Length);
             }
             byte[] fread = new byte[files.Length];
             files.Read(fread, 0, (int) files.Length);
             String[] options = fread.ToString().Split(',');
             timeFormat = Boolean.Parse(options[0]);
             backgroundColor = getColor(int.Parse(options[1]));
+            */
         }
 
         private static Color getColor(int c)
@@ -257,7 +260,7 @@ namespace CosmosKernel1
                 {
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 120, Color.Black, "System Information:");
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 150, Color.Black, " - CobaltOS Version: " + Kernel.osVersion);
-                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 180, Color.Black, " - CPU: " + Cosmos.Core.ProcessorInformation.GetVendorName() + " @ " + (Cosmos.Core.CPU.GetCPUCycleSpeed() / 1000) + "Ghz");
+                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 180, Color.Black, " - CPU: " + Kernel.cpuString);
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 210, Color.Black, " - RAM: " + (Cosmos.Core.CPU.GetAmountOfRAM() < 1024 ? Cosmos.Core.CPU.GetAmountOfRAM() + " MB" : Cosmos.Core.CPU.GetAmountOfRAM() / 1024.00 + " GB"));
                 }
 
@@ -609,12 +612,13 @@ namespace CosmosKernel1
                     else if (settingsPage == 0 && (x > settingsLocX + 460 && x < timeFormatToggleSize) && (y > settingsLocY + 100 && y < settingsLocY + 170))
                     {
                         timeFormat = !timeFormat;
-
+                        /*
                         DirectoryEntry f = fs.GetFile(@"0:\config.cfg");
                         byte[] buffer = new byte[f.GetFileStream().Length];
                         f.GetFileStream().Read(buffer, 0, (int) f.GetFileStream().Length);
                         String s = timeFormat.ToString() + "," + buffer.ToString().Split(',')[1];
                         f.GetFileStream().Write(Encoding.ASCII.GetBytes(s), 0, s.Length);
+                        */
                     }
                     else if (settingsPage == 1 && (x > settingsLocX + 460 && x < backgroundColorSize) && (y > settingsLocY + 100 && y < settingsLocY + 170) && !bgColorChangeMenu)
                     {
@@ -680,12 +684,13 @@ namespace CosmosKernel1
                             backgroundColor = Color.Purple;
                             bgColorChangeMenu = false;
                         }
-
+                        /*
                         DirectoryEntry f = fs.GetFile(@"0:\config.cfg");
                         byte[] buffer = new byte[f.GetFileStream().Length];
                         f.GetFileStream().Read(buffer, 0, (int)f.GetFileStream().Length);
                         String s = buffer.ToString().Split(',')[0] + "," + getInt(backgroundColor);
                         f.GetFileStream().Write(Encoding.ASCII.GetBytes(s), 0, s.Length);
+                        */
                     }
                 }
                 if (activeApp == 99)

@@ -81,28 +81,37 @@ namespace CosmosKernel1
         public static void addMouse(int x, int y)
         {
             setPixel(x + 1, y + 1, Color.White);
-            setPixel(Clamp(x + 2, 0, screenW - 2), y + 1, Color.White);
-            setPixel(Clamp(x + 4, 0, screenW - 2), y + 1, Color.White);
-            setPixel(Clamp(x + 6, 0, screenW - 2), y + 1, Color.White);
-            setPixel(x + 1, Clamp(y + 2, 0, screenH - 2), Color.White);
-            setPixel(x + 1, Clamp(y + 4, 0, screenH - 2), Color.White);
-            setPixel(x + 1, Clamp(y + 6, 0, screenH - 2), Color.White);
-            setPixel(Clamp(x + 2, 0, screenW - 2), Clamp(y + 2, 0, screenH - 2), Color.White);
-            setPixel(Clamp(x + 4, 0, screenW - 2), Clamp(y + 4, 0, screenH - 2), Color.White);
-            setPixel(Clamp(x + 6, 0, screenW - 2), Clamp(y + 6, 0, screenH - 2), Color.White);
-            setPixel(Clamp(x + 8, 0, screenW - 2), Clamp(y + 8, 0, screenH - 2), Color.White);
+            setPixel(x + 1, y + 2, Color.White);
+            setPixel(x + 2, y + 3, Color.White);
+            setPixel(x + 2, y + 4, Color.White);
+            setPixel(x + 3, y + 5, Color.White);
+            setPixel(x + 3, y + 6, Color.White);
+            setPixel(x + 4, y + 7, Color.White);
+            setPixel(x + 4, y + 8, Color.White);
+            setPixel(x + 5, y + 9, Color.White);
+            setPixel(x + 5, y + 10, Color.White);
+            setPixel(x + 6, y + 11, Color.White);
+            setPixel(x + 6, y + 12, Color.White);
 
-            setPixel(x, y, Color.Black);
-            setPixel(Clamp(x + 2, 0, screenW - 2), y, Color.Black);
-            setPixel(Clamp(x + 4, 0, screenW - 2), y, Color.Black);
-            setPixel(Clamp(x + 6, 0, screenW - 2), y, Color.Black);
-            setPixel(x, Clamp(y + 2, 0, screenH - 2), Color.Black);
-            setPixel(x, Clamp(y + 4, 0, screenH - 2), Color.Black);
-            setPixel(x, Clamp(y + 6, 0, screenH - 2), Color.Black);
-            setPixel(Clamp(x + 3, 0, screenW - 2), Clamp(y + 3, 0, screenH - 2), Color.Black);
-            setPixel(Clamp(x + 5, 0, screenW - 2), Clamp(y + 5, 0, screenH - 2), Color.Black);
-            setPixel(Clamp(x + 7, 0, screenW - 2), Clamp(y + 7, 0, screenH - 2), Color.Black);
-            setPixel(Clamp(x + 9, 0, screenW - 2), Clamp(y + 9, 0, screenH - 2), Color.Black);
+            setPixel(x + 2, y + 1, Color.White);
+            setPixel(x + 3, y + 2, Color.White);
+            setPixel(x + 4, y + 2, Color.White);
+            setPixel(x + 5, y + 3, Color.White);
+            setPixel(x + 6, y + 3, Color.White);
+            setPixel(x + 7, y + 4, Color.White);
+            setPixel(x + 8, y + 4, Color.White);
+            setPixel(x + 9, y + 5, Color.White);
+            setPixel(x + 10, y + 5, Color.White);
+            setPixel(x + 11, y + 6, Color.White);
+            setPixel(x + 12, y + 6, Color.White);
+
+            setPixel(x + 6, y + 12, Color.White);
+            setPixel(x + 7, y + 11, Color.White);
+            setPixel(x + 8, y + 10, Color.White);
+            setPixel(x + 9, y + 9, Color.White);
+            setPixel(x + 10, y + 8, Color.White);
+            setPixel(x + 11, y + 7, Color.White);
+            setPixel(x + 12, y + 6, Color.White);
         }
 
         public static void addFilledRectangle(int x, int y, int w, int h, Color c)

@@ -23,20 +23,17 @@ namespace CosmosKernel1
         private static Boolean graphicsMode = false;
         private static Boolean fsMode = false;
         private static String cd = "0:\\";
-        public static CosmosVFS fs;
+        public static readonly String cpuString = getCPU();
 
         protected override void BeforeRun()
         {
-            fs = new Sys.FileSystem.CosmosVFS();
-            Sys.FileSystem.VFS.VFSManager.RegisterVFS(fs);
-
             Console.Clear();
-            Console.WriteLine("##### ##### ####  ##### #  #######  ##### #####");
-            Console.WriteLine("#     #   # #  #  #   # #     #     #   # #    ");
-            Console.WriteLine("#     #   # ####  ##### #     #     #   # #####");
-            Console.WriteLine("#     #   # #   # #   # #     #     #   #     #");
+            Console.WriteLine("    ##### ##### ####  ##### #  #######  ##### #####");
+            Console.WriteLine("   #     #   # #  #  #   # #     #     #   # #    ");
+            Console.WriteLine("  #     #   # ####  ##### #     #     #   # #####");
+            Console.WriteLine(" #     #   # #   # #   # #     #     #   #     #");
             Console.WriteLine("##### ##### ##### #   # ##### #     ##### #####");
-            WaitSeconds(1);
+            WaitSeconds(2);
 
             initGUI();
         }
@@ -117,9 +114,10 @@ namespace CosmosKernel1
                 fsMode = false;
             }
 
-            var directory_list = fs.GetDirectoryListing(cd);
+            //var directory_list = fs.GetDirectoryListing(cd);
             if (input == "ls")
             {
+                /*
                 foreach (var directoryEntry in directory_list)
                 {
                     if (directoryEntry.mEntryType == Sys.FileSystem.Listing.DirectoryEntryTypeEnum.File)
@@ -131,6 +129,7 @@ namespace CosmosKernel1
                         Console.WriteLine(directoryEntry.mName);
                     }
                 }
+                */
             }
             else if (input == "cd")
             {
@@ -164,7 +163,7 @@ namespace CosmosKernel1
                     {
                         dir = dir + inputSplit[i];
                     }
-                    fs.CreateDirectory(cd + dir);
+                    //fs.CreateDirectory(cd + dir);
                 }
                 else
                 {
@@ -186,6 +185,25 @@ namespace CosmosKernel1
                 EndSec = StartSec + secNum;
             }
             while (Cosmos.HAL.RTC.Second != EndSec) { }
+        }
+
+        public static String getCPU()
+        {
+            String returnString = "";
+            String vendor = "";
+            foreach (Char c in CPU.GetCPUVendorName())
+            {
+                vendor += Convert.ToChar((byte)c);
+            }
+
+            if (vendor == "AuthenticAMD" || vendor == "GenuineIntel")
+            {
+                returnString = (vendor == "AuthenticAMD" ? "AMD" : "Intel");
+            } else
+            {
+                returnString = vendor;
+            }
+            return returnString;
         }
     }
 }

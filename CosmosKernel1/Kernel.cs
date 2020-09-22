@@ -12,6 +12,7 @@ using System.Drawing;
 using Cosmos.System;
 using Console = System.Console;
 using Cosmos.Debug.Kernel;
+using Cosmos.System.FileSystem;
 
 namespace CosmosKernel1
 {
@@ -22,7 +23,7 @@ namespace CosmosKernel1
         private static Boolean graphicsMode = false;
         private static Boolean fsMode = false;
         private static String cd = "0:\\";
-        public static Sys.FileSystem.CosmosVFS fs;
+        public static CosmosVFS fs;
 
         protected override void BeforeRun()
         {
@@ -30,7 +31,7 @@ namespace CosmosKernel1
             Sys.FileSystem.VFS.VFSManager.RegisterVFS(fs);
 
             Console.Clear();
-            Console.WriteLine("##### ##### ####  ##### #  #######   ##### #####");
+            Console.WriteLine("##### ##### ####  ##### #  #######  ##### #####");
             Console.WriteLine("#     #   # #  #  #   # #     #     #   # #    ");
             Console.WriteLine("#     #   # ####  ##### #     #     #   # #####");
             Console.WriteLine("#     #   # #   # #   # #     #     #   #     #");

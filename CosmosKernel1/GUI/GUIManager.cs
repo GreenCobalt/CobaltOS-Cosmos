@@ -106,7 +106,7 @@ namespace CosmosKernel1
             byte[] toRead = new byte[stream.Length];
             stream.Read(toRead, 0, (int) stream.Length);
 
-            String[] config = byteListToString(toRead).Split(',');
+            String[] config = ListUtils.byteListToString(toRead).Split(',');
             timeFormat = Boolean.Parse(config[0]);
             backgroundColor = getColor(int.Parse(config[1]));
         }
@@ -139,16 +139,6 @@ namespace CosmosKernel1
             if (c == Color.Yellow) { return 8; }
             if (c == Color.Purple) { return 9; }
             return 0;
-        }
-
-        public static String byteListToString(byte[] charL)
-        {
-            String returnS = "";
-            foreach (Char c in charL)
-            {
-                returnS += c;
-            }
-            return returnS;
         }
 
         public static void tick()
@@ -491,7 +481,7 @@ namespace CosmosKernel1
                         FileStream readStream = File.OpenRead(@"0:\config.cfg");
                         byte[] toRead = new byte[readStream.Length];
                         readStream.Read(toRead, 0, (int) readStream.Length);
-                        String s = timeFormat.ToString() + "," + byteListToString(toRead).Split(',')[1];
+                        String s = timeFormat.ToString() + "," + ListUtils.byteListToString(toRead).Split(',')[1];
                         readStream.Close();
 
                         File.Delete(@"0:\config.cfg");
@@ -568,7 +558,7 @@ namespace CosmosKernel1
                         FileStream readStream = File.OpenRead(@"0:\config.cfg");
                         byte[] toRead = new byte[readStream.Length];
                         readStream.Read(toRead, 0, (int)readStream.Length);
-                        String s = byteListToString(toRead).Split(',')[0] + "," + getInt(backgroundColor);
+                        String s = ListUtils.byteListToString(toRead).Split(',')[0] + "," + getInt(backgroundColor);
                         readStream.Close();
 
                         File.Delete(@"0:\config.cfg");
@@ -734,11 +724,11 @@ namespace CosmosKernel1
                     }
                     if ((x > offX - 10 && x < offSize + 10) && (y > Y - 10 && y < Y + 125))
                     {
-                        shutdown(false);
+                        Kernel.shutdown(false);
                     }
                     if ((x > restartX - 10 && x < restartSize + 10) && (y > Y - 10 && y < Y + 125))
                     {
-                        shutdown(true);
+                        Kernel.shutdown(true);
                     }
                 }
 
@@ -749,11 +739,6 @@ namespace CosmosKernel1
             }
         }
 
-        private static void shutdown(Boolean reboot)
-        {
-            if (reboot) Cosmos.System.Power.Reboot();
-            else Cosmos.System.Power.Shutdown();
-        }
 
         private static void checkKeyboard()
         {

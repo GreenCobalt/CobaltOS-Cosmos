@@ -16,6 +16,16 @@ namespace CosmosKernel1.Utils
             return r;
         }
 
+        public static String byteListToString(byte[] input)
+        {
+            String r = "";
+            foreach (Byte c in input)
+            {
+                r += (Char) c;
+            }
+            return r;
+        }
+
         public static Boolean listContains(List<string> input, String needle)
         {
             Boolean output = false;

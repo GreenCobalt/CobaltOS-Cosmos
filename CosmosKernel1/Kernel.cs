@@ -14,6 +14,7 @@ using Console = System.Console;
 using Cosmos.Debug.Kernel;
 using Cosmos.System.FileSystem;
 using Cosmos.System.FileSystem.Listing;
+using System.Net.Sockets;
 
 namespace CosmosKernel1
 {
@@ -106,11 +107,25 @@ namespace CosmosKernel1
 
                 return;
             }
+            else if (input == "shutdown")
+            {
+                shutdown(false);
+            }
+            else if (input == "restart")
+            {
+                shutdown(true);
+            }
             else
             {
                 Console.WriteLine("Unknown command! Use 'help' for help!");
                 return;
             }
+        }
+
+        public static void shutdown(Boolean reboot)
+        {
+            if (reboot) Cosmos.System.Power.Reboot();
+            else Cosmos.System.Power.Shutdown();
         }
 
         private static void processFSConsole(String input)

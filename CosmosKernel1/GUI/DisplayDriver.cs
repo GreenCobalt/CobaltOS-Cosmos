@@ -36,6 +36,11 @@ namespace CosmosKernel1
             GUIManager.init();
         }
 
+        public static void exitGUI()
+        {
+            canvas.Disable();
+        }
+
         public static void drawScreen()
         {
             Pen pen = new Pen(Color.Orange);

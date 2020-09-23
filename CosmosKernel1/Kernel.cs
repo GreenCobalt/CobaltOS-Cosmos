@@ -13,6 +13,7 @@ using Cosmos.System;
 using Console = System.Console;
 using Cosmos.Debug.Kernel;
 using Cosmos.System.FileSystem;
+using Cosmos.System.FileSystem.Listing;
 
 namespace CosmosKernel1
 {
@@ -33,6 +34,7 @@ namespace CosmosKernel1
             Console.WriteLine("  #     #   # ####  ##### #     #     #   # #####");
             Console.WriteLine(" #     #   # #   # #   # #     #     #   #     #");
             Console.WriteLine("##### ##### ##### #   # ##### #     ##### #####");
+
             WaitSeconds(2);
 
             initGUI();

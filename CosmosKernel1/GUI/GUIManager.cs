@@ -12,6 +12,7 @@ using CosmosKernel1.Utils;
 using Cosmos.Debug.Kernel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Cosmos.System.Graphics;
 
 namespace CosmosKernel1
 {
@@ -94,9 +95,14 @@ namespace CosmosKernel1
             screenW = DisplayDriver.screenW;
             screenH = DisplayDriver.screenH;
 
-            /*
-            DirectoryEntry f = fs.GetFile(@"0:\config.cfg");
+            DirectoryEntry f = GUIManager.fs.GetFile(@"0:\config.cfg");
             Stream files = f.GetFileStream();
+            if (File.Exists(@"0:\config.cfg"))
+            {
+                DisplayDriver.exitGUI();
+            }
+
+            /*
             if (f.mSize == 0) {
                 f = fs.CreateFile(@"0:\config.cfg");
                 files.Write(Encoding.ASCII.GetBytes("false,3"), 0, Encoding.ASCII.GetBytes("false,3").Length);

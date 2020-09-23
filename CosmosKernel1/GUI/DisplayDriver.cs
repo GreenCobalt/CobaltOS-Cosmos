@@ -53,17 +53,6 @@ namespace CosmosKernel1
             driver.Update(0,0,(uint)screenW, (uint)screenH);
         }
 
-        private static void copyArray(Color[] from, Color[] to)
-        {
-            for (int i = 0, len = from.Length; i < len; i++)
-            {
-                if (to[i] != from[i])
-                {
-                    to[i] = from[i];
-                }
-            }
-        }
-
         private static void setPixel(int x, int y, Color color)
         {
             if (x > screenW - 1 || y > screenH - 1)

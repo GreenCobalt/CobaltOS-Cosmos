@@ -256,6 +256,7 @@ namespace CosmosKernel1
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 150, Color.Black, " - CobaltOS Version: " + Kernel.osVersion);
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 180, Color.Black, " - CPU: " + Kernel.cpuString);
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 210, Color.Black, " - RAM: " + (Cosmos.Core.CPU.GetAmountOfRAM() < 1024 ? Cosmos.Core.CPU.GetAmountOfRAM() + " MB" : Cosmos.Core.CPU.GetAmountOfRAM() / 1024.00 + " GB"));
+                    
                 }
 
                 if (bgColorChangeMenu)
@@ -359,17 +360,17 @@ namespace CosmosKernel1
                     activeApp = 1;
                     return;
                 }
-                if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 60 && y < screenH - taskBarHeight - 35))
-                {
-                    startMenuOpen = false;
-                    activeApp = 2;
-                    return;
-                }
                 if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 265 && y < screenH - taskBarHeight - 230))
                 {
                     startMenuOpen = false;
                     activeApp = 3;
                     calcChars.Clear();
+                    return;
+                }
+                if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 70 && y < screenH - taskBarHeight - 40))
+                {
+                    startMenuOpen = false;
+                    activeApp = 2;
                     return;
                 }
                 if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 35 && y < screenH - taskBarHeight - 10))

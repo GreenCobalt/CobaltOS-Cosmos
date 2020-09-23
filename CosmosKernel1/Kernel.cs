@@ -33,6 +33,7 @@ namespace CosmosKernel1
             WaitSeconds(1);
 
             initGUI();
+
         }
 
         protected override void Run()
@@ -216,7 +217,7 @@ namespace CosmosKernel1
         {
             String returnString = "";
             String vendor = "";
-            foreach (Char c in CPU.GetCPUVendorName())
+            foreach (Char c in Cosmos.Core.CPU.GetCPUVendorName())
             {
                 vendor += Convert.ToChar((byte)c);
             }

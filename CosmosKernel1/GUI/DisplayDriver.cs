@@ -63,6 +63,16 @@ namespace CosmosKernel1
             SBuffer[(y * screenW) + x] = (uint) color.ToArgb();
         }
 
+        public static void addImage(String loc, int x, int y)
+        {
+            Bitmap b = new Bitmap(loc);
+            exitGUI();
+            foreach (int d in b.rawData)
+            {
+                Console.Write(d);
+            }
+        }
+
         public static void addMouse(int x, int y)
         {
             setPixel(x + 1, y + 1, Color.White);

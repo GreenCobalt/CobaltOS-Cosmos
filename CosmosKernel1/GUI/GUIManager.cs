@@ -368,12 +368,19 @@ namespace CosmosKernel1
                     startMenuOpen = !startMenuOpen;
                 }
 
+                //---------Start Menu---------------------
                 if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 290 && y < screenH - taskBarHeight - 265))
                 {
                     startMenuOpen = false;
                     typeLocX = notepadLocX + 10;
                     typeLocY = notepadLocY + 76;
                     activeApp = 1;
+                    return;
+                }
+                if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 60 && y < screenH - taskBarHeight - 35))
+                {
+                    startMenuOpen = false;
+                    activeApp = 2;
                     return;
                 }
                 if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 265 && y < screenH - taskBarHeight - 230))
@@ -383,17 +390,193 @@ namespace CosmosKernel1
                     calcChars.Clear();
                     return;
                 }
-                if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 80 && y < screenH - taskBarHeight - 55))
-                {
-                    startMenuOpen = false;
-                    activeApp = 2;
-                    return;
-                }
-                if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 55 && y < screenH - taskBarHeight - 30))
+                if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 35 && y < screenH - taskBarHeight - 10))
                 {
                     startMenuOpen = false;
                     activeApp = 99;
                     return;
+                }
+                //---------------------------------------
+
+
+                if (activeApp == 1)
+                {
+                    if ((x > settingsLocX + 575 && x < settingsLocX + 595) && (y > settingsLocY + 5 && y < settingsLocY + 25))
+                    {
+                        activeApp = 0;
+                        dirSelectOpen = false;
+                    }
+
+                    if ((x > notepadLocX + 2 && x < notepadLocX + 80) && (y > notepadLocY + 37 && y < notepadLocY + 77) && (!dirSelectOpen))
+                    {
+                        notepadFileMenu = !notepadFileMenu;
+                    }
+
+                    if ((x > notepadLocX + 5 && x < notepadLocX + 105) && (y > notepadLocY + 77 && y < notepadLocY + 117) && notepadFileMenu)
+                    {
+                        notepadFileMenu = !notepadFileMenu;
+                        dirSelectOpen = true;
+                        dirSelectPurpose = 0;
+                        dirSelectContent = new string(notePadChars.ToArray());
+                        dirChars.Clear();
+                        dirChars.Add('0');
+                        dirChars.Add(':');
+                        dirChars.Add('\\');
+                    }
+                    if ((x > notepadLocX + 5 && x < notepadLocX + 105) && (y > notepadLocY + 117 && y < notepadLocY + 157) && notepadFileMenu)
+                    {
+                        notepadFileMenu = !notepadFileMenu;
+                        dirSelectOpen = true;
+                        dirSelectPurpose = 1;
+                        dirChars.Clear();
+                        dirChars.Add('0');
+                        dirChars.Add(':');
+                        dirChars.Add('\\');
+                    }
+
+                    if (dirSelectOpen && (x > notepadLocX + 40 && x < notepadLocX + 140) && (y > notepadLocY + 110 && y < notepadLocY + 160))
+                    {
+                        if (dirSelectPurpose == 0)
+                        {
+                            FileStream f = File.Create(new string(dirChars.ToArray()));
+                            byte[] toWrite = Encoding.ASCII.GetBytes(dirSelectContent);
+                            f.Write(toWrite, 0, toWrite.Length);
+
+                            dirSelectOpen = false;
+                        }
+                        else if (dirSelectPurpose == 1)
+                        {
+                            if (File.Exists(new string(dirChars.ToArray())))
+                            {
+                                FileStream f = File.OpenRead(new string(dirChars.ToArray()));
+                                byte[] toRead = new byte[f.Length];
+                                f.Read(toRead, 0, (int) f.Length);
+                                notePadChars.Clear();
+                                for (int i = 0; i < toRead.Length; i++)
+                                {
+                                    notePadChars.Add(Encoding.ASCII.GetString(toRead)[i]);
+                                }
+                            } else
+                            {
+                                String s = "File not found!";
+                                notePadChars.Clear();
+                                for (int i = 0; i < s.Length; i++)
+                                {
+                                    notePadChars.Add(s[i]);
+                                }
+                                Kernel.WaitSeconds(1);
+                                notePadChars.Clear();
+                            }
+                            dirSelectOpen = false;
+                        }
+                    }
+                    if (dirSelectOpen && (x > notepadLocX + 190 && x < notepadLocX + 290) && (y > notepadLocY + 110 && y < notepadLocY + 160))
+                    {
+                        dirSelectOpen = false;
+                        dirSelectPurpose = 0;
+                    }
+                }
+
+                if (activeApp == 2)
+                {
+                    if ((x > settingsLocX + 575 && x < settingsLocX + 595) && (y > settingsLocY + 5 && y < settingsLocY + 25))
+                    {
+                        activeApp = 0;
+                        bgColorChangeMenu = false;
+                    }
+                    else if (settingsPage == 0 && (x > settingsLocX + 460 && x < timeFormatToggleSize) && (y > settingsLocY + 100 && y < settingsLocY + 170))
+                    {
+                        timeFormat = !timeFormat;
+
+                        FileStream readStream = File.OpenRead(@"0:\config.cfg");
+                        byte[] toRead = new byte[readStream.Length];
+                        readStream.Read(toRead, 0, (int) readStream.Length);
+                        String s = timeFormat.ToString() + "," + byteListToString(toRead).Split(',')[1];
+                        readStream.Close();
+
+                        File.Delete(@"0:\config.cfg");
+                        FileStream writeStream = File.Create(@"0:\config.cfg");
+                        byte[] toWrite = Encoding.ASCII.GetBytes(s);
+                        writeStream.Write(toWrite, 0, toWrite.Length);
+                        writeStream.Close();
+                    }
+                    else if (settingsPage == 1 && (x > settingsLocX + 460 && x < backgroundColorSize) && (y > settingsLocY + 100 && y < settingsLocY + 170) && !bgColorChangeMenu)
+                    {
+                        bgColorChangeMenu = true;
+                    }
+                    else if ((x > settingsLocX + 20 && x < settingsLocX + 150) && (y > settingsLocY + 85 && y < settingsLocY + 125))
+                    {
+                        settingsPage = 0;
+                        bgColorChangeMenu = false;
+                    }
+                    else if ((x > settingsLocX + 20 && x < settingsLocX + 150) && (y > settingsLocY + 125 && y < settingsLocY + 165))
+                    {
+                        settingsPage = 1;
+                    }
+                    else if  ((x > settingsLocX + 20 && x < settingsLocX + 150) && (y > settingsLocY + 325 && y < settingsLocY + 365))
+                    {
+                        settingsPage = 2;
+                    }
+                    else if (bgColorChangeMenu)
+                    {
+                        if ((x > settingsLocX + 490 && x < settingsLocX + 510) && (y > settingsLocY + 130 && y < settingsLocY + 150))
+                        {
+                            backgroundColor = Color.DarkBlue;
+                            bgColorChangeMenu = false;
+                        }
+                        else if ((x > settingsLocX + 520 && x < settingsLocX + 540) && (y > settingsLocY + 130 && y < settingsLocY + 150))
+                        {
+                            backgroundColor = Color.DarkRed;
+                            bgColorChangeMenu = false;
+                        }
+                        else if ((x > settingsLocX + 550 && x < settingsLocX + 570) && (y > settingsLocY + 130 && y < settingsLocY + 150))
+                        {
+                            backgroundColor = Color.DarkGreen;
+                            bgColorChangeMenu = false;
+                        }
+                        else if ((x > settingsLocX + 490 && x < settingsLocX + 510) && (y > settingsLocY + 160 && y < settingsLocY + 180))
+                        {
+                            backgroundColor = Color.Blue;
+                            bgColorChangeMenu = false;
+                        }
+                        else if ((x > settingsLocX + 520 && x < settingsLocX + 540) && (y > settingsLocY + 160 && y < settingsLocY + 180))
+                        {
+                            backgroundColor = Color.Red;
+                            bgColorChangeMenu = false;
+                        }
+                        else if ((x > settingsLocX + 550 && x < settingsLocX + 570) && (y > settingsLocY + 160 && y < settingsLocY + 180))
+                        {
+                            backgroundColor = Color.Green;
+                            bgColorChangeMenu = false;
+                        }
+                        else if ((x > settingsLocX + 490 && x < settingsLocX + 510) && (y > settingsLocY + 190 && y < settingsLocY + 210))
+                        {
+                            backgroundColor = Color.Orange;
+                            bgColorChangeMenu = false;
+                        }
+                        else if ((x > settingsLocX + 520 && x < settingsLocX + 540) && (y > settingsLocY + 190 && y < settingsLocY + 210))
+                        {
+                            backgroundColor = Color.Yellow;
+                            bgColorChangeMenu = false;
+                        }
+                        else if ((x > settingsLocX + 550 && x < settingsLocX + 570) && (y > settingsLocY + 190 && y < settingsLocY + 210))
+                        {
+                            backgroundColor = Color.Purple;
+                            bgColorChangeMenu = false;
+                        }
+
+                        FileStream readStream = File.OpenRead(@"0:\config.cfg");
+                        byte[] toRead = new byte[readStream.Length];
+                        readStream.Read(toRead, 0, (int)readStream.Length);
+                        String s = byteListToString(toRead).Split(',')[0] + "," + getInt(backgroundColor);
+                        readStream.Close();
+
+                        File.Delete(@"0:\config.cfg");
+                        FileStream writeStream = File.Create(@"0:\config.cfg");
+                        byte[] toWrite = Encoding.ASCII.GetBytes(s);
+                        writeStream.Write(toWrite, 0, toWrite.Length);
+                        writeStream.Close();
+                    }
                 }
 
                 if (activeApp == 3)
@@ -543,184 +726,6 @@ namespace CosmosKernel1
                     }
                 }
 
-                if (activeApp == 1)
-                {
-                    if ((x > notepadLocX + 475 && x < notepadLocX + 495) && (y > notepadLocY + 5 && y < notepadLocY + 25) && (!dirSelectOpen && dirSelectPurpose == 0))
-                    {
-                        activeApp = 0;
-                        dirSelectOpen = false;
-                    }
-
-                    if ((x > notepadLocX + 2 && x < notepadLocX + 80) && (y > notepadLocY + 37 && y < notepadLocY + 77) && (!dirSelectOpen))
-                    {
-                        notepadFileMenu = !notepadFileMenu;
-                    }
-
-                    if ((x > notepadLocX + 5 && x < notepadLocX + 105) && (y > notepadLocY + 77 && y < notepadLocY + 117) && notepadFileMenu)
-                    {
-                        notepadFileMenu = !notepadFileMenu;
-                        dirSelectOpen = true;
-                        dirSelectPurpose = 0;
-                        dirSelectContent = new string(notePadChars.ToArray());
-                        dirChars.Clear();
-                        dirChars.Add('0');
-                        dirChars.Add(':');
-                        dirChars.Add('\\');
-                    }
-                    if ((x > notepadLocX + 5 && x < notepadLocX + 105) && (y > notepadLocY + 117 && y < notepadLocY + 157) && notepadFileMenu)
-                    {
-                        notepadFileMenu = !notepadFileMenu;
-                        dirSelectOpen = true;
-                        dirSelectPurpose = 1;
-                        dirChars.Clear();
-                        dirChars.Add('0');
-                        dirChars.Add(':');
-                        dirChars.Add('\\');
-                    }
-
-                    if (dirSelectOpen && (x > notepadLocX + 40 && x < notepadLocX + 140) && (y > notepadLocY + 110 && y < notepadLocY + 160))
-                    {
-                        if (dirSelectPurpose == 0)
-                        {
-                            FileStream f = File.Create(new string(dirChars.ToArray()));
-                            byte[] toWrite = Encoding.ASCII.GetBytes(dirSelectContent);
-                            f.Write(toWrite, 0, toWrite.Length);
-
-                            dirSelectOpen = false;
-                        }
-                        else if (dirSelectPurpose == 1)
-                        {
-                            if (File.Exists(new string(dirChars.ToArray())))
-                            {
-                                FileStream f = File.OpenRead(new string(dirChars.ToArray()));
-                                byte[] toRead = new byte[f.Length];
-                                f.Read(toRead, 0, (int) f.Length);
-                                notePadChars.Clear();
-                                for (int i = 0; i < toRead.Length; i++)
-                                {
-                                    notePadChars.Add(Encoding.ASCII.GetString(toRead)[i]);
-                                }
-                            } else
-                            {
-                                String s = "File not found!";
-                                notePadChars.Clear();
-                                for (int i = 0; i < s.Length; i++)
-                                {
-                                    notePadChars.Add(s[i]);
-                                }
-                                Kernel.WaitSeconds(1);
-                                notePadChars.Clear();
-                            }
-                            dirSelectOpen = false;
-                        }
-                    }
-                    if (dirSelectOpen && (x > notepadLocX + 190 && x < notepadLocX + 290) && (y > notepadLocY + 110 && y < notepadLocY + 160))
-                    {
-                        dirSelectOpen = false;
-                        dirSelectPurpose = 0;
-                    }
-                }
-                if (activeApp == 2)
-                {
-                    if ((x > notepadLocX + 575 && x < notepadLocX + 595) && (y > notepadLocY + 5 && y < notepadLocY + 25))
-                    {
-                        activeApp = 0;
-                        bgColorChangeMenu = false;
-                    }
-                    else if (settingsPage == 0 && (x > settingsLocX + 460 && x < timeFormatToggleSize) && (y > settingsLocY + 100 && y < settingsLocY + 170))
-                    {
-                        timeFormat = !timeFormat;
-
-                        FileStream readStream = File.OpenRead(@"0:\config.cfg");
-                        byte[] toRead = new byte[readStream.Length];
-                        readStream.Read(toRead, 0, (int) readStream.Length);
-                        String s = timeFormat.ToString() + "," + byteListToString(toRead).Split(',')[1];
-                        readStream.Close();
-
-                        File.Delete(@"0:\config.cfg");
-                        FileStream writeStream = File.Create(@"0:\config.cfg");
-                        byte[] toWrite = Encoding.ASCII.GetBytes(s);
-                        writeStream.Write(toWrite, 0, toWrite.Length);
-                        writeStream.Close();
-                    }
-                    else if (settingsPage == 1 && (x > settingsLocX + 460 && x < backgroundColorSize) && (y > settingsLocY + 100 && y < settingsLocY + 170) && !bgColorChangeMenu)
-                    {
-                        bgColorChangeMenu = true;
-                    }
-                    else if ((x > settingsLocX + 20 && x < settingsLocX + 150) && (y > settingsLocY + 85 && y < settingsLocY + 125))
-                    {
-                        settingsPage = 0;
-                        bgColorChangeMenu = false;
-                    }
-                    else if ((x > settingsLocX + 20 && x < settingsLocX + 150) && (y > settingsLocY + 125 && y < settingsLocY + 165))
-                    {
-                        settingsPage = 1;
-                    }
-                    else if  ((x > settingsLocX + 20 && x < settingsLocX + 150) && (y > settingsLocY + 325 && y < settingsLocY + 365))
-                    {
-                        settingsPage = 2;
-                    }
-                    else if (bgColorChangeMenu)
-                    {
-                        if ((x > settingsLocX + 490 && x < settingsLocX + 510) && (y > settingsLocY + 130 && y < settingsLocY + 150))
-                        {
-                            backgroundColor = Color.DarkBlue;
-                            bgColorChangeMenu = false;
-                        }
-                        else if ((x > settingsLocX + 520 && x < settingsLocX + 540) && (y > settingsLocY + 130 && y < settingsLocY + 150))
-                        {
-                            backgroundColor = Color.DarkRed;
-                            bgColorChangeMenu = false;
-                        }
-                        else if ((x > settingsLocX + 550 && x < settingsLocX + 570) && (y > settingsLocY + 130 && y < settingsLocY + 150))
-                        {
-                            backgroundColor = Color.DarkGreen;
-                            bgColorChangeMenu = false;
-                        }
-                        else if ((x > settingsLocX + 490 && x < settingsLocX + 510) && (y > settingsLocY + 160 && y < settingsLocY + 180))
-                        {
-                            backgroundColor = Color.Blue;
-                            bgColorChangeMenu = false;
-                        }
-                        else if ((x > settingsLocX + 520 && x < settingsLocX + 540) && (y > settingsLocY + 160 && y < settingsLocY + 180))
-                        {
-                            backgroundColor = Color.Red;
-                            bgColorChangeMenu = false;
-                        }
-                        else if ((x > settingsLocX + 550 && x < settingsLocX + 570) && (y > settingsLocY + 160 && y < settingsLocY + 180))
-                        {
-                            backgroundColor = Color.Green;
-                            bgColorChangeMenu = false;
-                        }
-                        else if ((x > settingsLocX + 490 && x < settingsLocX + 510) && (y > settingsLocY + 190 && y < settingsLocY + 210))
-                        {
-                            backgroundColor = Color.Orange;
-                            bgColorChangeMenu = false;
-                        }
-                        else if ((x > settingsLocX + 520 && x < settingsLocX + 540) && (y > settingsLocY + 190 && y < settingsLocY + 210))
-                        {
-                            backgroundColor = Color.Yellow;
-                            bgColorChangeMenu = false;
-                        }
-                        else if ((x > settingsLocX + 550 && x < settingsLocX + 570) && (y > settingsLocY + 190 && y < settingsLocY + 210))
-                        {
-                            backgroundColor = Color.Purple;
-                            bgColorChangeMenu = false;
-                        }
-
-                        FileStream readStream = File.OpenRead(@"0:\config.cfg");
-                        byte[] toRead = new byte[readStream.Length];
-                        readStream.Read(toRead, 0, (int)readStream.Length);
-                        String s = byteListToString(toRead).Split(',')[0] + "," + getInt(backgroundColor);
-                        readStream.Close();
-
-                        File.Delete(@"0:\config.cfg");
-                        FileStream writeStream = File.Create(@"0:\config.cfg");
-                        byte[] toWrite = Encoding.ASCII.GetBytes(s);
-                        writeStream.Write(toWrite, 0, toWrite.Length);
-                        writeStream.Close();
-                    }
-                }
                 if (activeApp == 99)
                 {
                     if ((x > cancelX - 10 && x < cancelSize + 10) && (y > Y - 10 && y < Y + 125))

@@ -339,5 +339,5 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
-bin/
-obj/
+CosmosKernel1/bin/
+CosmosKernel1/obj/

@@ -76,7 +76,7 @@ namespace CosmosKernel1
 
         private static void setPixel(int x, int y, Color color)
         {
-            if (x > screenW || y > screenH)
+            if (x > screenW - 1 || y > screenH - 1)
             {
                 return;
             }

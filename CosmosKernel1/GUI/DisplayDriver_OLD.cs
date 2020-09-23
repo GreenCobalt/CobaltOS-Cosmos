@@ -11,23 +11,27 @@ using System.Xml.Linq;
 
 namespace CosmosKernel1
 {
-    class DisplayDriver
+    class DisplayDriver_OLD
     {
         public static int screenW = 800;
         public static int screenH = 600;
 
-        public static uint[] SBuffer;
+        public static Color[] SBuffer;
+        public static Color[] SBufferOld;
 
-        private static Cosmos.HAL.Drivers.PCI.Video.VMWareSVGAII driver = new Cosmos.HAL.Drivers.PCI.Video.VMWareSVGAII();
+        private static Canvas canvas;
 
         public static void initScreen()
         {
-            driver.SetMode(Convert.ToUInt32(screenW), Convert.ToUInt32(screenH));
-
-            SBuffer = new uint[(screenW * screenH) + screenW];
+            SBuffer = new Color[(screenW * screenH) + screenW];
+            SBufferOld = new Color[(screenW * screenH) + screenW];
 
             Cosmos.System.MouseManager.ScreenWidth = Convert.ToUInt32(screenW);
             Cosmos.System.MouseManager.ScreenHeight = Convert.ToUInt32(screenH);
+
+            canvas = FullScreenCanvas.GetFullScreenCanvas();
+            Mode canvasMode = new Mode(screenW, screenH, ColorDepth.ColorDepth32);
+            canvas.Mode = canvasMode;
 
             GUIManager.init();
         }
@@ -35,22 +39,28 @@ namespace CosmosKernel1
         public static void exitGUI()
         {
             Kernel.graphicsMode = false;
-            driver.Disable();
+            canvas.Disable();
         }
 
         public static void drawScreen()
         {
+            Pen pen = new Pen(Color.Orange);
             for (int y = 0, h = screenH; y < h; y++)
             {
                 for (int x = 0, w = screenW; x < w; x++)
                 {
-                    if (!(SBuffer[(y * screenW) + x] == driver.GetPixel((uint) x, (uint) y)))
+                    if (!(SBuffer[(y * screenW) + x] == SBufferOld[(y * screenW) + x]))
                     {
-                        driver.SetPixel((uint)x, (uint)y, SBuffer[(y * screenW) + x]);
+                        if (!(SBuffer[(y * screenW) + x] == pen.Color))
+                        {
+                            pen.Color = SBuffer[(y * screenW) + x];
+                        }
+                        canvas.DrawPoint(pen, x, y);
                     }
+
                 }
             }
-            driver.Update(0,0,(uint)screenW, (uint)screenH);
+            copyArray(SBuffer, SBufferOld);
         }
 
         private static void copyArray(Color[] from, Color[] to)
@@ -71,7 +81,7 @@ namespace CosmosKernel1
                 return;
             }
 
-            SBuffer[(y * screenW) + x] = (uint) color.ToArgb();
+            SBuffer[(y * screenW) + x] = color;
         }
 
         public static void addMouse(int x, int y)
@@ -153,7 +163,7 @@ namespace CosmosKernel1
             {
                 for (int b = y; b < y + h; b++)
                 {
-                    setPixel(a, b, c);
+                    setPixel(Clamp(a, 0, screenW - 1), Clamp(b, 0, screenH - 1), c);
                 }
             }
         }
@@ -162,13 +172,13 @@ namespace CosmosKernel1
         {
             for (int a = x; a < endX; a++)
             {
-                setPixel(a, y, c);
-                setPixel(a, endY, c);
+                setPixel(Clamp(a, 0, screenW - 1), y, c);
+                setPixel(Clamp(a, 0, screenW - 1), endY, c);
             }
             for (int a = y; a < endY; a++)
             {
-                setPixel(x, a, c);
-                setPixel(endX, a, c);
+                setPixel(x, Clamp(a, 0, screenH - 1), c);
+                setPixel(endX, Clamp(a, 0, screenH - 1), c);
             }
             setPixel(endX, endY, c);
         }

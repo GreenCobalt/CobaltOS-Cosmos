@@ -4,16 +4,8 @@ using System.Text;
 using System.Drawing;
 using Cosmos.System;
 using Cosmos.System.FileSystem;
-using Cosmos.System.FileSystem.Listing;
-using Sys = Cosmos.System;
 using System.IO;
-using System.Linq;
 using CosmosKernel1.Utils;
-using Cosmos.Debug.Kernel;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Cosmos.System.Graphics;
-using Console = System.Console;
 
 namespace CosmosKernel1
 {

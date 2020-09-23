@@ -1,32 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Sys = Cosmos.System;
 using Cosmos.Core;
-using Cosmos.HAL;
 using System.IO;
-using Cosmos.System.Graphics;
-using System.Threading;
-using Cosmos.Core.IOGroup;
-using System.Drawing;
-using Cosmos.System;
 using Console = System.Console;
-using Cosmos.Debug.Kernel;
 using Cosmos.System.FileSystem;
-using Cosmos.System.FileSystem.Listing;
-using System.Net.Sockets;
 
 namespace CosmosKernel1
 {
     public class Kernel : Sys.Kernel
     {
         public static double osVersion = 0.1;
+        public static readonly String cpuString = getCPU();
+
+        public static CosmosVFS fs;
+        private static String cd = @"0:\";
 
         public static Boolean graphicsMode = false;
         private static Boolean fsMode = false;
-        private static String cd = "0:\\";
-        public static readonly String cpuString = getCPU();
-        public static CosmosVFS fs;
 
         protected override void BeforeRun()
         {

@@ -13,6 +13,7 @@ using Cosmos.Debug.Kernel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Cosmos.System.Graphics;
+using Console = System.Console;
 
 namespace CosmosKernel1
 {
@@ -89,30 +90,25 @@ namespace CosmosKernel1
 
         public static void init()
         {
-            fs = new Sys.FileSystem.CosmosVFS();
-            Sys.FileSystem.VFS.VFSManager.RegisterVFS(fs);
+            fs = Kernel.fs;
 
             screenW = DisplayDriver.screenW;
             screenH = DisplayDriver.screenH;
 
-            DirectoryEntry f = GUIManager.fs.GetFile(@"0:\config.cfg");
-            Stream files = f.GetFileStream();
-            if (File.Exists(@"0:\config.cfg"))
+            if (!File.Exists(@"0:\config.cfg"))
             {
-                DisplayDriver.exitGUI();
+                FileStream tempStream = File.Create(@"0:\config.cfg");
+                byte[] toWrite = Encoding.ASCII.GetBytes("false,1");
+                tempStream.Write(toWrite, 0, toWrite.Length);
+                tempStream.Close();
             }
+            FileStream stream = File.OpenRead(@"0:\config.cfg");
+            byte[] toRead = new byte[stream.Length];
+            stream.Read(toRead, 0, (int) stream.Length);
 
-            /*
-            if (f.mSize == 0) {
-                f = fs.CreateFile(@"0:\config.cfg");
-                files.Write(Encoding.ASCII.GetBytes("false,3"), 0, Encoding.ASCII.GetBytes("false,3").Length);
-            }
-            byte[] fread = new byte[files.Length];
-            files.Read(fread, 0, (int) files.Length);
-            String[] options = fread.ToString().Split(',');
-            timeFormat = Boolean.Parse(options[0]);
-            backgroundColor = getColor(int.Parse(options[1]));
-            */
+            String[] config = byteListToString(toRead).Split(',');
+            timeFormat = Boolean.Parse(config[0]);
+            backgroundColor = getColor(int.Parse(config[1]));
         }
 
         private static Color getColor(int c)
@@ -143,6 +139,16 @@ namespace CosmosKernel1
             if (c == Color.Yellow) { return 8; }
             if (c == Color.Purple) { return 9; }
             return 0;
+        }
+
+        public static String byteListToString(byte[] charL)
+        {
+            String returnS = "";
+            foreach (Char c in charL)
+            {
+                returnS += c;
+            }
+            return returnS;
         }
 
         public static void tick()
@@ -576,30 +582,36 @@ namespace CosmosKernel1
                     {
                         if (dirSelectPurpose == 0)
                         {
-                            DirectoryEntry file = fs.CreateFile(new string(dirChars.ToArray()));
-                            Stream fileStream = file.GetFileStream();
-                            if (fileStream.CanWrite)
-                            {
-                                byte[] toWrite = Encoding.ASCII.GetBytes(dirSelectContent);
-                                fileStream.Write(toWrite, 0, toWrite.Length);
-                            }
+                            FileStream f = File.Create(new string(dirChars.ToArray()));
+                            byte[] toWrite = Encoding.ASCII.GetBytes(dirSelectContent);
+                            f.Write(toWrite, 0, toWrite.Length);
+
                             dirSelectOpen = false;
                         }
                         else if (dirSelectPurpose == 1)
                         {
-                            DirectoryEntry file = fs.GetFile(new string(dirChars.ToArray()));
-                            Stream fileStream = file.GetFileStream();
-                            if (fileStream.CanRead)
+                            if (File.Exists(new string(dirChars.ToArray())))
                             {
-                                byte[] toRead = new byte[fileStream.Length];
-                                fileStream.Read(toRead, 0, (int)fileStream.Length);
+                                FileStream f = File.OpenRead(new string(dirChars.ToArray()));
+                                byte[] toRead = new byte[f.Length];
+                                f.Read(toRead, 0, (int) f.Length);
                                 notePadChars.Clear();
                                 for (int i = 0; i < toRead.Length; i++)
                                 {
                                     notePadChars.Add(Encoding.ASCII.GetString(toRead)[i]);
                                 }
-                                dirSelectOpen = false;
+                            } else
+                            {
+                                String s = "File not found!";
+                                notePadChars.Clear();
+                                for (int i = 0; i < s.Length; i++)
+                                {
+                                    notePadChars.Add(s[i]);
+                                }
+                                Kernel.WaitSeconds(1);
+                                notePadChars.Clear();
                             }
+                            dirSelectOpen = false;
                         }
                     }
                     if (dirSelectOpen && (x > notepadLocX + 190 && x < notepadLocX + 290) && (y > notepadLocY + 110 && y < notepadLocY + 160))
@@ -618,13 +630,18 @@ namespace CosmosKernel1
                     else if (settingsPage == 0 && (x > settingsLocX + 460 && x < timeFormatToggleSize) && (y > settingsLocY + 100 && y < settingsLocY + 170))
                     {
                         timeFormat = !timeFormat;
-                        /*
-                        DirectoryEntry f = fs.GetFile(@"0:\config.cfg");
-                        byte[] buffer = new byte[f.GetFileStream().Length];
-                        f.GetFileStream().Read(buffer, 0, (int) f.GetFileStream().Length);
-                        String s = timeFormat.ToString() + "," + buffer.ToString().Split(',')[1];
-                        f.GetFileStream().Write(Encoding.ASCII.GetBytes(s), 0, s.Length);
-                        */
+
+                        FileStream readStream = File.OpenRead(@"0:\config.cfg");
+                        byte[] toRead = new byte[readStream.Length];
+                        readStream.Read(toRead, 0, (int) readStream.Length);
+                        String s = timeFormat.ToString() + "," + byteListToString(toRead).Split(',')[1];
+                        readStream.Close();
+
+                        File.Delete(@"0:\config.cfg");
+                        FileStream writeStream = File.Create(@"0:\config.cfg");
+                        byte[] toWrite = Encoding.ASCII.GetBytes(s);
+                        writeStream.Write(toWrite, 0, toWrite.Length);
+                        writeStream.Close();
                     }
                     else if (settingsPage == 1 && (x > settingsLocX + 460 && x < backgroundColorSize) && (y > settingsLocY + 100 && y < settingsLocY + 170) && !bgColorChangeMenu)
                     {
@@ -690,13 +707,18 @@ namespace CosmosKernel1
                             backgroundColor = Color.Purple;
                             bgColorChangeMenu = false;
                         }
-                        /*
-                        DirectoryEntry f = fs.GetFile(@"0:\config.cfg");
-                        byte[] buffer = new byte[f.GetFileStream().Length];
-                        f.GetFileStream().Read(buffer, 0, (int)f.GetFileStream().Length);
-                        String s = buffer.ToString().Split(',')[0] + "," + getInt(backgroundColor);
-                        f.GetFileStream().Write(Encoding.ASCII.GetBytes(s), 0, s.Length);
-                        */
+
+                        FileStream readStream = File.OpenRead(@"0:\config.cfg");
+                        byte[] toRead = new byte[readStream.Length];
+                        readStream.Read(toRead, 0, (int)readStream.Length);
+                        String s = byteListToString(toRead).Split(',')[0] + "," + getInt(backgroundColor);
+                        readStream.Close();
+
+                        File.Delete(@"0:\config.cfg");
+                        FileStream writeStream = File.Create(@"0:\config.cfg");
+                        byte[] toWrite = Encoding.ASCII.GetBytes(s);
+                        writeStream.Write(toWrite, 0, toWrite.Length);
+                        writeStream.Close();
                     }
                 }
                 if (activeApp == 99)
@@ -707,11 +729,11 @@ namespace CosmosKernel1
                     }
                     if ((x > offX - 10 && x < offSize + 10) && (y > Y - 10 && y < Y + 125))
                     {
-                        Cosmos.System.Power.Shutdown();
+                        shutdown(false);
                     }
                     if ((x > restartX - 10 && x < restartSize + 10) && (y > Y - 10 && y < Y + 125))
                     {
-                        Cosmos.System.Power.Reboot();
+                        shutdown(true);
                     }
                 }
 
@@ -720,6 +742,12 @@ namespace CosmosKernel1
                     ;
                 }
             }
+        }
+
+        private static void shutdown(Boolean reboot)
+        {
+            if (reboot) Cosmos.System.Power.Reboot();
+            else Cosmos.System.Power.Shutdown();
         }
 
         private static void checkKeyboard()

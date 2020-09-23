@@ -38,6 +38,7 @@ namespace CosmosKernel1
 
         public static void exitGUI()
         {
+            Kernel.graphicsMode = false;
             canvas.Disable();
         }
 
@@ -117,6 +118,43 @@ namespace CosmosKernel1
             setPixel(x + 10, y + 8, Color.White);
             setPixel(x + 11, y + 7, Color.White);
             setPixel(x + 12, y + 6, Color.White);
+
+            setPixel(x, y, Color.Black);
+            setPixel(x, y + 1, Color.Black);
+            setPixel(x, y + 2, Color.Black);
+            setPixel(x + 1, y + 3, Color.Black);
+            setPixel(x + 1, y + 4, Color.Black);
+            setPixel(x + 2, y + 5, Color.Black);
+            setPixel(x + 2, y + 6, Color.Black);
+            setPixel(x + 3, y + 7, Color.Black);
+            setPixel(x + 3, y + 8, Color.Black);
+            setPixel(x + 4, y + 9, Color.Black);
+            setPixel(x + 4, y + 10, Color.Black);
+            setPixel(x + 5, y + 11, Color.Black);
+            setPixel(x + 5, y + 12, Color.Black);
+            setPixel(x + 6, y + 13, Color.Black);
+
+            setPixel(x + 1, y, Color.Black);
+            setPixel(x + 2, y, Color.Black);
+            setPixel(x + 3, y + 1, Color.Black);
+            setPixel(x + 4, y + 1, Color.Black);
+            setPixel(x + 5, y + 2, Color.Black);
+            setPixel(x + 6, y + 2, Color.Black);
+            setPixel(x + 7, y + 3, Color.Black);
+            setPixel(x + 8, y + 3, Color.Black);
+            setPixel(x + 9, y + 4, Color.Black);
+            setPixel(x + 10, y + 4, Color.Black);
+            setPixel(x + 11, y + 5, Color.Black);
+            setPixel(x + 12, y + 5, Color.Black);
+            setPixel(x + 13, y + 6, Color.Black);
+
+            setPixel(x + 7, y + 13, Color.Black);
+            setPixel(x + 8, y + 12, Color.Black);
+            setPixel(x + 9, y + 11, Color.Black);
+            setPixel(x + 10, y + 10, Color.Black);
+            setPixel(x + 11, y + 9, Color.Black);
+            setPixel(x + 12, y + 8, Color.Black);
+            setPixel(x + 13, y + 7, Color.Black);
         }
 
         public static void addFilledRectangle(int x, int y, int w, int h, Color c)

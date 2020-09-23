@@ -21,13 +21,17 @@ namespace CosmosKernel1
     {
         public static double osVersion = 0.1;
 
-        private static Boolean graphicsMode = false;
+        public static Boolean graphicsMode = false;
         private static Boolean fsMode = false;
         private static String cd = "0:\\";
         public static readonly String cpuString = getCPU();
+        public static CosmosVFS fs;
 
         protected override void BeforeRun()
         {
+            fs = new Sys.FileSystem.CosmosVFS();
+            Sys.FileSystem.VFS.VFSManager.RegisterVFS(fs);
+
             Console.Clear();
             Console.WriteLine("    ##### ##### ####  ##### #  #######  ##### #####");
             Console.WriteLine("   #     #   # #  #  #   # #     #     #   # #    ");
@@ -35,7 +39,7 @@ namespace CosmosKernel1
             Console.WriteLine(" #     #   # #   # #   # #     #     #   #     #");
             Console.WriteLine("##### ##### ##### #   # ##### #     ##### #####");
 
-            WaitSeconds(2);
+            WaitSeconds(1);
 
             initGUI();
         }
@@ -116,10 +120,9 @@ namespace CosmosKernel1
                 fsMode = false;
             }
 
-            //var directory_list = fs.GetDirectoryListing(cd);
+            var directory_list = fs.GetDirectoryListing(cd);
             if (input == "ls")
             {
-                /*
                 foreach (var directoryEntry in directory_list)
                 {
                     if (directoryEntry.mEntryType == Sys.FileSystem.Listing.DirectoryEntryTypeEnum.File)
@@ -131,9 +134,8 @@ namespace CosmosKernel1
                         Console.WriteLine(directoryEntry.mName);
                     }
                 }
-                */
             }
-            else if (input == "cd")
+            else if (input.Split(" ")[0] == "cd")
             {
                 String[] inputSplit = input.Split(" ");
                 if (inputSplit.Length > 1)
@@ -155,7 +157,7 @@ namespace CosmosKernel1
                     Console.WriteLine("Invalid syntax! cd [dir] ");
                 }
             }
-            else if (input == "mkdir")
+            else if (input.Split(" ")[0] == "mkdir")
             {
                 String[] inputSplit = input.Split(" ");
                 if (inputSplit.Length > 1)
@@ -165,16 +167,32 @@ namespace CosmosKernel1
                     {
                         dir = dir + inputSplit[i];
                     }
-                    //fs.CreateDirectory(cd + dir);
+                    fs.CreateDirectory(cd + dir);
+                    Console.WriteLine("Success!");
                 }
                 else
                 {
                     Console.WriteLine("Invalid syntax! mkdir [name] ");
                 }
             }
+            else if (input.Split(" ")[0] == "delfile")
+            {
+                String[] inputSplit = input.Split(" ");
+                if (inputSplit.Length == 2) {
+                    File.Delete(@"0:\" + inputSplit[1]);
+                    Console.WriteLine("Success!");
+                } else
+                {
+                    Console.WriteLine("Invalid Syntax!");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Unknown");
+            }
         }
 
-        private static void WaitSeconds(int secNum)
+        public static void WaitSeconds(int secNum)
         {
             int StartSec = Cosmos.HAL.RTC.Second;
             int EndSec;
@@ -189,7 +207,7 @@ namespace CosmosKernel1
             while (Cosmos.HAL.RTC.Second != EndSec) { }
         }
 
-        public static String getCPU()
+        private static String getCPU()
         {
             String returnString = "";
             String vendor = "";

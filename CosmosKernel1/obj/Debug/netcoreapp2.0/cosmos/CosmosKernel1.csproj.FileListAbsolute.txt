@@ -1,9 +1,0 @@
-C:\Users\samna\Source\Repos\samnad\CobaltOS\CosmosKernel1\bin\Debug\netcoreapp2.0\cosmos\CosmosKernel1.deps.json
-C:\Users\samna\Source\Repos\samnad\CobaltOS\CosmosKernel1\bin\Debug\netcoreapp2.0\cosmos\CosmosKernel1.dll
-C:\Users\samna\Source\Repos\samnad\CobaltOS\CosmosKernel1\bin\Debug\netcoreapp2.0\cosmos\CosmosKernel1.pdb
-C:\Users\samna\Source\Repos\samnad\CobaltOS\CosmosKernel1\obj\Debug\netcoreapp2.0\cosmos\CosmosKernel1.csprojAssemblyReference.cache
-C:\Users\samna\Source\Repos\samnad\CobaltOS\CosmosKernel1\obj\Debug\netcoreapp2.0\cosmos\CosmosKernel1.AssemblyInfoInputs.cache
-C:\Users\samna\Source\Repos\samnad\CobaltOS\CosmosKernel1\obj\Debug\netcoreapp2.0\cosmos\CosmosKernel1.AssemblyInfo.cs
-C:\Users\samna\Source\Repos\samnad\CobaltOS\CosmosKernel1\obj\Debug\netcoreapp2.0\cosmos\CosmosKernel1.csproj.CoreCompileInputs.cache
-C:\Users\samna\Source\Repos\samnad\CobaltOS\CosmosKernel1\obj\Debug\netcoreapp2.0\cosmos\CosmosKernel1.dll
-C:\Users\samna\Source\Repos\samnad\CobaltOS\CosmosKernel1\obj\Debug\netcoreapp2.0\cosmos\CosmosKernel1.pdb

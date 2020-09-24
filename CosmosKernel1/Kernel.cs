@@ -32,9 +32,13 @@ namespace CosmosKernel1
             Console.WriteLine(" #     #   # #   # #   # #     #     #   #     #");
             Console.WriteLine("##### ##### ##### #   # ##### #     ##### #####");
 
-            WaitSeconds(1);
+            Console.WriteLine("Filesystem: " + fs.GetFileSystemType("0:/") + ", " + fs.GetAvailableFreeSpace(@"0:\") / 1000000 + " MB");
+            Console.WriteLine("CPU Vendor: " + getCPU());
+            Console.WriteLine("RAM: " + MemoryManager.getTotalRAM() + " MB");
 
-            //initGUI();
+            WaitSeconds(3);
+
+            initGUI();
 
         }
 

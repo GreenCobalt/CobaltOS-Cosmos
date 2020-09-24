@@ -149,7 +149,7 @@ namespace CosmosKernel1
         {
             if (i == 1) return new int[] { 640,480 };
             if (i == 2) return new int[] { 800, 600 };
-            if (i == 2) return new int[] { 1024, 768 };
+            if (i == 3) return new int[] { 1024, 768 };
             return new int[] { 160,120 };
         }
 
@@ -163,7 +163,6 @@ namespace CosmosKernel1
             else
             {
                 DisplayDriver.setFullBuffer(backgroundColor);
-                DisplayDriver.addText(0, 0, Color.White, ("RAM: " + MemoryManager.getUsedRAMPercent() + "% (" + MemoryManager.getUsedRAM() + " MB / " + MemoryManager.getTotalRAM() + "MB)"));
                 DisplayDriver.addFilledRectangle(0, screenH - taskBarHeight, screenW, taskBarHeight, Color.FromArgb(255, 50, 50, 50));
                 DisplayDriver.addFilledRectangle(10, screenH - taskBarHeight + 10, 30, taskBarHeight - 20, Color.Red);
                 DisplayDriver.addText((timeFormat ? screenW - 125 : screenW - 175), screenH - 40, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")));
@@ -309,8 +308,8 @@ namespace CosmosKernel1
                 if (resolutionChangeMenu)
                 {
                     DisplayDriver.addFilledRectangle(settingsLocX + 300, settingsLocY + 290, 200, 100, Color.LightGray);
-                    DisplayDriver.addText(settingsLocX + 310, settingsLocY + 300, Color.White, "640x480");
-                    DisplayDriver.addText(settingsLocX + 310, settingsLocY + 330, Color.White, "800x600");
+                    DisplayDriver.addText(settingsLocX + 310, settingsLocY + 300, Color.Black, "640x480");
+                    DisplayDriver.addText(settingsLocX + 310, settingsLocY + 330, Color.Black, "800x600");
                 }
             }
 
@@ -616,16 +615,11 @@ namespace CosmosKernel1
                         writeStream.Close();
                     } else if (resolutionChangeMenu)
                     {
-                        if (x > 310 && x < 500 && y > 330 && y < 360)
-                        {
-                            DisplayDriver.changeRes(640, 480);
-                        } else if (x > 310 && x < 500 && y > 360 && y < 390)
-                        {
-                            DisplayDriver.changeRes(800,600);
-                        } else
-                        {
-                            return;
-                        }
+                        if (x > 310 && x < 500 && y > 330 && y < 360) DisplayDriver.changeRes(640,480);
+                        else if (x > 310 && x < 500 && y > 360 && y < 390) DisplayDriver.changeRes(800,600);
+                        else return;
+
+                        resolutionChangeMenu = false;
 
                         FileStream readStream = File.OpenRead(@"0:\config.cfg");
                         byte[] toRead = new byte[readStream.Length];

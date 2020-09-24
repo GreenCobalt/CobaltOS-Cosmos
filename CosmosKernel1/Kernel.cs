@@ -4,6 +4,8 @@ using Cosmos.Core;
 using System.IO;
 using Console = System.Console;
 using Cosmos.System.FileSystem;
+using Cosmos.HAL;
+using CosmosKernel1.Utils;
 
 namespace CosmosKernel1
 {
@@ -32,7 +34,7 @@ namespace CosmosKernel1
 
             WaitSeconds(1);
 
-            initGUI();
+            //initGUI();
 
         }
 
@@ -124,6 +126,7 @@ namespace CosmosKernel1
             if (input == "exit")
             {
                 fsMode = false;
+                return;
             }
 
             var directory_list = fs.GetDirectoryListing(cd);
@@ -184,10 +187,30 @@ namespace CosmosKernel1
             else if (input.Split(" ")[0] == "delfile")
             {
                 String[] inputSplit = input.Split(" ");
-                if (inputSplit.Length == 2) {
+                if (inputSplit.Length == 2)
+                {
                     File.Delete(@"0:\" + inputSplit[1]);
                     Console.WriteLine("Success!");
-                } else
+                }
+                else
+                {
+                    Console.WriteLine("Invalid Syntax!");
+                }
+            }
+            else if (input.Split(" ")[0] == "rdfile")
+            {
+                String[] inputSplit = input.Split(" ");
+                if (inputSplit.Length == 2)
+                {
+                    FileStream s = File.OpenRead(inputSplit[1]);
+                    byte[] a = new byte[s.Length];
+                    s.Read(a, 0, a.Length);
+                    foreach (Byte b in a)
+                    {
+                        Console.Write((char) b);
+                    }
+                }
+                else
                 {
                     Console.WriteLine("Invalid Syntax!");
                 }

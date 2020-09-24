@@ -6,6 +6,8 @@ using Cosmos.System;
 using Cosmos.System.FileSystem;
 using System.IO;
 using CosmosKernel1.Utils;
+using System.ComponentModel;
+using System.Dynamic;
 
 namespace CosmosKernel1
 {
@@ -55,6 +57,8 @@ namespace CosmosKernel1
         private static int restartSize;
         private static int timeFormatToggleSize;
         private static int backgroundColorSize;
+        private static int resolutionChangeSize;
+        private static Boolean resolutionChangeMenu = false;
         private static Boolean bgColorChangeMenu = false;
         private static int typeLocX;
         private static int typeLocY;
@@ -90,7 +94,7 @@ namespace CosmosKernel1
             if (!File.Exists(@"0:\config.cfg"))
             {
                 FileStream tempStream = File.Create(@"0:\config.cfg");
-                byte[] toWrite = Encoding.ASCII.GetBytes("false,1");
+                byte[] toWrite = Encoding.ASCII.GetBytes("false,1,1");
                 tempStream.Write(toWrite, 0, toWrite.Length);
                 tempStream.Close();
             }
@@ -100,10 +104,12 @@ namespace CosmosKernel1
 
             String[] config = ListUtils.byteListToString(toRead).Split(',');
             timeFormat = Boolean.Parse(config[0]);
-            backgroundColor = getColor(int.Parse(config[1]));
+            backgroundColor = getColorFromInt(int.Parse(config[1]));
+            int[] resolution = getResFromInt(int.Parse(config[2]));
+            DisplayDriver.changeRes(resolution[0], resolution[1]);
         }
 
-        private static Color getColor(int c)
+        private static Color getColorFromInt(int c)
         {
             switch (c)
             {
@@ -119,19 +125,34 @@ namespace CosmosKernel1
                 default: return Color.Black;
             }
         }
-        private static int getInt(Color c)
+        private static int getIntFromColor(Color c)
         {
-            if (c == Color.DarkBlue) { return 1; }
-            if (c == Color.DarkRed) { return 2; }
-            if (c == Color.DarkGreen) { return 3; }
-            if (c == Color.Blue) { return 4; }
-            if (c == Color.Red) { return 5; }
-            if (c == Color.Green) { return 6; }
-            if (c == Color.Orange) { return 7; }
-            if (c == Color.Yellow) { return 8; }
-            if (c == Color.Purple) { return 9; }
+            if (c == Color.DarkBlue) return 1;
+            if (c == Color.DarkRed) return 2;
+            if (c == Color.DarkGreen) return 3;
+            if (c == Color.Blue) return 4;
+            if (c == Color.Red) return 5;
+            if (c == Color.Green) return 6;
+            if (c == Color.Orange) return 7;
+            if (c == Color.Yellow) return 8;
+            if (c == Color.Purple) return 9;
             return 0;
         }
+        private static int getIntFromRes(int x) 
+        {
+            if (x == 640) return 1;
+            if (x == 800) return 2;
+            if (x == 1024) return 3;
+            return 0;
+        }
+        private static int[] getResFromInt(int i)
+        {
+            if (i == 1) return new int[] { 640,480 };
+            if (i == 2) return new int[] { 800, 600 };
+            if (i == 2) return new int[] { 1024, 768 };
+            return new int[] { 160,120 };
+        }
+
 
         public static void tick()
         {
@@ -142,6 +163,7 @@ namespace CosmosKernel1
             else
             {
                 DisplayDriver.setFullBuffer(backgroundColor);
+                DisplayDriver.addText(0, 0, Color.White, ("RAM: " + MemoryManager.getUsedRAMPercent() + "% (" + MemoryManager.getUsedRAM() + " MB / " + MemoryManager.getTotalRAM() + "MB)"));
                 DisplayDriver.addFilledRectangle(0, screenH - taskBarHeight, screenW, taskBarHeight, Color.FromArgb(255, 50, 50, 50));
                 DisplayDriver.addFilledRectangle(10, screenH - taskBarHeight + 10, 30, taskBarHeight - 20, Color.Red);
                 DisplayDriver.addText((timeFormat ? screenW - 125 : screenW - 175), screenH - 40, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")));
@@ -249,6 +271,10 @@ namespace CosmosKernel1
                     DisplayDriver.addText(settingsLocX + 350, settingsLocY + 120, Color.Black, (timeFormat ? "24 Hour" : "12 Hour"));
                     timeFormatToggleSize = DisplayDriver.addText(settingsLocX + 480, settingsLocY + 120, Color.Black, "Toggle") + 20;
                     DisplayDriver.addRectangle(settingsLocX + 460, settingsLocY + 100, timeFormatToggleSize, settingsLocY + 170, Color.Black);
+
+                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 200, Color.Black, "Screen Resolution:   " + screenW + "x" + screenH);
+                    resolutionChangeSize = DisplayDriver.addText(settingsLocX + 480, settingsLocY + 260, Color.Black, "Change") + 20;
+                    DisplayDriver.addRectangle(settingsLocX + 460, settingsLocY + 240, resolutionChangeSize, settingsLocY + 310, Color.Black);
                 }
                 else if (settingsPage == 1)
                 {
@@ -278,6 +304,13 @@ namespace CosmosKernel1
                     DisplayDriver.addFilledRectangle(settingsLocX + 490, settingsLocY + 190, 20, 20, Color.Orange);
                     DisplayDriver.addFilledRectangle(settingsLocX + 520, settingsLocY + 190, 20, 20, Color.Yellow);
                     DisplayDriver.addFilledRectangle(settingsLocX + 550, settingsLocY + 190, 20, 20, Color.Purple);
+                }
+
+                if (resolutionChangeMenu)
+                {
+                    DisplayDriver.addFilledRectangle(settingsLocX + 300, settingsLocY + 290, 200, 100, Color.LightGray);
+                    DisplayDriver.addText(settingsLocX + 310, settingsLocY + 300, Color.White, "640x480");
+                    DisplayDriver.addText(settingsLocX + 310, settingsLocY + 330, Color.White, "800x600");
                 }
             }
 
@@ -346,12 +379,23 @@ namespace CosmosKernel1
             }
         }
 
+        public static void updateScreenSize(int x, int y)
+        {
+            screenW = x;
+            screenH = y;
+        }
+
         private static void checkMouse()
         {
             if (MouseManager.MouseState == MouseState.Left)
             {
                 uint x = Cosmos.System.MouseManager.X;
                 uint y = Cosmos.System.MouseManager.Y;
+
+                if (x > 10 && x < 30 && y > 10 && y < 30)
+                {
+                    DisplayDriver.changeRes(1920, 1080);
+                }
 
                 if ((x > 10 && x < 40) && (y > screenH - (taskBarHeight - 10) && y < screenH - 10))
                 {
@@ -474,6 +518,10 @@ namespace CosmosKernel1
                         activeApp = 0;
                         bgColorChangeMenu = false;
                     }
+                    else if (settingsPage == 0 && (x > settingsLocX + 460 && x < resolutionChangeSize) && (y > settingsLocY + 240 && y < settingsLocY + 310))
+                    {
+                        resolutionChangeMenu = true;
+                    }
                     else if (settingsPage == 0 && (x > settingsLocX + 460 && x < timeFormatToggleSize) && (y > settingsLocY + 100 && y < settingsLocY + 170))
                     {
                         timeFormat = !timeFormat;
@@ -481,7 +529,7 @@ namespace CosmosKernel1
                         FileStream readStream = File.OpenRead(@"0:\config.cfg");
                         byte[] toRead = new byte[readStream.Length];
                         readStream.Read(toRead, 0, (int) readStream.Length);
-                        String s = timeFormat.ToString() + "," + ListUtils.byteListToString(toRead).Split(',')[1];
+                        String s = timeFormat.ToString() + "," + ListUtils.byteListToString(toRead).Split(',')[1] + "," + ListUtils.byteListToString(toRead).Split(',')[2];
                         readStream.Close();
 
                         File.Delete(@"0:\config.cfg");
@@ -558,7 +606,31 @@ namespace CosmosKernel1
                         FileStream readStream = File.OpenRead(@"0:\config.cfg");
                         byte[] toRead = new byte[readStream.Length];
                         readStream.Read(toRead, 0, (int)readStream.Length);
-                        String s = ListUtils.byteListToString(toRead).Split(',')[0] + "," + getInt(backgroundColor);
+                        String s = ListUtils.byteListToString(toRead).Split(',')[0] + "," + getIntFromColor(backgroundColor) + "," + ListUtils.byteListToString(toRead).Split(',')[2];
+                        readStream.Close();
+
+                        File.Delete(@"0:\config.cfg");
+                        FileStream writeStream = File.Create(@"0:\config.cfg");
+                        byte[] toWrite = Encoding.ASCII.GetBytes(s);
+                        writeStream.Write(toWrite, 0, toWrite.Length);
+                        writeStream.Close();
+                    } else if (resolutionChangeMenu)
+                    {
+                        if (x > 310 && x < 500 && y > 330 && y < 360)
+                        {
+                            DisplayDriver.changeRes(640, 480);
+                        } else if (x > 310 && x < 500 && y > 360 && y < 390)
+                        {
+                            DisplayDriver.changeRes(800,600);
+                        } else
+                        {
+                            return;
+                        }
+
+                        FileStream readStream = File.OpenRead(@"0:\config.cfg");
+                        byte[] toRead = new byte[readStream.Length];
+                        readStream.Read(toRead, 0, (int)readStream.Length);
+                        String s = ListUtils.byteListToString(toRead).Split(',')[0] + "," + ListUtils.byteListToString(toRead).Split(',')[1] + "," + getIntFromRes(screenW);
                         readStream.Close();
 
                         File.Delete(@"0:\config.cfg");

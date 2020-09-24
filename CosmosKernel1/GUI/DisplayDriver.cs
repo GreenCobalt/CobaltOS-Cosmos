@@ -1,4 +1,5 @@
-﻿using Cosmos.System.Graphics;
+﻿using Cosmos.HAL;
+using Cosmos.System.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,8 +14,8 @@ namespace CosmosKernel1
 {
     class DisplayDriver
     {
-        public static int screenW = 800;
-        public static int screenH = 600;
+        public static int screenW = 640;
+        public static int screenH = 480;
 
         public static uint[] SBuffer;
 
@@ -30,6 +31,17 @@ namespace CosmosKernel1
             Cosmos.System.MouseManager.ScreenHeight = Convert.ToUInt32(screenH);
 
             GUIManager.init();
+        }
+
+        public static void changeRes(int x, int y)
+        {
+            screenW = x;
+            screenH = y;
+            Cosmos.System.MouseManager.ScreenWidth = Convert.ToUInt32(screenW);
+            Cosmos.System.MouseManager.ScreenHeight = Convert.ToUInt32(screenH);
+            SBuffer = new uint[(screenW * screenH) + screenW];
+            GUIManager.updateScreenSize(screenW, screenH);
+            driver.SetMode(Convert.ToUInt32(screenW), Convert.ToUInt32(screenH));
         }
 
         public static void exitGUI()
@@ -2028,6 +2040,52 @@ namespace CosmosKernel1
                     return 8;
                 case ' ':
                     return 8;
+                case '(':
+                    setPixel(x + 4, y, c);
+                    setPixel(x + 2, y + 2, c);
+                    setPixel(x, y + 4, c);
+                    setPixel(x, y + 6, c);
+                    setPixel(x, y + 8, c);
+                    setPixel(x, y + 10, c);
+                    setPixel(x, y + 12, c);
+                    setPixel(x, y + 14, c);
+                    setPixel(x, y + 16, c);
+                    setPixel(x, y + 18, c);
+                    setPixel(x, y + 20, c);
+                    setPixel(x + 2, y + 22, c);
+                    setPixel(x + 4, y + 24, c);
+                    return 8;
+                case ')':
+                    setPixel(x, y, c);
+                    setPixel(x + 2, y + 2, c);
+                    setPixel(x + 4, y + 4, c);
+                    setPixel(x + 4, y + 6, c);
+                    setPixel(x + 4, y + 8, c);
+                    setPixel(x + 4, y + 10, c);
+                    setPixel(x + 4, y + 12, c);
+                    setPixel(x + 4, y + 14, c);
+                    setPixel(x + 4, y + 16, c);
+                    setPixel(x + 4, y + 18, c);
+                    setPixel(x + 4, y + 20, c);
+                    setPixel(x + 2, y + 22, c);
+                    setPixel(x, y + 24, c);
+                    return 8;
+                case '%':
+                    setPixel(x + 10, y + 2, c);
+                    setPixel(x + 10, y + 4, c);
+                    setPixel(x + 8, y + 6, c);
+                    setPixel(x + 8, y + 8, c);
+                    setPixel(x + 6, y + 10, c);
+                    setPixel(x + 6, y + 12, c);
+                    setPixel(x + 4, y + 14, c);
+                    setPixel(x + 4, y + 16, c);
+                    setPixel(x + 2, y + 18, c);
+                    setPixel(x + 2, y + 20, c);
+                    setPixel(x, y + 22, c);
+                    setPixel(x, y + 24, c);
+                    setPixel(x + 4, y + 4, c);
+                    setPixel(x + 8, y + 20, c);
+                    return 14;
                 default:
                     setPixel(x, y, c);
                     setPixel(x + 2, y, c);

@@ -155,6 +155,13 @@ namespace CosmosKernel1
             DisplayDriver.drawScreen();
         }
 
+        public static double round(double input)
+        {
+            double output = input * 100;
+            output = (int)output;
+            return output / 100;
+        }
+
         private static void addShapes()
         {
             if (activeApp == 1)
@@ -255,7 +262,7 @@ namespace CosmosKernel1
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 120, Color.Black, "System Information:");
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 150, Color.Black, " - CobaltOS Version: " + Kernel.osVersion);
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 180, Color.Black, " - CPU: " + Kernel.cpuString);
-                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 210, Color.Black, " - RAM: " + (Cosmos.Core.CPU.GetAmountOfRAM() < 1024 ? Cosmos.Core.CPU.GetAmountOfRAM() + " MB" : Cosmos.Core.CPU.GetAmountOfRAM() / 1024.00 + " GB"));
+                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 210, Color.Black, " - RAM: " + (Cosmos.Core.CPU.GetAmountOfRAM() < 1000 ? Cosmos.Core.CPU.GetAmountOfRAM() + " MB" : round(Cosmos.Core.CPU.GetAmountOfRAM() / 1000.00) + " GB"));
                     
                 }
 

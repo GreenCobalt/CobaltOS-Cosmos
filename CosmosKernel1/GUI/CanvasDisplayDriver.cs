@@ -208,7 +208,6 @@ namespace CosmosKernel1
             return (value < min) ? min : (value > max) ? max : value;
         }
 
-
         public static int addText(int x, int y, Color c, String s)
         {
             int xLoc = x;

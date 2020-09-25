@@ -28,11 +28,11 @@ namespace CosmosKernel1
             Sys.FileSystem.VFS.VFSManager.RegisterVFS(fs);
 
             Console.Clear();
-            Console.WriteLine("    ##### ##### ####  ##### #  #######  ##### #####");
-            Console.WriteLine("   #     #   # #  #  #   # #     #     #   # #    ");
-            Console.WriteLine("  #     #   # ####  ##### #     #     #   # #####");
-            Console.WriteLine(" #     #   # #   # #   # #     #     #   #     #");
-            Console.WriteLine("##### ##### ##### #   # ##### #     ##### #####");
+            Console.WriteLine("    ##### ##### ####  ##### #  #######  ##### #####    ");
+            Console.WriteLine("   #     #   # #  #  #   # #     #       #   # #       ");
+            Console.WriteLine("  #     #   # ####  ##### #     #         #   # #####  ");
+            Console.WriteLine(" #     #   # #   # #   # #     #           #   #     # ");
+            Console.WriteLine("##### ##### ##### #   # ##### #             ##### #####");
 
             //Console.WriteLine("Filesystem: " + fs.GetFileSystemType("0:/") + ", " + fs.GetAvailableFreeSpace(@"0:\") / 1000000 + " MB");
             Console.WriteLine("CPU: " + cpuString);

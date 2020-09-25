@@ -32,13 +32,13 @@ namespace CosmosKernel1
             Console.WriteLine(" #     #   # #   # #   # #     #     #   #     #");
             Console.WriteLine("##### ##### ##### #   # ##### #     ##### #####");
 
-            Console.WriteLine("Filesystem: " + fs.GetFileSystemType("0:/") + ", " + fs.GetAvailableFreeSpace(@"0:\") / 1000000 + " MB");
-            Console.WriteLine("CPU Vendor: " + getCPU());
+            //Console.WriteLine("Filesystem: " + fs.GetFileSystemType("0:/") + ", " + fs.GetAvailableFreeSpace(@"0:\") / 1000000 + " MB");
+            Console.WriteLine("CPU: " + getCPU() + " @ " + (Cosmos.Core.CPU.GetCPUCycleSpeed() / 10000000000) + "Ghz");
             Console.WriteLine("RAM: " + MemoryManager.getTotalRAM() + " MB");
 
-            WaitSeconds(3);
+            Console.WriteLine("Successfully booted!");
 
-            initGUI();
+            //initGUI();
 
         }
 
@@ -75,7 +75,7 @@ namespace CosmosKernel1
             }
             else if (input == "cpu")
             {
-                Console.WriteLine("CPU: " + Cosmos.Core.ProcessorInformation.GetVendorName() + " @ " + (Cosmos.Core.CPU.GetCPUCycleSpeed() / 1000) + "Ghz");
+                Console.WriteLine("CPU: " + getCPU() + " @ " + (Cosmos.Core.CPU.GetCPUCycleSpeed() / 10000000000) + "Ghz");
                 return;
             }
             else if (input == "mem")

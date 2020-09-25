@@ -1,4 +1,5 @@
-﻿using Cosmos.System.Graphics;
+﻿using Cosmos.HAL;
+using Cosmos.System.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,98 +12,150 @@ using System.Xml.Linq;
 
 namespace CosmosKernel1
 {
-    class RealDisplayDriver
+    class VMDisplayDriver
     {
-        public static int screenW = 800;
-        public static int screenH = 600;
+        public static int screenW = 640;
+        public static int screenH = 480;
 
-        public static Color[] SBuffer;
-        public static Color[] SBufferOld;
+        public static uint[] SBuffer;
 
-        private static Canvas canvas;
+        private static Cosmos.HAL.Drivers.PCI.Video.VMWareSVGAII driver = new Cosmos.HAL.Drivers.PCI.Video.VMWareSVGAII();
 
         public static void initScreen()
         {
-            SBuffer = new Color[(screenW * screenH) + screenW];
-            SBufferOld = new Color[(screenW * screenH) + screenW];
+            driver.SetMode(Convert.ToUInt32(screenW), Convert.ToUInt32(screenH));
+
+            SBuffer = new uint[(screenW * screenH) + screenW];
 
             Cosmos.System.MouseManager.ScreenWidth = Convert.ToUInt32(screenW);
             Cosmos.System.MouseManager.ScreenHeight = Convert.ToUInt32(screenH);
 
-            canvas = FullScreenCanvas.GetFullScreenCanvas();
-            Mode canvasMode = new Mode(screenW, screenH, ColorDepth.ColorDepth32);
-            canvas.Mode = canvasMode;
-
             GUIManager.init();
+        }
+
+        public static void changeRes(int x, int y)
+        {
+            screenW = x;
+            screenH = y;
+            Cosmos.System.MouseManager.ScreenWidth = Convert.ToUInt32(screenW);
+            Cosmos.System.MouseManager.ScreenHeight = Convert.ToUInt32(screenH);
+            SBuffer = new uint[(screenW * screenH) + screenW];
+            GUIManager.updateScreenSize(screenW, screenH);
+            driver.SetMode(Convert.ToUInt32(screenW), Convert.ToUInt32(screenH));
+        }
+
+        public static void exitGUI()
+        {
+            Kernel.graphicsMode = false;
+            driver.Disable();
         }
 
         public static void drawScreen()
         {
-            Pen pen = new Pen(Color.Orange);
             for (int y = 0, h = screenH; y < h; y++)
             {
                 for (int x = 0, w = screenW; x < w; x++)
                 {
-                    if (!(SBuffer[(y * screenW) + x] == SBufferOld[(y * screenW) + x]))
+                    if (!(SBuffer[(y * screenW) + x] == driver.GetPixel((uint) x, (uint) y)))
                     {
-                        if (!(SBuffer[(y * screenW) + x] == pen.Color))
-                        {
-                            pen.Color = SBuffer[(y * screenW) + x];
-                        }
-                        canvas.DrawPoint(pen, x, y);
+                        driver.SetPixel((uint)x, (uint)y, SBuffer[(y * screenW) + x]);
                     }
-
                 }
             }
-            copyArray(SBuffer, SBufferOld);
-        }
-
-        private static void copyArray(Color[] from, Color[] to)
-        {
-            for (int i = 0, len = from.Length; i < len; i++)
-            {
-                if (to[i] != from[i])
-                {
-                    to[i] = from[i];
-                }
-            }
+            driver.Update(0,0,(uint)screenW, (uint)screenH);
         }
 
         private static void setPixel(int x, int y, Color color)
         {
-            if (x > screenW || y > screenH)
+            if (x > screenW - 1 || y > screenH - 1)
             {
                 return;
             }
 
-            SBuffer[(y * screenW) + x] = color;
+            SBuffer[(y * screenW) + x] = (uint) color.ToArgb();
+        }
+
+        public static void addImage(String loc, int x, int y)
+        {
+            Bitmap b = new Bitmap(loc);
+            exitGUI();
+            foreach (int d in b.rawData)
+            {
+                Console.Write(d);
+            }
         }
 
         public static void addMouse(int x, int y)
         {
             setPixel(x + 1, y + 1, Color.White);
-            setPixel(Clamp(x + 2, 0, screenW - 2), y + 1, Color.White);
-            setPixel(Clamp(x + 4, 0, screenW - 2), y + 1, Color.White);
-            setPixel(Clamp(x + 6, 0, screenW - 2), y + 1, Color.White);
-            setPixel(x + 1, Clamp(y + 2, 0, screenH - 2), Color.White);
-            setPixel(x + 1, Clamp(y + 4, 0, screenH - 2), Color.White);
-            setPixel(x + 1, Clamp(y + 6, 0, screenH - 2), Color.White);
-            setPixel(Clamp(x + 2, 0, screenW - 2), Clamp(y + 2, 0, screenH - 2), Color.White);
-            setPixel(Clamp(x + 4, 0, screenW - 2), Clamp(y + 4, 0, screenH - 2), Color.White);
-            setPixel(Clamp(x + 6, 0, screenW - 2), Clamp(y + 6, 0, screenH - 2), Color.White);
-            setPixel(Clamp(x + 8, 0, screenW - 2), Clamp(y + 8, 0, screenH - 2), Color.White);
+            setPixel(x + 1, y + 2, Color.White);
+            setPixel(x + 2, y + 3, Color.White);
+            setPixel(x + 2, y + 4, Color.White);
+            setPixel(x + 3, y + 5, Color.White);
+            setPixel(x + 3, y + 6, Color.White);
+            setPixel(x + 4, y + 7, Color.White);
+            setPixel(x + 4, y + 8, Color.White);
+            setPixel(x + 5, y + 9, Color.White);
+            setPixel(x + 5, y + 10, Color.White);
+            setPixel(x + 6, y + 11, Color.White);
+            setPixel(x + 6, y + 12, Color.White);
+
+            setPixel(x + 2, y + 1, Color.White);
+            setPixel(x + 3, y + 2, Color.White);
+            setPixel(x + 4, y + 2, Color.White);
+            setPixel(x + 5, y + 3, Color.White);
+            setPixel(x + 6, y + 3, Color.White);
+            setPixel(x + 7, y + 4, Color.White);
+            setPixel(x + 8, y + 4, Color.White);
+            setPixel(x + 9, y + 5, Color.White);
+            setPixel(x + 10, y + 5, Color.White);
+            setPixel(x + 11, y + 6, Color.White);
+            setPixel(x + 12, y + 6, Color.White);
+
+            setPixel(x + 6, y + 12, Color.White);
+            setPixel(x + 7, y + 11, Color.White);
+            setPixel(x + 8, y + 10, Color.White);
+            setPixel(x + 9, y + 9, Color.White);
+            setPixel(x + 10, y + 8, Color.White);
+            setPixel(x + 11, y + 7, Color.White);
+            setPixel(x + 12, y + 6, Color.White);
 
             setPixel(x, y, Color.Black);
-            setPixel(Clamp(x + 2, 0, screenW - 2), y, Color.Black);
-            setPixel(Clamp(x + 4, 0, screenW - 2), y, Color.Black);
-            setPixel(Clamp(x + 6, 0, screenW - 2), y, Color.Black);
-            setPixel(x, Clamp(y + 2, 0, screenH - 2), Color.Black);
-            setPixel(x, Clamp(y + 4, 0, screenH - 2), Color.Black);
-            setPixel(x, Clamp(y + 6, 0, screenH - 2), Color.Black);
-            setPixel(Clamp(x + 3, 0, screenW - 2), Clamp(y + 3, 0, screenH - 2), Color.Black);
-            setPixel(Clamp(x + 5, 0, screenW - 2), Clamp(y + 5, 0, screenH - 2), Color.Black);
-            setPixel(Clamp(x + 7, 0, screenW - 2), Clamp(y + 7, 0, screenH - 2), Color.Black);
-            setPixel(Clamp(x + 9, 0, screenW - 2), Clamp(y + 9, 0, screenH - 2), Color.Black);
+            setPixel(x, y + 1, Color.Black);
+            setPixel(x, y + 2, Color.Black);
+            setPixel(x + 1, y + 3, Color.Black);
+            setPixel(x + 1, y + 4, Color.Black);
+            setPixel(x + 2, y + 5, Color.Black);
+            setPixel(x + 2, y + 6, Color.Black);
+            setPixel(x + 3, y + 7, Color.Black);
+            setPixel(x + 3, y + 8, Color.Black);
+            setPixel(x + 4, y + 9, Color.Black);
+            setPixel(x + 4, y + 10, Color.Black);
+            setPixel(x + 5, y + 11, Color.Black);
+            setPixel(x + 5, y + 12, Color.Black);
+            setPixel(x + 6, y + 13, Color.Black);
+
+            setPixel(x + 1, y, Color.Black);
+            setPixel(x + 2, y, Color.Black);
+            setPixel(x + 3, y + 1, Color.Black);
+            setPixel(x + 4, y + 1, Color.Black);
+            setPixel(x + 5, y + 2, Color.Black);
+            setPixel(x + 6, y + 2, Color.Black);
+            setPixel(x + 7, y + 3, Color.Black);
+            setPixel(x + 8, y + 3, Color.Black);
+            setPixel(x + 9, y + 4, Color.Black);
+            setPixel(x + 10, y + 4, Color.Black);
+            setPixel(x + 11, y + 5, Color.Black);
+            setPixel(x + 12, y + 5, Color.Black);
+            setPixel(x + 13, y + 6, Color.Black);
+
+            setPixel(x + 7, y + 13, Color.Black);
+            setPixel(x + 8, y + 12, Color.Black);
+            setPixel(x + 9, y + 11, Color.Black);
+            setPixel(x + 10, y + 10, Color.Black);
+            setPixel(x + 11, y + 9, Color.Black);
+            setPixel(x + 12, y + 8, Color.Black);
+            setPixel(x + 13, y + 7, Color.Black);
         }
 
         public static void addFilledRectangle(int x, int y, int w, int h, Color c)
@@ -111,7 +164,7 @@ namespace CosmosKernel1
             {
                 for (int b = y; b < y + h; b++)
                 {
-                    setPixel(Clamp(a, 0, screenW - 1), Clamp(b, 0, screenH - 1), c);
+                    setPixel(a, b, c);
                 }
             }
         }
@@ -120,13 +173,13 @@ namespace CosmosKernel1
         {
             for (int a = x; a < endX; a++)
             {
-                setPixel(Clamp(a, 0, screenW - 1), y, c);
-                setPixel(Clamp(a, 0, screenW - 1), endY, c);
+                setPixel(a, y, c);
+                setPixel(a, endY, c);
             }
             for (int a = y; a < endY; a++)
             {
-                setPixel(x, Clamp(a, 0, screenH - 1), c);
-                setPixel(endX, Clamp(a, 0, screenH - 1), c);
+                setPixel(x, a, c);
+                setPixel(endX, a, c);
             }
             setPixel(endX, endY, c);
         }
@@ -1987,6 +2040,52 @@ namespace CosmosKernel1
                     return 8;
                 case ' ':
                     return 8;
+                case '(':
+                    setPixel(x + 4, y, c);
+                    setPixel(x + 2, y + 2, c);
+                    setPixel(x, y + 4, c);
+                    setPixel(x, y + 6, c);
+                    setPixel(x, y + 8, c);
+                    setPixel(x, y + 10, c);
+                    setPixel(x, y + 12, c);
+                    setPixel(x, y + 14, c);
+                    setPixel(x, y + 16, c);
+                    setPixel(x, y + 18, c);
+                    setPixel(x, y + 20, c);
+                    setPixel(x + 2, y + 22, c);
+                    setPixel(x + 4, y + 24, c);
+                    return 8;
+                case ')':
+                    setPixel(x, y, c);
+                    setPixel(x + 2, y + 2, c);
+                    setPixel(x + 4, y + 4, c);
+                    setPixel(x + 4, y + 6, c);
+                    setPixel(x + 4, y + 8, c);
+                    setPixel(x + 4, y + 10, c);
+                    setPixel(x + 4, y + 12, c);
+                    setPixel(x + 4, y + 14, c);
+                    setPixel(x + 4, y + 16, c);
+                    setPixel(x + 4, y + 18, c);
+                    setPixel(x + 4, y + 20, c);
+                    setPixel(x + 2, y + 22, c);
+                    setPixel(x, y + 24, c);
+                    return 8;
+                case '%':
+                    setPixel(x + 10, y + 2, c);
+                    setPixel(x + 10, y + 4, c);
+                    setPixel(x + 8, y + 6, c);
+                    setPixel(x + 8, y + 8, c);
+                    setPixel(x + 6, y + 10, c);
+                    setPixel(x + 6, y + 12, c);
+                    setPixel(x + 4, y + 14, c);
+                    setPixel(x + 4, y + 16, c);
+                    setPixel(x + 2, y + 18, c);
+                    setPixel(x + 2, y + 20, c);
+                    setPixel(x, y + 22, c);
+                    setPixel(x, y + 24, c);
+                    setPixel(x + 4, y + 4, c);
+                    setPixel(x + 8, y + 20, c);
+                    return 14;
                 default:
                     setPixel(x, y, c);
                     setPixel(x + 2, y, c);

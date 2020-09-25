@@ -6,8 +6,7 @@ using Cosmos.System;
 using Cosmos.System.FileSystem;
 using System.IO;
 using CosmosKernel1.Utils;
-using System.ComponentModel;
-using System.Dynamic;
+using CosmosKernel1.GUI;
 
 namespace CosmosKernel1
 {
@@ -83,13 +82,15 @@ namespace CosmosKernel1
         private static int dirSelectPurpose;
         private static String dirSelectContent;
         private static Boolean dirSelectOpen;
+        private static Boolean newGraphics;
 
         public static void init()
         {
             fs = Kernel.fs;
+            newGraphics = Kernel.newGraphics;
 
-            screenW = DisplayDriver.screenW;
-            screenH = DisplayDriver.screenH;
+            screenW = newGraphics ? VMDisplayDriver.screenW : CanvasDisplayDriver.screenW;
+            screenH = newGraphics ? VMDisplayDriver.screenH : CanvasDisplayDriver.screenH;
 
             if (!File.Exists(@"0:\config.cfg"))
             {
@@ -100,7 +101,7 @@ namespace CosmosKernel1
             }
             FileStream stream = File.OpenRead(@"0:\config.cfg");
             byte[] toRead = new byte[stream.Length];
-            stream.Read(toRead, 0, (int) stream.Length);
+            stream.Read(toRead, 0, (int)stream.Length);
 
             String[] config = ListUtils.byteListToString(toRead).Split(',');
             timeFormat = Boolean.Parse(config[0]);
@@ -138,7 +139,7 @@ namespace CosmosKernel1
             if (c == Color.Purple) return 9;
             return 0;
         }
-        private static int getIntFromRes(int x) 
+        private static int getIntFromRes(int x)
         {
             if (x == 640) return 1;
             if (x == 800) return 2;
@@ -147,10 +148,10 @@ namespace CosmosKernel1
         }
         private static int[] getResFromInt(int i)
         {
-            if (i == 1) return new int[] { 640,480 };
+            if (i == 1) return new int[] { 640, 480 };
             if (i == 2) return new int[] { 800, 600 };
             if (i == 3) return new int[] { 1024, 768 };
-            return new int[] { 160,120 };
+            return new int[] { 160, 120 };
         }
 
 
@@ -288,7 +289,7 @@ namespace CosmosKernel1
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 150, Color.Black, " - CobaltOS Version: " + Kernel.osVersion);
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 180, Color.Black, " - CPU: " + Kernel.cpuString);
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 210, Color.Black, " - RAM: " + (Cosmos.Core.CPU.GetAmountOfRAM() < 1000 ? Cosmos.Core.CPU.GetAmountOfRAM() + " MB" : round(Cosmos.Core.CPU.GetAmountOfRAM() / 1000.00) + " GB"));
-                    
+
                 }
 
                 if (bgColorChangeMenu)
@@ -483,13 +484,14 @@ namespace CosmosKernel1
                             {
                                 FileStream f = File.OpenRead(new string(dirChars.ToArray()));
                                 byte[] toRead = new byte[f.Length];
-                                f.Read(toRead, 0, (int) f.Length);
+                                f.Read(toRead, 0, (int)f.Length);
                                 notePadChars.Clear();
                                 for (int i = 0; i < toRead.Length; i++)
                                 {
                                     notePadChars.Add(Encoding.ASCII.GetString(toRead)[i]);
                                 }
-                            } else
+                            }
+                            else
                             {
                                 String s = "File not found!";
                                 notePadChars.Clear();
@@ -527,7 +529,7 @@ namespace CosmosKernel1
 
                         FileStream readStream = File.OpenRead(@"0:\config.cfg");
                         byte[] toRead = new byte[readStream.Length];
-                        readStream.Read(toRead, 0, (int) readStream.Length);
+                        readStream.Read(toRead, 0, (int)readStream.Length);
                         String s = timeFormat.ToString() + "," + ListUtils.byteListToString(toRead).Split(',')[1] + "," + ListUtils.byteListToString(toRead).Split(',')[2];
                         readStream.Close();
 
@@ -550,7 +552,7 @@ namespace CosmosKernel1
                     {
                         settingsPage = 1;
                     }
-                    else if  ((x > settingsLocX + 20 && x < settingsLocX + 150) && (y > settingsLocY + 325 && y < settingsLocY + 365))
+                    else if ((x > settingsLocX + 20 && x < settingsLocX + 150) && (y > settingsLocY + 325 && y < settingsLocY + 365))
                     {
                         settingsPage = 2;
                     }
@@ -613,10 +615,11 @@ namespace CosmosKernel1
                         byte[] toWrite = Encoding.ASCII.GetBytes(s);
                         writeStream.Write(toWrite, 0, toWrite.Length);
                         writeStream.Close();
-                    } else if (resolutionChangeMenu)
+                    }
+                    else if (resolutionChangeMenu)
                     {
-                        if (x > 310 && x < 500 && y > 330 && y < 360) DisplayDriver.changeRes(640,480);
-                        else if (x > 310 && x < 500 && y > 360 && y < 390) DisplayDriver.changeRes(800,600);
+                        if (x > 310 && x < 500 && y > 330 && y < 360) DisplayDriver.changeRes(640, 480);
+                        else if (x > 310 && x < 500 && y > 360 && y < 390) DisplayDriver.changeRes(800, 600);
                         else return;
 
                         resolutionChangeMenu = false;

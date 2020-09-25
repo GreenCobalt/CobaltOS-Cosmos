@@ -6,6 +6,7 @@ using Console = System.Console;
 using Cosmos.System.FileSystem;
 using Cosmos.HAL;
 using CosmosKernel1.Utils;
+using CosmosKernel1.GUI;
 
 namespace CosmosKernel1
 {
@@ -19,6 +20,7 @@ namespace CosmosKernel1
 
         public static Boolean graphicsMode = false;
         private static Boolean fsMode = false;
+        public static Boolean newGraphics = false;
 
         protected override void BeforeRun()
         {
@@ -33,7 +35,7 @@ namespace CosmosKernel1
             Console.WriteLine("##### ##### ##### #   # ##### #     ##### #####");
 
             //Console.WriteLine("Filesystem: " + fs.GetFileSystemType("0:/") + ", " + fs.GetAvailableFreeSpace(@"0:\") / 1000000 + " MB");
-            Console.WriteLine("CPU: " + getCPU() + " @ " + (Cosmos.Core.CPU.GetCPUCycleSpeed() / 10000000000) + "Ghz");
+            Console.WriteLine("CPU: " + cpuString);
             Console.WriteLine("RAM: " + MemoryManager.getTotalRAM() + " MB");
 
             Console.WriteLine("Successfully booted!");
@@ -63,6 +65,7 @@ namespace CosmosKernel1
         private void initGUI()
         {
             graphicsMode = true;
+            DisplayDriver.init(newGraphics);
             DisplayDriver.initScreen();
         }
 
@@ -70,12 +73,21 @@ namespace CosmosKernel1
         {
             if (input == "gui")
             {
+                Console.WriteLine("Would you like to use VM or real hardware graphics drivers? (v or r)");
+                if (Console.ReadLine() == "v")
+                {
+                    newGraphics = true;
+                } else
+                {
+                    newGraphics = false;
+                }
+
                 initGUI();
                 return;
             }
             else if (input == "cpu")
             {
-                Console.WriteLine("CPU: " + getCPU() + " @ " + (Cosmos.Core.CPU.GetCPUCycleSpeed() / 10000000000) + "Ghz");
+                Console.WriteLine("CPU: " + cpuString);
                 return;
             }
             else if (input == "mem")
@@ -256,6 +268,9 @@ namespace CosmosKernel1
             {
                 returnString = vendor;
             }
+
+            returnString += " at " + ((Cosmos.Core.CPU.GetCPUCycleSpeed() / 1000000000) > 1 ? (Cosmos.Core.CPU.GetCPUCycleSpeed() / 1000000000) + "Ghz" : (Cosmos.Core.CPU.GetCPUCycleSpeed() / 1000000) + "Mhz");
+
             return returnString;
         }
     }

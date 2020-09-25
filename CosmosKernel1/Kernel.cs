@@ -21,11 +21,17 @@ namespace CosmosKernel1
         public static Boolean graphicsMode = false;
         private static Boolean fsMode = false;
         public static Boolean newGraphics = false;
+        public static Boolean enableFs = false;
 
         protected override void BeforeRun()
         {
-            fs = new Sys.FileSystem.CosmosVFS();
-            Sys.FileSystem.VFS.VFSManager.RegisterVFS(fs);
+            Console.WriteLine("Enable FS? (y / n) (Don't use on real hardware!)");
+            if (Console.ReadLine() == "y")
+            {
+                enableFs = true;
+                fs = new Sys.FileSystem.CosmosVFS();
+                Sys.FileSystem.VFS.VFSManager.RegisterVFS(fs);
+            }
 
             Console.Clear();
             Console.WriteLine("    ##### ##### ####  ##### #  #######  ##### #####    ");
@@ -34,11 +40,13 @@ namespace CosmosKernel1
             Console.WriteLine(" #     #   # #   # #   # #     #           #   #     # ");
             Console.WriteLine("##### ##### ##### #   # ##### #             ##### #####");
 
-            //Console.WriteLine("Filesystem: " + fs.GetFileSystemType("0:/") + ", " + fs.GetAvailableFreeSpace(@"0:\") / 1000000 + " MB");
             Console.WriteLine("CPU: " + cpuString);
             Console.WriteLine("RAM: " + MemoryManager.getTotalRAM() + " MB");
 
-            Console.WriteLine("Successfully booted!");
+            if (enableFs)
+            {
+                Console.WriteLine("Filesystem: " + fs.GetFileSystemType("0:/") + ", " + fs.GetAvailableFreeSpace(@"0:\") / 1000000 + " MB");
+            }
 
             //initGUI();
 
@@ -112,7 +120,13 @@ namespace CosmosKernel1
             }
             else if (input == "fs")
             {
-                fsMode = true;
+                if (enableFs)
+                {
+                    fsMode = true;
+                } else
+                {
+                    Console.WriteLine("FS is not enabled! Please restart and select 'y' when prompted!");
+                }
 
                 return;
             }

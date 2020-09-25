@@ -92,22 +92,25 @@ namespace CosmosKernel1
             screenW = newGraphics ? VMDisplayDriver.screenW : CanvasDisplayDriver.screenW;
             screenH = newGraphics ? VMDisplayDriver.screenH : CanvasDisplayDriver.screenH;
 
-            if (!File.Exists(@"0:\config.cfg"))
+            if (Kernel.enableFs)
             {
-                FileStream tempStream = File.Create(@"0:\config.cfg");
-                byte[] toWrite = Encoding.ASCII.GetBytes("false,1,1");
-                tempStream.Write(toWrite, 0, toWrite.Length);
-                tempStream.Close();
-            }
-            FileStream stream = File.OpenRead(@"0:\config.cfg");
-            byte[] toRead = new byte[stream.Length];
-            stream.Read(toRead, 0, (int)stream.Length);
+                if (!File.Exists(@"0:\config.cfg"))
+                {
+                    FileStream tempStream = File.Create(@"0:\config.cfg");
+                    byte[] toWrite = Encoding.ASCII.GetBytes("false,1,1");
+                    tempStream.Write(toWrite, 0, toWrite.Length);
+                    tempStream.Close();
+                }
+                FileStream stream = File.OpenRead(@"0:\config.cfg");
+                byte[] toRead = new byte[stream.Length];
+                stream.Read(toRead, 0, (int)stream.Length);
 
-            String[] config = ListUtils.byteListToString(toRead).Split(',');
-            timeFormat = Boolean.Parse(config[0]);
-            backgroundColor = getColorFromInt(int.Parse(config[1]));
-            int[] resolution = getResFromInt(int.Parse(config[2]));
-            DisplayDriver.changeRes(resolution[0], resolution[1]);
+                String[] config = ListUtils.byteListToString(toRead).Split(',');
+                timeFormat = Boolean.Parse(config[0]);
+                backgroundColor = getColorFromInt(int.Parse(config[1]));
+                int[] resolution = getResFromInt(int.Parse(config[2]));
+                DisplayDriver.changeRes(resolution[0], resolution[1]);
+            }
         }
 
         private static Color getColorFromInt(int c)
@@ -311,6 +314,7 @@ namespace CosmosKernel1
                     DisplayDriver.addFilledRectangle(settingsLocX + 300, settingsLocY + 290, 200, 100, Color.LightGray);
                     DisplayDriver.addText(settingsLocX + 310, settingsLocY + 300, Color.Black, "640x480");
                     DisplayDriver.addText(settingsLocX + 310, settingsLocY + 330, Color.Black, "800x600");
+                    DisplayDriver.addText(settingsLocX + 310, settingsLocY + 360, Color.Black, "1024x768");
                 }
             }
 
@@ -527,17 +531,20 @@ namespace CosmosKernel1
                     {
                         timeFormat = !timeFormat;
 
-                        FileStream readStream = File.OpenRead(@"0:\config.cfg");
-                        byte[] toRead = new byte[readStream.Length];
-                        readStream.Read(toRead, 0, (int)readStream.Length);
-                        String s = timeFormat.ToString() + "," + ListUtils.byteListToString(toRead).Split(',')[1] + "," + ListUtils.byteListToString(toRead).Split(',')[2];
-                        readStream.Close();
+                        if (Kernel.enableFs)
+                        {
+                            FileStream readStream = File.OpenRead(@"0:\config.cfg");
+                            byte[] toRead = new byte[readStream.Length];
+                            readStream.Read(toRead, 0, (int)readStream.Length);
+                            String s = timeFormat.ToString() + "," + ListUtils.byteListToString(toRead).Split(',')[1] + "," + ListUtils.byteListToString(toRead).Split(',')[2];
+                            readStream.Close();
 
-                        File.Delete(@"0:\config.cfg");
-                        FileStream writeStream = File.Create(@"0:\config.cfg");
-                        byte[] toWrite = Encoding.ASCII.GetBytes(s);
-                        writeStream.Write(toWrite, 0, toWrite.Length);
-                        writeStream.Close();
+                            File.Delete(@"0:\config.cfg");
+                            FileStream writeStream = File.Create(@"0:\config.cfg");
+                            byte[] toWrite = Encoding.ASCII.GetBytes(s);
+                            writeStream.Write(toWrite, 0, toWrite.Length);
+                            writeStream.Close();
+                        }
                     }
                     else if (settingsPage == 1 && (x > settingsLocX + 460 && x < backgroundColorSize) && (y > settingsLocY + 100 && y < settingsLocY + 170) && !bgColorChangeMenu)
                     {
@@ -604,37 +611,44 @@ namespace CosmosKernel1
                             bgColorChangeMenu = false;
                         }
 
-                        FileStream readStream = File.OpenRead(@"0:\config.cfg");
-                        byte[] toRead = new byte[readStream.Length];
-                        readStream.Read(toRead, 0, (int)readStream.Length);
-                        String s = ListUtils.byteListToString(toRead).Split(',')[0] + "," + getIntFromColor(backgroundColor) + "," + ListUtils.byteListToString(toRead).Split(',')[2];
-                        readStream.Close();
+                        if (Kernel.enableFs)
+                        {
+                            FileStream readStream = File.OpenRead(@"0:\config.cfg");
+                            byte[] toRead = new byte[readStream.Length];
+                            readStream.Read(toRead, 0, (int)readStream.Length);
+                            String s = ListUtils.byteListToString(toRead).Split(',')[0] + "," + getIntFromColor(backgroundColor) + "," + ListUtils.byteListToString(toRead).Split(',')[2];
+                            readStream.Close();
 
-                        File.Delete(@"0:\config.cfg");
-                        FileStream writeStream = File.Create(@"0:\config.cfg");
-                        byte[] toWrite = Encoding.ASCII.GetBytes(s);
-                        writeStream.Write(toWrite, 0, toWrite.Length);
-                        writeStream.Close();
+                            File.Delete(@"0:\config.cfg");
+                            FileStream writeStream = File.Create(@"0:\config.cfg");
+                            byte[] toWrite = Encoding.ASCII.GetBytes(s);
+                            writeStream.Write(toWrite, 0, toWrite.Length);
+                            writeStream.Close();
+                        }
                     }
                     else if (resolutionChangeMenu)
                     {
-                        if (x > 310 && x < 500 && y > 330 && y < 360) DisplayDriver.changeRes(640, 480);
-                        else if (x > 310 && x < 500 && y > 360 && y < 390) DisplayDriver.changeRes(800, 600);
+                        if (x > 310 && x < 500 && y > 300 && y < 330) DisplayDriver.changeRes(640, 480);
+                        else if (x > 310 && x < 500 && y > 330 && y < 360) DisplayDriver.changeRes(800, 600);
+                        else if (x > 310 && x < 500 && y > 360 && y < 390) DisplayDriver.changeRes(1024, 768);
                         else return;
 
                         resolutionChangeMenu = false;
 
-                        FileStream readStream = File.OpenRead(@"0:\config.cfg");
-                        byte[] toRead = new byte[readStream.Length];
-                        readStream.Read(toRead, 0, (int)readStream.Length);
-                        String s = ListUtils.byteListToString(toRead).Split(',')[0] + "," + ListUtils.byteListToString(toRead).Split(',')[1] + "," + getIntFromRes(screenW);
-                        readStream.Close();
+                        if (Kernel.enableFs)
+                        {
+                            FileStream readStream = File.OpenRead(@"0:\config.cfg");
+                            byte[] toRead = new byte[readStream.Length];
+                            readStream.Read(toRead, 0, (int)readStream.Length);
+                            String s = ListUtils.byteListToString(toRead).Split(',')[0] + "," + ListUtils.byteListToString(toRead).Split(',')[1] + "," + getIntFromRes(screenW);
+                            readStream.Close();
 
-                        File.Delete(@"0:\config.cfg");
-                        FileStream writeStream = File.Create(@"0:\config.cfg");
-                        byte[] toWrite = Encoding.ASCII.GetBytes(s);
-                        writeStream.Write(toWrite, 0, toWrite.Length);
-                        writeStream.Close();
+                            File.Delete(@"0:\config.cfg");
+                            FileStream writeStream = File.Create(@"0:\config.cfg");
+                            byte[] toWrite = Encoding.ASCII.GetBytes(s);
+                            writeStream.Write(toWrite, 0, toWrite.Length);
+                            writeStream.Close();
+                        }
                     }
                 }
 

@@ -7,6 +7,10 @@ using Cosmos.System.FileSystem;
 using Cosmos.HAL;
 using CosmosKernel1.Utils;
 using CosmosKernel1.GUI;
+using System.Reflection.Metadata;
+using Cosmos.System.Graphics;
+using IL2CPU.API.Attribs;
+using System.Text;
 
 namespace CosmosKernel1
 {
@@ -25,6 +29,7 @@ namespace CosmosKernel1
 
         protected override void BeforeRun()
         {
+
             Console.WriteLine("Enable FS? (y / n) (Don't use on real hardware!)");
             if (Console.ReadLine() == "y")
             {
@@ -268,23 +273,7 @@ namespace CosmosKernel1
 
         private static String getCPU()
         {
-            String returnString = "";
-            String vendor = "";
-            foreach (Char c in Cosmos.Core.CPU.GetCPUVendorName())
-            {
-                vendor += Convert.ToChar((byte)c);
-            }
-
-            if (vendor == "AuthenticAMD" || vendor == "GenuineIntel")
-            {
-                returnString = (vendor == "AuthenticAMD" ? "AMD" : "Intel");
-            } else
-            {
-                returnString = vendor;
-            }
-
-            returnString += " at " + ((Cosmos.Core.CPU.GetCPUCycleSpeed() / 1000000000) > 1 ? (Cosmos.Core.CPU.GetCPUCycleSpeed() / 1000000000) + "Ghz" : (Cosmos.Core.CPU.GetCPUCycleSpeed() / 1000000) + "Mhz");
-
+            String returnString = Cosmos.Core.CPU.GetCPUVendorName();
             return returnString;
         }
     }

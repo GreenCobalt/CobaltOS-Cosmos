@@ -7,6 +7,7 @@ using Cosmos.System.FileSystem;
 using System.IO;
 using CosmosKernel1.Utils;
 using CosmosKernel1.GUI;
+using CosmosKernel1.Image;
 
 namespace CosmosKernel1
 {
@@ -101,6 +102,13 @@ namespace CosmosKernel1
                     tempStream.Write(toWrite, 0, toWrite.Length);
                     tempStream.Close();
                 }
+                if (!File.Exists(@"0:\logo.img"))
+                {
+                    FileStream f = File.Create(@"0:\logo.img");
+                    byte[] toWrite = Encoding.ASCII.GetBytes(Images.face);
+                    f.Write(toWrite, 0, toWrite.Length);
+                }
+
                 FileStream stream = File.OpenRead(@"0:\config.cfg");
                 byte[] toRead = new byte[stream.Length];
                 stream.Read(toRead, 0, (int)stream.Length);
@@ -171,6 +179,8 @@ namespace CosmosKernel1
                 DisplayDriver.addFilledRectangle(10, screenH - taskBarHeight + 10, 30, taskBarHeight - 20, Color.Red);
                 DisplayDriver.addText((timeFormat ? screenW - 125 : screenW - 175), screenH - 40, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")));
             }
+
+            DisplayDriver.addImage(@"0:\logo.img", 20, 20);
 
             checkKeyboard();
             addShapes();

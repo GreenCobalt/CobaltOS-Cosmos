@@ -181,6 +181,7 @@ namespace CosmosKernel1
             }
         }
 
+        /*
         public static void addImage(String path, int locX, int locY)
         {
             //String s = FSCache.getFile(path);
@@ -219,6 +220,7 @@ namespace CosmosKernel1
                 }
             }
         }
+        */
 
         public static void addRectangle(int x, int y, int endX, int endY, Color c)
         {

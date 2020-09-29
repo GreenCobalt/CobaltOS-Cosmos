@@ -53,7 +53,7 @@ namespace CosmosKernel1
                 Console.WriteLine("Filesystem: " + fs.GetFileSystemType("0:/") + ", " + fs.GetAvailableFreeSpace(@"0:\") / 1000000 + " MB");
             }
 
-            //initGUI();
+            initGUI();
 
         }
 
@@ -77,6 +77,15 @@ namespace CosmosKernel1
 
         private void initGUI()
         {
+            Console.WriteLine("Would you like to use VM or real hardware graphics drivers? (v or r)");
+            if (Console.ReadLine() == "v")
+            {
+                newGraphics = true;
+            }
+            else
+            {
+                newGraphics = false;
+            }
             graphicsMode = true;
             DisplayDriver.init(newGraphics);
             DisplayDriver.initScreen();
@@ -86,15 +95,6 @@ namespace CosmosKernel1
         {
             if (input == "gui")
             {
-                Console.WriteLine("Would you like to use VM or real hardware graphics drivers? (v or r)");
-                if (Console.ReadLine() == "v")
-                {
-                    newGraphics = true;
-                } else
-                {
-                    newGraphics = false;
-                }
-
                 initGUI();
                 return;
             }

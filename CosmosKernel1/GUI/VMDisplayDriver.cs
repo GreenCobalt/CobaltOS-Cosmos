@@ -78,7 +78,7 @@ namespace CosmosKernel1
             SBuffer[(y * screenW) + x] = (uint) color.ToArgb();
         }
 
-
+        /*
         public static void addImage(String path, int locX, int locY)
         {
             //String s = FSCache.getFile(path);
@@ -117,6 +117,7 @@ namespace CosmosKernel1
                 }
             }
         }
+        */
 
         public static void addMouse(int x, int y)
         {

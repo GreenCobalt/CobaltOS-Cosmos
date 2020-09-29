@@ -181,46 +181,10 @@ namespace CosmosKernel1
             }
         }
 
-        /*
         public static void addImage(String path, int locX, int locY)
         {
-            //String s = FSCache.getFile(path);
-            String s = Images.test;
-            int[] imageSize = Image.Image.getImageSize(s);
-            int[] imagePixelsUnsorted = Image.Image.getPixels(s);
 
-            int[] Ra = { };
-            int[] Ga = { };
-            int[] Ba = { };
-            int currentList = 0;
-            int lastIndex = 0;
-
-            for (int i = 0; i < imagePixelsUnsorted.Length; i++)
-            {
-                if (currentList == 0) Ra[i - lastIndex] = imagePixelsUnsorted[i];
-                else if (currentList == 1) Ga[i - lastIndex] = imagePixelsUnsorted[i];
-                else if (currentList == 2) Ba[i - lastIndex] = imagePixelsUnsorted[i];
-
-                if (imagePixelsUnsorted[i] == 256)
-                {
-                    currentList++;
-                    lastIndex = i;
-                }
-            }
-
-            int sizeX = imageSize[0];
-            int sizeY = imageSize[1];
-
-            for (int x = 1; x < sizeX + 1; x++)
-            {
-                for (int y = 1; y < sizeY + 1; y++)
-                {
-                    int[] pixel = { Ra[(x * y) + x], Ba[(x * y) + x], Ga[(x * y) + x] };
-                    setPixel(x, y, Color.FromArgb(pixel[0], 0, 0));
-                }
-            }
         }
-        */
 
         public static void addRectangle(int x, int y, int endX, int endY, Color c)
         {

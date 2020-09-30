@@ -183,7 +183,16 @@ namespace CosmosKernel1
 
         public static void addImage(String path, int locX, int locY)
         {
+            String s = FSCache.getFile(path);
+            int[] imageSize = { int.Parse(s.Split("; ")[0].Split(",")[0]), int.Parse(s.Split(";")[0].Split(",")[1]) };
+            int[] rP = ListUtils.arrayStringToInt(s.Split(";")[1].Split(","));
+            int[] gP = ListUtils.arrayStringToInt(s.Split(";")[2].Split(","));
+            int[] bP = ListUtils.arrayStringToInt(s.Split(";")[3].Split(","));
 
+            for (int i = 0; i < imageSize[0] * imageSize[1]; i++)
+            {
+                setPixel(locX + (i - (imageSize[0] * Convert.ToInt32(Math.Floor((double)i / imageSize[0])))), locY + (Convert.ToInt32(Math.Floor((double)i / imageSize[0]))), Color.FromArgb(rP[i], gP[i], bP[i]));
+            }
         }
 
         public static void addRectangle(int x, int y, int endX, int endY, Color c)

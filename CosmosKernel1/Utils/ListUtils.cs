@@ -61,5 +61,15 @@ namespace CosmosKernel1.Utils
             }
             return charListToString(s);
         }
+
+        public static int[] arrayStringToInt(string[] input)
+        {
+            int[] returnArray = new int[input.Length];
+            for(int i = 0; i < input.Length; i++)
+            {
+                returnArray[i] = int.Parse(input[i]);
+            }
+            return returnArray; 
+        }
     }
 }

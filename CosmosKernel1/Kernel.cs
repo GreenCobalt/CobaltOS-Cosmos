@@ -53,8 +53,7 @@ namespace CosmosKernel1
                 Console.WriteLine("Filesystem: " + fs.GetFileSystemType("0:/") + ", " + fs.GetAvailableFreeSpace(@"0:\") / 1000000 + " MB");
             }
 
-            initGUI();
-
+            //initGUI();
         }
 
         protected override void Run()

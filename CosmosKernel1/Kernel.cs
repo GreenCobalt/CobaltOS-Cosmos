@@ -46,7 +46,7 @@ namespace CosmosKernel1
             Console.WriteLine("##### ##### ##### #   # ##### #             ##### #####");
 
             Console.WriteLine("CPU: " + cpuString);
-            Console.WriteLine("RAM: " + MemoryManager.getTotalRAM() + " MB");
+            Console.WriteLine("RAM: " + Memory.getTotalRAM() + " MB");
 
             if (enableFs)
             {

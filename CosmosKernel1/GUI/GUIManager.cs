@@ -181,8 +181,6 @@ namespace CosmosKernel1
             }
 
             //DisplayDriver.addImage(@"0:\logo.img", 50, 50);
-            DisplayDriver.addRectangle(10, 10, 110, 30, Color.Black);
-            DisplayDriver.addFilledRectangle(10, 10, (int)MemoryManager.getUsedRAMPercent(), 20, Color.Black);
 
             checkKeyboard();
             addShapes();
@@ -407,11 +405,6 @@ namespace CosmosKernel1
             {
                 uint x = Cosmos.System.MouseManager.X;
                 uint y = Cosmos.System.MouseManager.Y;
-
-                if (x > 10 && x < 30 && y > 10 && y < 30)
-                {
-                    DisplayDriver.changeRes(1920, 1080);
-                }
 
                 if ((x > 10 && x < 40) && (y > screenH - (taskBarHeight - 10) && y < screenH - 10))
                 {

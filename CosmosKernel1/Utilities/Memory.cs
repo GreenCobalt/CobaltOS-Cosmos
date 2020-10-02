@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CosmosKernel1.Utils
 {
-    class MemoryManager
+    class Memory
     {
         public static uint getFreeRAM()
         {

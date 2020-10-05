@@ -40,6 +40,12 @@ namespace CosmosKernel1
             GUIManager.init();
         }
 
+        public static void exitGUI()
+        {
+            Kernel.graphicsMode = false;
+            canvas.Disable();
+        }
+
         public static void changeRes(int x, int y)
         {
             screenW = x;

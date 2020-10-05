@@ -9,13 +9,15 @@ using CosmosKernel1.Utils;
 using CosmosKernel1.GUI;
 using System.Reflection.Metadata;
 using Cosmos.System.Graphics;
-using IL2CPU.API.Attribs;
 using System.Text;
+using MIV;
 
 namespace CosmosKernel1
 {
     public class Kernel : Sys.Kernel
     {
+        public static string file;
+
         public static double osVersion = 0.1;
         public static readonly String cpuString = getCPU();
 
@@ -94,6 +96,8 @@ namespace CosmosKernel1
         {
             if (input == "gui")
             {
+                deathScreen("Testing 0x0001");
+
                 initGUI();
                 return;
             }
@@ -121,6 +125,10 @@ namespace CosmosKernel1
                 Console.WriteLine("    gui: Activates the GUI.");
                 Console.WriteLine("    help: Returns this message.");
                 return;
+            }
+            else if (input == "miv")
+            {
+                MIV.MIV.StartMIV();
             }
             else if (input == "fs")
             {
@@ -153,6 +161,21 @@ namespace CosmosKernel1
         {
             if (reboot) Cosmos.System.Power.Reboot();
             else Cosmos.System.Power.Shutdown();
+        }
+
+        public static void deathScreen(String error)
+        {
+            DisplayDriver.exitGUI();
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.BackgroundColor = ConsoleColor.Red;
+            Console.WriteLine("Your system was disabled due to an internal error. Please see the error message below and contact us on GitHub if you don't know what happened.");
+            Console.WriteLine();
+            Console.WriteLine(error);
+            Console.WriteLine();
+            Console.WriteLine("Your system will automatically reboot in 5 seconds.");
+            WaitSeconds(5);
+            shutdown(true);
         }
 
         private static void processFSConsole(String input)
@@ -272,7 +295,7 @@ namespace CosmosKernel1
 
         private static String getCPU()
         {
-            String returnString = Cosmos.Core.CPU.GetCPUVendorName();
+            String returnString = Cosmos.Core.CPU.GetCPUBrandString();
             return returnString;
         }
     }

@@ -1,7 +1,6 @@
 ﻿using Cosmos.Core;
 using Cosmos.System.Graphics;
 using CosmosKernel1.GUI;
-using CosmosKernel1.Image;
 using CosmosKernel1.Utils;
 using System;
 using System.Collections.Generic;
@@ -42,6 +41,7 @@ namespace CosmosKernel1
 
         public static void exitGUI()
         {
+            Kernel.graphicsMode = false;
             Kernel.graphicsMode = false;
             canvas.Disable();
         }
@@ -183,6 +183,7 @@ namespace CosmosKernel1
             }
         }
 
+        /*
         public static void addImage(String path, int locX, int locY)
         {
             String s = FSCache.getFile(path);
@@ -196,6 +197,7 @@ namespace CosmosKernel1
                 setPixel(locX + (i - (imageSize[0] * Convert.ToInt32(Math.Floor((double)i / imageSize[0])))), locY + (Convert.ToInt32(Math.Floor((double)i / imageSize[0]))), Color.FromArgb(rP[i], gP[i], bP[i]));
             }
         }
+        */
 
         public static void addRectangle(int x, int y, int endX, int endY, Color c)
         {

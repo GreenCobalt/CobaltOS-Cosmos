@@ -1,6 +1,5 @@
 ﻿using Cosmos.HAL;
 using Cosmos.System.Graphics;
-using CosmosKernel1.Image;
 using CosmosKernel1.Utils;
 using System;
 using System.Collections.Generic;
@@ -78,6 +77,7 @@ namespace CosmosKernel1
             SBuffer[(y * screenW) + x] = (uint) color.ToArgb();
         }
 
+        /*
         public static void addImage(String path, int locX, int locY)
         {
             try
@@ -97,6 +97,7 @@ namespace CosmosKernel1
                 Kernel.deathScreen("Failed loading an image. (0x0000)");
             }
         }
+        */
 
         public static void addMouse(int x, int y)
         {

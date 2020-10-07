@@ -13,8 +13,7 @@ namespace CosmosKernel1.Utils
         }
         public static uint getUsedRAM()
         {
-            uint usedRAM = CPU.GetEndOfKernel() + 1024;
-            return usedRAM / 1048576;
+            return CPU.GetEndOfKernel() + 1024 / 1048576;
         }
         public static uint getTotalRAM()
         {

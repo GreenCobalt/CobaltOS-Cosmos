@@ -11,6 +11,7 @@ using System.Reflection.Metadata;
 using Cosmos.System.Graphics;
 using System.Text;
 using MIV;
+using System.Text.RegularExpressions;
 
 namespace CosmosKernel1
 {
@@ -33,9 +34,19 @@ namespace CosmosKernel1
         {
             printLogoConsole();
 
+
             enableFs = true;
+
             fs = new Sys.FileSystem.CosmosVFS();
             Sys.FileSystem.VFS.VFSManager.RegisterVFS(fs);
+
+            Console.WriteLine(DriveInfo.GetDrives().Length);
+            foreach (DriveInfo d in DriveInfo.GetDrives())
+            {
+                Console.WriteLine(" - " + d.Name + " (" + d.GetType() + ") " + (d.TotalSize / 1024 / 1024) + "MB");
+            }
+            WaitSeconds(3);
+
             if (!File.Exists(@"0:\fs.cfg"))
             {
                 printLogoConsole();
@@ -46,11 +57,18 @@ namespace CosmosKernel1
                 if (Console.ReadLine() == "y")
                 {
                     Console.WriteLine("\nFormatting...");
-                    fs.Format(@"0:\", "FAT32", true);
-                    FileStream writeStream = File.Create(@"0:\fs.cfg");
-                    byte[] toWrite = Encoding.ASCII.GetBytes("true");
-                    writeStream.Write(toWrite, 0, toWrite.Length);
-                    writeStream.Close();
+                    try
+                    {
+                        fs.Format(@"0:\", "FAT32", true);
+                        FileStream writeStream = File.Create(@"0:\fs.cfg");
+                        byte[] toWrite = Encoding.ASCII.GetBytes("true");
+                        writeStream.Write(toWrite, 0, toWrite.Length);
+                        writeStream.Close();
+                    }
+                    catch
+                    {
+                        deathScreen("0x0100 No Hard Drive to format!");
+                    }
                 }
                 else
                 {
@@ -59,6 +77,7 @@ namespace CosmosKernel1
                     WaitSeconds(2);
                 }
             }
+            
 
             printLogoConsole();
 
@@ -67,7 +86,7 @@ namespace CosmosKernel1
 
             if (enableFs)
             {
-                Console.WriteLine("Filesystem: " + fs.GetFileSystemType("0:/") + ", " + fs.GetAvailableFreeSpace(@"0:\") / 1000000 + " MB");
+                Console.WriteLine("Filesystem: " + fs.GetFileSystemType("0:/") + ", " + fs.GetTotalSize(@"0:\") / 1024 / 1024 + " MB");
             }
 
             //initGUI();
@@ -301,6 +320,7 @@ namespace CosmosKernel1
                     {
                         Console.Write((char)b);
                     }
+                    Console.Write("\n");
                 }
                 else
                 {
@@ -331,7 +351,7 @@ namespace CosmosKernel1
         private static String getCPU()
         {
             String returnString = Cosmos.Core.CPU.GetCPUBrandString();
-            return returnString;
+            return returnString.Substring(0, (returnString.Length > 22 ? 22 : returnString.Length)) + (returnString.Length > 22 ? "..." : "");
         }
     }
 }

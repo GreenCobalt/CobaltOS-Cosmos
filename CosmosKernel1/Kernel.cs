@@ -32,20 +32,18 @@ namespace CosmosKernel1
 
         protected override void BeforeRun()
         {
-            printLogoConsole();
-
-
             enableFs = true;
-
             fs = new Sys.FileSystem.CosmosVFS();
             Sys.FileSystem.VFS.VFSManager.RegisterVFS(fs);
-
-            Console.WriteLine(DriveInfo.GetDrives().Length);
+            WaitSeconds(2);
+            printLogoConsole();
+            Console.WriteLine("Detected Drives: ");
+            Console.Write(DriveInfo.GetDrives().Length);
             foreach (DriveInfo d in DriveInfo.GetDrives())
             {
-                Console.WriteLine(" - " + d.Name + " (" + d.GetType() + ") " + (d.TotalSize / 1024 / 1024) + "MB");
+                Console.WriteLine(" - " + d.Name + " (" + d.GetType() + ") " + (d.TotalSize / 1048576) + "MB");
             }
-            WaitSeconds(3);
+            WaitSeconds(2);
 
             if (!File.Exists(@"0:\fs.cfg"))
             {
@@ -86,7 +84,7 @@ namespace CosmosKernel1
 
             if (enableFs)
             {
-                Console.WriteLine("Filesystem: " + fs.GetFileSystemType("0:/") + ", " + fs.GetTotalSize(@"0:\") / 1024 / 1024 + " MB");
+                Console.WriteLine("Filesystem: " + fs.GetFileSystemType("0:/") + ", " + fs.GetTotalSize(@"0:\") / 1048576 + " MB");
             }
 
             //initGUI();

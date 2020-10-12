@@ -7,21 +7,12 @@ using Cosmos.System.FileSystem;
 using System.IO;
 using CosmosKernel1.Utils;
 using CosmosKernel1.GUI;
-using CosmosKernel1.Image;
 
 namespace CosmosKernel1
 {
     class GUIManager
     {
-        /*
-         * 0 = Desktop
-         * 1 = Notepad
-         * 2 = Settings
-         * 3 = Calculator
-         * 
-         * 99 = Power Menu
-         */
-        private static int activeApp = 0;
+        private static OSApp activeApp = OSApp.Desktop;
         private static List<int> openApps = new List<int>();
 
         /*
@@ -75,6 +66,14 @@ namespace CosmosKernel1
 
         private static int taskBarHeight = 50;
 
+        enum OSApp
+        {
+            Desktop = 0,
+            Notepad = 1,
+            Settings = 2,
+            Calculator = 3,
+            PowerMenu = 99
+        }
 
         /*
          * 0 = Save
@@ -101,12 +100,6 @@ namespace CosmosKernel1
                     byte[] toWrite = Encoding.ASCII.GetBytes("false,1,1");
                     tempStream.Write(toWrite, 0, toWrite.Length);
                     tempStream.Close();
-                }
-                if (!File.Exists(@"0:\logo.img"))
-                {
-                    FileStream f = File.Create(@"0:\logo.img");
-                    byte[] toWrite = Encoding.ASCII.GetBytes(Images.face);
-                    f.Write(toWrite, 0, toWrite.Length);
                 }
 
                 FileStream stream = File.OpenRead(@"0:\config.cfg");
@@ -168,7 +161,7 @@ namespace CosmosKernel1
 
         public static void tick()
         {
-            if (activeApp == 99)
+            if (activeApp == OSApp.PowerMenu)
             {
                 DisplayDriver.setFullBuffer(Color.DarkGray);
             }
@@ -179,8 +172,6 @@ namespace CosmosKernel1
                 DisplayDriver.addFilledRectangle(10, screenH - taskBarHeight + 10, 30, taskBarHeight - 20, Color.Red);
                 DisplayDriver.addText((timeFormat ? screenW - 125 : screenW - 175), screenH - 40, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")));
             }
-
-            DisplayDriver.addImage(@"0:\logo.img", 50, 50);
 
             checkKeyboard();
             addShapes();
@@ -199,7 +190,7 @@ namespace CosmosKernel1
 
         private static void addShapes()
         {
-            if (activeApp == 1)
+            if (activeApp == OSApp.Notepad)
             {
                 DisplayDriver.addFilledRectangle(notepadLocX, notepadLocY, notepadSizeX, notepadSizeY, Color.White);
 
@@ -260,7 +251,7 @@ namespace CosmosKernel1
                 }
             }
 
-            if (activeApp == 2)
+            if (activeApp == OSApp.Settings)
             {
                 DisplayDriver.addFilledRectangle(settingsLocX, settingsLocY, settingsSizeX, settingsSizeY, Color.White);
                 DisplayDriver.addFilledRectangle(settingsLocX, settingsLocY, settingsSizeX, 30, Color.Gray);
@@ -328,7 +319,7 @@ namespace CosmosKernel1
                 }
             }
 
-            if (activeApp == 3)
+            if (activeApp == OSApp.Calculator)
             {
                 int spacingX = 16;
                 int spacingY = 13;
@@ -358,7 +349,7 @@ namespace CosmosKernel1
                 DisplayDriver.addFilledRectangle(calcLocX + 200, calcLocY + 270, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 200 + spacingX, calcLocY + 270 + spacingY, Color.Black, "+");
             }
 
-            if (activeApp == 99)
+            if (activeApp == OSApp.PowerMenu)
             {
                 cancelSize = DisplayDriver.addText(cancelX, Y + 75, Color.Blue, "Cancel");
                 DisplayDriver.addFilledRectangle(((cancelX + cancelSize) / 2) - 25, Y, 50, 50, Color.Blue);
@@ -417,32 +408,32 @@ namespace CosmosKernel1
                     startMenuOpen = false;
                     typeLocX = notepadLocX + 10;
                     typeLocY = notepadLocY + 76;
-                    activeApp = 1;
+                    activeApp = OSApp.Notepad;
                     return;
                 }
                 if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 265 && y < screenH - taskBarHeight - 230))
                 {
                     startMenuOpen = false;
-                    activeApp = 3;
+                    activeApp = OSApp.Calculator;
                     calcChars.Clear();
                     return;
                 }
                 if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 70 && y < screenH - taskBarHeight - 40))
                 {
                     startMenuOpen = false;
-                    activeApp = 2;
+                    activeApp = OSApp.Settings;
                     return;
                 }
                 if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 35 && y < screenH - taskBarHeight - 10))
                 {
                     startMenuOpen = false;
-                    activeApp = 99;
+                    activeApp = OSApp.PowerMenu;
                     return;
                 }
                 //---------------------------------------
 
 
-                if (activeApp == 1)
+                if (activeApp == OSApp.Notepad)
                 {
                     if ((x > settingsLocX + 575 && x < settingsLocX + 595) && (y > settingsLocY + 5 && y < settingsLocY + 25))
                     {
@@ -521,7 +512,7 @@ namespace CosmosKernel1
                     }
                 }
 
-                if (activeApp == 2)
+                if (activeApp == OSApp.Settings)
                 {
                     if ((x > settingsLocX + 575 && x < settingsLocX + 595) && (y > settingsLocY + 5 && y < settingsLocY + 25))
                     {
@@ -657,7 +648,7 @@ namespace CosmosKernel1
                     }
                 }
 
-                if (activeApp == 3)
+                if (activeApp == OSApp.Calculator)
                 {
                     if ((x > calcLocX + calcSizeX - 25 && x < calcLocX + calcSizeX - 5) && (y > calcLocY + 5 && y < calcLocY + 25))
                     {
@@ -804,7 +795,7 @@ namespace CosmosKernel1
                     }
                 }
 
-                if (activeApp == 99)
+                if (activeApp == OSApp.PowerMenu)
                 {
                     if ((x > cancelX - 10 && x < cancelSize + 10) && (y > Y - 10 && y < Y + 125))
                     {
@@ -1030,7 +1021,7 @@ namespace CosmosKernel1
                     currentChar = '�';
                 }
 
-                if (activeApp == 1)
+                if (activeApp == OSApp.Notepad)
                 {
                     if (!dirSelectOpen)
                     {

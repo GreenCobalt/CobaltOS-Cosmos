@@ -11,6 +11,7 @@ using System.Reflection.Metadata;
 using Cosmos.System.Graphics;
 using System.Text;
 using MIV;
+using System.Text.RegularExpressions;
 
 namespace CosmosKernel1
 {
@@ -31,31 +32,72 @@ namespace CosmosKernel1
 
         protected override void BeforeRun()
         {
-
-            Console.WriteLine("Enable FS? (y / n) (Don't use on real hardware!)");
-            if (Console.ReadLine() == "y")
+            enableFs = true;
+            fs = new Sys.FileSystem.CosmosVFS();
+            Sys.FileSystem.VFS.VFSManager.RegisterVFS(fs);
+            WaitSeconds(2);
+            printLogoConsole();
+            Console.WriteLine("Detected Drives: ");
+            Console.Write(DriveInfo.GetDrives().Length);
+            foreach (DriveInfo d in DriveInfo.GetDrives())
             {
-                enableFs = true;
-                fs = new Sys.FileSystem.CosmosVFS();
-                Sys.FileSystem.VFS.VFSManager.RegisterVFS(fs);
+                Console.WriteLine(" - " + d.Name + " (" + d.GetType() + ") " + (d.TotalSize / 1048576) + "MB");
             }
+            WaitSeconds(2);
 
-            Console.Clear();
-            Console.WriteLine("    ##### ##### ####  ##### #  #######  ##### #####    ");
-            Console.WriteLine("   #     #   # #  #  #   # #     #       #   # #       ");
-            Console.WriteLine("  #     #   # ####  ##### #     #         #   # #####  ");
-            Console.WriteLine(" #     #   # #   # #   # #     #           #   #     # ");
-            Console.WriteLine("##### ##### ##### #   # ##### #             ##### #####");
+            if (!File.Exists(@"0:\fs.cfg"))
+            {
+                printLogoConsole();
+
+                Console.WriteLine(@"The filesystem was not formatted with CobaltOS, so it cannot be used.");
+                Console.WriteLine(@"Would you like to format it? (y/n)");
+                Console.WriteLine("WARNING: THIS WILL DELETE ALL DATA.\n");
+                if (Console.ReadLine() == "y")
+                {
+                    Console.WriteLine("\nFormatting...");
+                    try
+                    {
+                        fs.Format(@"0:\", "FAT32", true);
+                        FileStream writeStream = File.Create(@"0:\fs.cfg");
+                        byte[] toWrite = Encoding.ASCII.GetBytes("true");
+                        writeStream.Write(toWrite, 0, toWrite.Length);
+                        writeStream.Close();
+                    }
+                    catch
+                    {
+                        deathScreen("0x0100 No Hard Drive to format!");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\nThe filesystem is being disabled as it was not formatted with CobaltOS.");
+                    enableFs = false;
+                    WaitSeconds(2);
+                }
+            }
+            
+
+            printLogoConsole();
 
             Console.WriteLine("CPU: " + cpuString);
             Console.WriteLine("RAM: " + Memory.getTotalRAM() + " MB");
 
             if (enableFs)
             {
-                Console.WriteLine("Filesystem: " + fs.GetFileSystemType("0:/") + ", " + fs.GetAvailableFreeSpace(@"0:\") / 1000000 + " MB");
+                Console.WriteLine("Filesystem: " + fs.GetFileSystemType("0:/") + ", " + fs.GetTotalSize(@"0:\") / 1048576 + " MB");
             }
 
             //initGUI();
+        }
+
+        private static void printLogoConsole()
+        {
+            Console.Clear();
+            Console.WriteLine("    ##### ##### ####  ##### #  #######  ##### #####    ");
+            Console.WriteLine("   #     #   # #  #  #   # #     #       #   # #       ");
+            Console.WriteLine("  #     #   # ####  ##### #     #         #   # #####  ");
+            Console.WriteLine(" #     #   # #   # #   # #     #           #   #     # ");
+            Console.WriteLine("##### ##### ##### #   # ##### #             ##### #####");
         }
 
         protected override void Run()
@@ -96,8 +138,6 @@ namespace CosmosKernel1
         {
             if (input == "gui")
             {
-                deathScreen("Testing 0x0001");
-
                 initGUI();
                 return;
             }
@@ -124,6 +164,7 @@ namespace CosmosKernel1
                 Console.WriteLine("    time: Returns current time according to the BIOS.");
                 Console.WriteLine("    gui: Activates the GUI.");
                 Console.WriteLine("    help: Returns this message.");
+                Console.WriteLine("    miv: Activates the MIV text editor.");
                 return;
             }
             else if (input == "miv")
@@ -135,7 +176,8 @@ namespace CosmosKernel1
                 if (enableFs)
                 {
                     fsMode = true;
-                } else
+                }
+                else
                 {
                     Console.WriteLine("FS is not enabled! Please restart and select 'y' when prompted!");
                 }
@@ -166,15 +208,25 @@ namespace CosmosKernel1
         public static void deathScreen(String error)
         {
             DisplayDriver.exitGUI();
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.BackgroundColor = ConsoleColor.Red;
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.WriteLine("Your system was disabled due to an internal error. Please see the error message below and contact us on GitHub if you don't know what happened.");
-            Console.WriteLine();
-            Console.WriteLine(error);
-            Console.WriteLine();
-            Console.WriteLine("Your system will automatically reboot in 5 seconds.");
-            WaitSeconds(5);
+            int sec = 20;
+            while (sec > 0)
+            {
+                Console.WriteLine("Your system was disabled due to an internal error. Please see the error message below and contact us on GitHub if you don't know what happened.");
+                Console.WriteLine();
+                Console.WriteLine(error);
+                Console.WriteLine();
+                Console.WriteLine("Your system will automatically reboot in " + sec + " seconds, or press any key to restart now.");
+                sec--;
+                WaitSeconds(1);
+                if (System.Console.KeyAvailable == true)
+                {
+                    shutdown(true);
+                }
+                Console.Clear();
+            }
             shutdown(true);
         }
 
@@ -264,8 +316,9 @@ namespace CosmosKernel1
                     s.Read(a, 0, a.Length);
                     foreach (Byte b in a)
                     {
-                        Console.Write((char) b);
+                        Console.Write((char)b);
                     }
+                    Console.Write("\n");
                 }
                 else
                 {
@@ -296,7 +349,7 @@ namespace CosmosKernel1
         private static String getCPU()
         {
             String returnString = Cosmos.Core.CPU.GetCPUBrandString();
-            return returnString;
+            return returnString.Substring(0, (returnString.Length > 22 ? 22 : returnString.Length)) + (returnString.Length > 22 ? "..." : "");
         }
     }
 }

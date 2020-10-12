@@ -167,8 +167,8 @@ namespace CosmosKernel1
         {
             DisplayDriver.exitGUI();
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.BackgroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.BackgroundColor = ConsoleColor.Black;
             Console.WriteLine("Your system was disabled due to an internal error. Please see the error message below and contact us on GitHub if you don't know what happened.");
             Console.WriteLine();
             Console.WriteLine(error);

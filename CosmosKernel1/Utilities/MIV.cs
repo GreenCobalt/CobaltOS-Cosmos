@@ -210,9 +210,6 @@ namespace MIV
                             continue;
                         }
                         printMIVScreen(chars, pos, infoBar, editMode);
-
-
-
                     } while (keyInfo.Key != ConsoleKey.Escape);
                 }
 
@@ -312,8 +309,6 @@ namespace MIV
                 File.WriteAllText(@"0:\" + Kernel.file, text);
                 Console.WriteLine("Content has been saved to " + Kernel.file);
             }
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey(true);
         }
     }
 }

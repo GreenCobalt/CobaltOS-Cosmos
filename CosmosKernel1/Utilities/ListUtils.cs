@@ -27,15 +27,14 @@ namespace CosmosKernel1.Utils
 
         public static Boolean listContains(List<string> input, String needle)
         {
-            Boolean output = false;
             foreach (String current in input)
             {
                 if (current == needle)
                 {
-                    output = true;
+                    return true;
                 }
             }
-            return output;
+            return false;
         }
 
         public static int countList(List<int> input)

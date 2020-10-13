@@ -7,12 +7,13 @@ using Cosmos.System.FileSystem;
 using System.IO;
 using CosmosKernel1.Utils;
 using CosmosKernel1.GUI;
+using CobaltOS.Utilities.Hardware;
 
 namespace CosmosKernel1
 {
     class GUIManager
     {
-        private static OSApp activeApp = OSApp.Desktop;
+        private static OSApp activeApp = OSApp.None;
         private static List<int> openApps = new List<int>();
 
         /*
@@ -68,7 +69,7 @@ namespace CosmosKernel1
 
         enum OSApp
         {
-            Desktop = 0,
+            None = 0,
             Notepad = 1,
             Settings = 2,
             Calculator = 3,
@@ -291,9 +292,8 @@ namespace CosmosKernel1
                 {
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 120, Color.Black, "System Information:");
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 150, Color.Black, " - CobaltOS Version: " + Kernel.osVersion);
-                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 180, Color.Black, " - CPU: " + Kernel.cpuString);
+                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 180, Color.Black, " - CPU: " + Kernel.cpuStringShort);
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 210, Color.Black, " - RAM: " + (Cosmos.Core.CPU.GetAmountOfRAM() < 1000 ? Cosmos.Core.CPU.GetAmountOfRAM() + " MB" : round(Cosmos.Core.CPU.GetAmountOfRAM() / 1000.00) + " GB"));
-
                 }
 
                 if (bgColorChangeMenu)

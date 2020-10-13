@@ -376,6 +376,9 @@ namespace CosmosKernel1
                 DisplayDriver.addFilledRectangle(20, screenH - taskBarHeight - 255, 20, 20, Color.SandyBrown);
                 DisplayDriver.addText(50, screenH - taskBarHeight - 255, Color.White, "Calculator");
 
+                DisplayDriver.addFilledRectangle(20, screenH - taskBarHeight - 125, 20, 20, Color.Purple);
+                DisplayDriver.addText(50, screenH - taskBarHeight - 125, Color.White, "Console");
+
                 DisplayDriver.addFilledRectangle(20, screenH - taskBarHeight - 80, 20, 20, Color.DarkGray);
                 DisplayDriver.addText(50, screenH - taskBarHeight - 80, Color.White, "Settings");
 

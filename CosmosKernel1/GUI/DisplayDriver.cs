@@ -67,14 +67,6 @@ namespace CosmosKernel1.GUI
             else CanvasDisplayDriver.addFilledRectangle(x, y, w, h, c);
         }
 
-        /*
-        public static void addImage(String path, int locX, int locY)
-        {
-            if (newGraphics) VMDisplayDriver.addImage(path, locX, locY);
-            else CanvasDisplayDriver.addImage(path, locX, locY);
-        }
-        */
-
         public static void exitGUI()
         {
             if (Kernel.graphicsMode)

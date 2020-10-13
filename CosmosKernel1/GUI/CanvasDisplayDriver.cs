@@ -35,13 +35,13 @@ namespace CosmosKernel1
 
             canvas = FullScreenCanvas.GetFullScreenCanvas();
             canvas.Mode = new Mode(screenW, screenH, ColorDepth.ColorDepth32);
+            canvas.Clear();
 
             GUIManager.init();
         }
 
         public static void exitGUI()
         {
-            Kernel.graphicsMode = false;
             Kernel.graphicsMode = false;
             canvas.Disable();
         }

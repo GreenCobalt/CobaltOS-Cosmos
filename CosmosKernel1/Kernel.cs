@@ -1,17 +1,12 @@
 ﻿using System;
 using Sys = Cosmos.System;
-using Cosmos.Core;
 using System.IO;
 using Console = System.Console;
 using Cosmos.System.FileSystem;
-using Cosmos.HAL;
-using CosmosKernel1.Utils;
 using CosmosKernel1.GUI;
-using System.Reflection.Metadata;
-using Cosmos.System.Graphics;
 using System.Text;
-using MIV;
-using System.Text.RegularExpressions;
+using CobaltOS.Utilities;
+using CobaltOS.Utilities.Hardware;
 
 namespace CosmosKernel1
 {
@@ -20,7 +15,9 @@ namespace CosmosKernel1
         public static string file;
 
         public static double osVersion = 0.1;
-        public static readonly String cpuString = getCPU();
+
+        public static readonly String cpuString = getCPU(false);
+        public static readonly String cpuStringShort = getCPU(true);
 
         public static CosmosVFS fs;
         private static String cd = @"0:\";
@@ -35,10 +32,9 @@ namespace CosmosKernel1
             enableFs = true;
             fs = new Sys.FileSystem.CosmosVFS();
             Sys.FileSystem.VFS.VFSManager.RegisterVFS(fs);
-            WaitSeconds(2);
             printLogoConsole();
-            Console.WriteLine("Detected Drives: ");
-            Console.Write(DriveInfo.GetDrives().Length);
+            Console.Write("Detected Drives: ");
+            Console.WriteLine(DriveInfo.GetDrives().Length);
             foreach (DriveInfo d in DriveInfo.GetDrives())
             {
                 Console.WriteLine(" - " + d.Name + " (" + d.GetType() + ") " + (d.TotalSize / 1048576) + "MB");
@@ -81,6 +77,7 @@ namespace CosmosKernel1
 
             Console.WriteLine("CPU: " + cpuString);
             Console.WriteLine("RAM: " + Memory.getTotalRAM() + " MB");
+            Console.WriteLine("Real Hardware: " + Hardware.onRealHardware());
 
             if (enableFs)
             {
@@ -120,17 +117,8 @@ namespace CosmosKernel1
 
         private void initGUI()
         {
-            Console.WriteLine("Would you like to use VM or real hardware graphics drivers? (v or r)");
-            if (Console.ReadLine() == "v")
-            {
-                newGraphics = true;
-            }
-            else
-            {
-                newGraphics = false;
-            }
             graphicsMode = true;
-            DisplayDriver.init(newGraphics);
+            DisplayDriver.init(!Hardware.onRealHardware());
             DisplayDriver.initScreen();
         }
 
@@ -346,10 +334,16 @@ namespace CosmosKernel1
             while (Cosmos.HAL.RTC.Second != EndSec) { }
         }
 
-        private static String getCPU()
+        private static String getCPU(Boolean shortened)
         {
             String returnString = Cosmos.Core.CPU.GetCPUBrandString();
-            return returnString.Substring(0, (returnString.Length > 22 ? 22 : returnString.Length)) + (returnString.Length > 22 ? "..." : "");
+            if (shortened)
+            {
+                return returnString.Substring(0, (returnString.Length > 22 ? 22 : returnString.Length)) + (returnString.Length > 22 ? "..." : "").Replace(" ", "");
+            } else
+            {
+                return returnString;
+            }
         }
     }
 }

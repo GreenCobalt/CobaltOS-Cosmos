@@ -30,9 +30,9 @@ namespace CobaltOS.Network
         /// <param name="count">The count index for remove.</param>
         public static void c_Ping(string arg, short startIndex = 0, short count = 5)
         {
-            string[] items = arg.Split('.');
             if (Misc.IsIpv4Address(arg))
             {
+                string[] items = arg.Split('.');
 
                 int PacketSent = 0;
                 int PacketReceived = 0;
@@ -43,19 +43,7 @@ namespace CobaltOS.Network
                 try
                 {
                     Address destination = new Address((byte)int.Parse(items[0]), (byte)int.Parse(items[1]), (byte)int.Parse(items[2]), (byte)int.Parse(items[3]));
-                    Address source = new Address(1, 1, 1, 1);
-
-                    Console.WriteLine(IPV4.Config.ipConfigs.Count);
-                    Kernel.WaitSeconds(2);
-
-                    try
-                    {
-                        source = Config.FindNetwork(destination);
-                    } catch (Exception e) {
-                        Console.WriteLine("{0} Exception caught.", e);
-                    }
-
-                    Kernel.WaitSeconds(3);
+                    Address source = Config.FindNetwork(destination);
 
                     int _deltaT = 0;
                     int second;
@@ -65,17 +53,17 @@ namespace CobaltOS.Network
                         second = 0;
                         Console.WriteLine("Sending ping to " + destination.ToString() + "...");
 
+                        Kernel.WaitSeconds(1);
+
                         try
                         {
-                            //replace address by source
-                            //System.Network.IPV4.Address address = new System.Network.IPV4.Address(192, 168, 1, 70);
                             ICMPEchoRequest request = new ICMPEchoRequest(source, destination, 0x0001, 0x50); //this is working
-                            OutgoingBuffer.AddPacket(request); //Aura doesn't work when this is called.
-                            NetworkStack.Update();
+                            //OutgoingBuffer.AddPacket(request); //Aura doesn't work when this is called.
+                            //NetworkStack.Update();
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("Error on ping " + i + "!");
+                            Console.WriteLine("Error on ping " + i + ": " + ex);
                         }
 
                         PacketSent++;
@@ -121,7 +109,7 @@ namespace CobaltOS.Network
                 }
                 catch
                 {
-                    Console.WriteLine("Host Unreachable.");
+                    Console.WriteLine("Internal error.");
                 }
                 finally
                 {

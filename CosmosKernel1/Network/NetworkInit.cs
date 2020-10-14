@@ -9,7 +9,7 @@ namespace CobaltOS.Network
         {
             if (RTL8168NIC != null)
             {
-                Settings settings = new Settings(@"0:\System\" + RTL8168NIC.Name + ".conf");
+                Settings settings = new Settings(@"0:\" + RTL8168NIC.Name + ".conf");
                 if (!IsSavedConf(RTL8168NIC.Name))
                 {
                     Kernel.LocalNetworkConfig = new Network.IPV4.Config(new Network.IPV4.Address(0, 0, 0, 0), new Network.IPV4.Address(0, 0, 0, 0), new Network.IPV4.Address(0, 0, 0, 0));
@@ -23,7 +23,7 @@ namespace CobaltOS.Network
             }
             if (AMDPCNetIINIC != null)
             {
-                Settings settings = new Settings(@"0:\System\" + AMDPCNetIINIC.Name + ".conf");
+                Settings settings = new Settings(@"0:\" + AMDPCNetIINIC.Name + ".conf");
                 if (!IsSavedConf(AMDPCNetIINIC.Name))
                 {
                     Kernel.LocalNetworkConfig = new Network.IPV4.Config(new Network.IPV4.Address(0, 0, 0, 0), new Network.IPV4.Address(0, 0, 0, 0), new Network.IPV4.Address(0, 0, 0, 0));
@@ -94,7 +94,7 @@ namespace CobaltOS.Network
         {
             if (Kernel.enableFs)
             {
-                Settings settings = new Settings(@"0:\System\" + device + ".conf");
+                Settings settings = new Settings(@"0:\" + device + ".conf");
                 if ((settings.GetValue("ipaddress") != "0.0.0.0") || (settings.GetValue("subnet") != "0.0.0.0") || (settings.GetValue("gateway") != "0.0.0.0"))
                 {
                     return true;

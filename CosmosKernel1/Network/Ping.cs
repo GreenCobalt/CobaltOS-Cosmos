@@ -42,6 +42,7 @@ namespace CobaltOS.Network
 
                 try
                 {
+                    Console.WriteLine(Config.ipConfigs.ToString());
                     Address destination = new Address((byte)int.Parse(items[0]), (byte)int.Parse(items[1]), (byte)int.Parse(items[2]), (byte)int.Parse(items[3]));
                     Address source = Config.FindNetwork(destination);
 
@@ -58,8 +59,8 @@ namespace CobaltOS.Network
                         try
                         {
                             ICMPEchoRequest request = new ICMPEchoRequest(source, destination, 0x0001, 0x50); //this is working
-                            //OutgoingBuffer.AddPacket(request); //Aura doesn't work when this is called.
-                            //NetworkStack.Update();
+                            OutgoingBuffer.AddPacket(request); //Aura doesn't work when this is called.
+                            NetworkStack.Update();
                         }
                         catch (Exception ex)
                         {

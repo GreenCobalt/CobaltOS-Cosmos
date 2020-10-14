@@ -16,7 +16,7 @@ namespace CobaltOS.Network.IPV4
     /// </summary>
     public class Config
     {
-        internal static List<Config> ipConfigs;
+        public static List<Config> ipConfigs;
 
         static Config()
         {

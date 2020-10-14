@@ -21,7 +21,7 @@ namespace CobaltOS.Network.DHCP
         /// <returns></returns>
         public static Address DHCPServerAddress(NetworkDevice networkDevice)
         {
-            Settings settings = new Settings(@"0:\System\" + networkDevice.Name + ".conf");
+            Settings settings = new Settings(@"0:\" + networkDevice.Name + ".conf");
             return Address.Parse(settings.GetValue("dhcp_server"));
         }
 
@@ -39,7 +39,7 @@ namespace CobaltOS.Network.DHCP
 
                 NetworkStack.RemoveAllConfigIP();
 
-                Settings settings = new Settings(@"0:\System\" + networkDevice.Name + ".conf");
+                Settings settings = new Settings(@"0:\" + networkDevice.Name + ".conf");
                 settings.EditValue("ipaddress", "0.0.0.0");
                 settings.EditValue("subnet", "0.0.0.0");
                 settings.EditValue("gateway", "0.0.0.0");
@@ -104,7 +104,7 @@ namespace CobaltOS.Network.DHCP
                     Console.WriteLine("   DNS server  : " + Options.DNS01().ToString());
                 }
 
-                Settings settings = new Settings(@"0:\System\" + networkDevice.Name + ".conf");
+                Settings settings = new Settings(@"0:\" + networkDevice.Name + ".conf");
                 settings.EditValue("ipaddress", Options.Address().ToString());
                 settings.EditValue("subnet", Options.Subnet().ToString());
                 settings.EditValue("gateway", Options.Gateway().ToString());

@@ -5,11 +5,9 @@ using System.Drawing;
 using Cosmos.System;
 using Cosmos.System.FileSystem;
 using System.IO;
-using CosmosKernel1.Utils;
-using CosmosKernel1.GUI;
-using CobaltOS.Utilities.Hardware;
+using CobaltOS.Utilities;
 
-namespace CosmosKernel1
+namespace CobaltOS.GUI
 {
     class GUIManager
     {

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
-namespace CosmosKernel1.GUI
+namespace CobaltOS.GUI
 {
     class DisplayDriver
     {

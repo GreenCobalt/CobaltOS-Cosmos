@@ -3,12 +3,13 @@ using Sys = Cosmos.System;
 using System.IO;
 using Console = System.Console;
 using Cosmos.System.FileSystem;
-using CosmosKernel1.GUI;
+using CobaltOS.GUI;
 using System.Text;
 using CobaltOS.Utilities;
-using CobaltOS.Utilities.Hardware;
+using Cosmos.HAL;
+using System.Collections.Generic;
 
-namespace CosmosKernel1
+namespace CobaltOS
 {
     public class Kernel : Sys.Kernel
     {
@@ -26,6 +27,11 @@ namespace CosmosKernel1
         private static Boolean fsMode = false;
         public static Boolean newGraphics = false;
         public static Boolean enableFs = false;
+
+        public static Boolean systemExists = false;
+        public static CobaltOS.Network.IPV4.Config LocalNetworkConfig;
+
+        public static List<string> networkInterfaces = new List<string>();
 
         protected override void BeforeRun()
         {
@@ -71,10 +77,15 @@ namespace CosmosKernel1
                     WaitSeconds(2);
                 }
             }
-            
 
             printLogoConsole();
 
+            Network.NetworkInit.Init();
+            WaitSeconds(1); 
+            Network.NetworkInit.Enable();
+            WaitSeconds(2);
+
+            printLogoConsole();
             Console.WriteLine("CPU: " + cpuString);
             Console.WriteLine("RAM: " + Memory.getTotalRAM() + " MB");
             Console.WriteLine("Real Hardware: " + Hardware.onRealHardware());
@@ -124,7 +135,12 @@ namespace CosmosKernel1
 
         private void processConsole(String input)
         {
-            if (input == "gui")
+            if (input.StartsWith("ping "))
+            {
+                Network.Ping.c_Ping(input.Split(" ")[1]);
+                return;
+            }
+            else if (input == "gui")
             {
                 initGUI();
                 return;
@@ -157,7 +173,7 @@ namespace CosmosKernel1
             }
             else if (input == "miv")
             {
-                MIV.MIV.StartMIV();
+                MIV.StartMIV();
             }
             else if (input == "fs")
             {
@@ -344,6 +360,11 @@ namespace CosmosKernel1
             {
                 return returnString;
             }
+        }
+
+        public static void printToConsole(String print)
+        {
+            Console.WriteLine(print);
         }
     }
 }

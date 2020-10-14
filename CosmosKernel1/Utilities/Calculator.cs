@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace CosmosKernel1.Utils
+namespace CobaltOS.Utilities
 {
     class Calculator
     {

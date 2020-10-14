@@ -1,19 +1,8 @@
-﻿using Cosmos.Core;
-using Cosmos.System.Graphics;
-using CosmosKernel1.GUI;
-using CosmosKernel1.Utils;
+﻿using Cosmos.System.Graphics;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
-using System.Runtime.ConstrainedExecution;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Xml.Linq;
 
-namespace CosmosKernel1
+namespace CobaltOS.GUI
 {
     class CanvasDisplayDriver
     {

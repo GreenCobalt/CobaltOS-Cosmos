@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CosmosKernel1.Utils
+namespace CobaltOS.Utilities
 {
     class ListUtils
     {

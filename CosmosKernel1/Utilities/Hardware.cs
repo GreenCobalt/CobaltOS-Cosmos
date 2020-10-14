@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace CobaltOS.Utilities.Hardware
+namespace CobaltOS.Utilities
 {
     class Hardware
     {

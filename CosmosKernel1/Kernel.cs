@@ -48,7 +48,12 @@ namespace CobaltOS
             }
             WaitSeconds(2);
 
-            if (!File.Exists(@"0:\fs.cfg"))
+            if (!Directory.Exists(@"0:\System\"))
+            {
+                fs.CreateDirectory(@"0:\System\");
+            }
+
+            if (!File.Exists(@"0:\SYS\fs.cfg"))
             {
                 printLogoConsole();
 
@@ -57,18 +62,25 @@ namespace CobaltOS
                 Console.WriteLine("WARNING: THIS WILL DELETE ALL DATA.\n");
                 if (Console.ReadLine() == "y")
                 {
-                    Console.WriteLine("\nFormatting...");
+                    Console.WriteLine("\nFormatting");
                     try
                     {
                         fs.Format(@"0:\", "FAT32", true);
-                        FileStream writeStream = File.Create(@"0:\fs.cfg");
+                        Console.WriteLine("Successfully Formatted!");
+                        WaitSeconds(1);
+                        Console.WriteLine("Adding fs.cfg file");
+                        File.Create(@"0:\SYS\fs.cfg");
+                        FileStream writeStream = File.OpenWrite(@"0:\SYS\fs.cfg");
+                        Console.WriteLine("Added");
+                        WaitSeconds(1);
+
                         byte[] toWrite = Encoding.ASCII.GetBytes("true");
                         writeStream.Write(toWrite, 0, toWrite.Length);
                         writeStream.Close();
                     }
                     catch
                     {
-                        deathScreen("0x0100 No Hard Drive to format!");
+                        deathScreen("0x0100 Error formatting and initalizing drive!");
                     }
                 }
                 else
@@ -268,22 +280,38 @@ namespace CobaltOS
                 String[] inputSplit = input.Split(" ");
                 if (inputSplit.Length > 1)
                 {
-                    Console.WriteLine("go");
                     String[] pieces = input.Split(" ");
-                    Console.WriteLine("go 2");
                     if (Directory.Exists(pieces[1]))
                     {
-                        Console.WriteLine("Exists");
+                        cd = pieces[1];
                     }
-                    else
-                    {
-                        Console.WriteLine("Not Exists");
-                    }
+                    else Console.WriteLine("Directory does not exist!");
                 }
                 else
                 {
                     Console.WriteLine("Invalid syntax! cd [dir] ");
                 }
+            }
+            else if (input.Split(" ")[0] == "format")
+            {
+                Console.WriteLine("Formatting...");
+                fs.Format(@"0:\", "FAT32", true);
+                Console.WriteLine("Successfully Formatted!");
+                WaitSeconds(1);
+                Console.WriteLine("Adding fs.cfg file");
+                File.Create(@"0:\SYS\fs.cfg");
+                FileStream writeStream = File.OpenWrite(@"0:\SYS\fs.cfg");
+                Console.WriteLine("Added");
+                WaitSeconds(1);
+
+                byte[] toWrite = Encoding.ASCII.GetBytes("true");
+                writeStream.Write(toWrite, 0, toWrite.Length);
+                writeStream.Close();
+                Console.WriteLine("Regenerating network config files...");
+                Network.NetworkInit.Init();
+                Network.NetworkInit.Enable();
+                Network.NetworkInterfaces.Init();
+                Console.WriteLine("Done!");
             }
             else if (input.Split(" ")[0] == "mkdir")
             {

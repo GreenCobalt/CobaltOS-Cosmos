@@ -65,6 +65,12 @@ namespace CobaltOS.GUI
             else CanvasDisplayDriver.addFilledRectangle(x, y, w, h, c);
         }
 
+        public static void addImage(String path, int x, int y)
+        {
+            if (newGraphics) VMDisplayDriver.DrawPictureFromFile(path, x, y);
+            else CanvasDisplayDriver.DrawPictureFromFile(path, x, y);
+        }
+
         public static void exitGUI()
         {
             if (Kernel.graphicsMode)

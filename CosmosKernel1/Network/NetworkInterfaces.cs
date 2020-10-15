@@ -16,7 +16,7 @@ namespace CobaltOS.Network
             Kernel.printToConsole("Initializing network interfaces...");
 
             int ID = 0;
-            Settings interfaces = new Settings(@"0:\netinterface.conf");
+            Settings interfaces = new Settings(@"0:\SYS\netinterface.cfg");
 
             foreach (NetworkDevice networkDevice in NetworkDevice.Devices)
             {
@@ -44,7 +44,7 @@ namespace CobaltOS.Network
 
         public static string Interface(string interfaceName)
         {
-            Settings interfaces = new Settings(@"0:\netinterface.conf");
+            Settings interfaces = new Settings(@"0:\SYS\netinterface.cfg");
             return interfaces.Get(interfaceName);
         }
 

@@ -42,7 +42,6 @@ namespace CobaltOS.Network
 
                 try
                 {
-                    Console.WriteLine(Config.ipConfigs.ToString());
                     Address destination = new Address((byte)int.Parse(items[0]), (byte)int.Parse(items[1]), (byte)int.Parse(items[2]), (byte)int.Parse(items[3]));
                     Address source = Config.FindNetwork(destination);
 

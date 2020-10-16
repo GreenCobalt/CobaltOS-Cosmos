@@ -48,12 +48,7 @@ namespace CobaltOS
             }
             WaitSeconds(2);
 
-            if (!Directory.Exists(@"0:\System\"))
-            {
-                fs.CreateDirectory(@"0:\System\");
-            }
-
-            if (!File.Exists(@"0:\SYS\fs.cfg"))
+            if (!File.Exists(@"0:\fs.cfg"))
             {
                 printLogoConsole();
 
@@ -66,12 +61,11 @@ namespace CobaltOS
                     try
                     {
                         fs.Format(@"0:\", "FAT32", true);
-                        Directory.CreateDirectory(@"0:\SYS\");
                         Console.WriteLine("Successfully Formatted!");
                         WaitSeconds(1);
                         Console.WriteLine("Adding fs.cfg file");
-                        File.Create(@"0:\SYS\fs.cfg");
-                        FileStream writeStream = File.OpenWrite(@"0:\SYS\fs.cfg");
+                        File.Create(@"0:\fs.cfg");
+                        FileStream writeStream = File.OpenWrite(@"0:\fs.cfg");
                         Console.WriteLine("Added");
                         WaitSeconds(1);
 

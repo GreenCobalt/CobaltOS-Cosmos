@@ -9,6 +9,8 @@ using CobaltOS.Utilities;
 using Cosmos.HAL;
 using System.Collections.Generic;
 using CobaltOS.Network;
+using Cosmos.System.FileSystem.Listing;
+using System.Linq.Expressions;
 
 namespace CobaltOS
 {
@@ -48,7 +50,7 @@ namespace CobaltOS
             }
             WaitSeconds(2);
 
-            if (!File.Exists(@"0:\fs.cfg"))
+            if (!File.Exists(@"0:\SYS\fs.cfg"))
             {
                 printLogoConsole();
 
@@ -62,12 +64,8 @@ namespace CobaltOS
                     {
                         fs.Format(@"0:\", "FAT32", true);
                         Console.WriteLine("Successfully Formatted!");
-                        WaitSeconds(1);
-                        Console.WriteLine("Adding fs.cfg file");
-                        File.Create(@"0:\fs.cfg");
-                        FileStream writeStream = File.OpenWrite(@"0:\fs.cfg");
-                        Console.WriteLine("Added");
-                        WaitSeconds(1);
+                        fs.CreateDirectory(cd + "SYS");
+                        FileStream writeStream = File.Create(@"0:\SYS\fs.cfg");
 
                         byte[] toWrite = Encoding.ASCII.GetBytes("true");
                         writeStream.Write(toWrite, 0, toWrite.Length);
@@ -290,14 +288,9 @@ namespace CobaltOS
             else if (input.Split(" ")[0] == "mkdir")
             {
                 String[] inputSplit = input.Split(" ");
-                if (inputSplit.Length > 1)
+                if (inputSplit.Length == 2)
                 {
-                    String dir = "";
-                    for (int i = 1; i < inputSplit.Length; i++)
-                    {
-                        dir = dir + inputSplit[i];
-                    }
-                    fs.CreateDirectory(cd + dir);
+                    fs.CreateDirectory(cd + inputSplit[1]);
                     Console.WriteLine("Success!");
                 }
                 else
@@ -310,12 +303,48 @@ namespace CobaltOS
                 String[] inputSplit = input.Split(" ");
                 if (inputSplit.Length == 2)
                 {
-                    File.Delete(@"0:\" + inputSplit[1]);
+                    if (!File.Exists(cd + inputSplit[1]))
+                    {
+                        Console.WriteLine("File " + cd + inputSplit[1] + " doesn't exist!");
+                    }
+                    Console.WriteLine("Deleting file " + cd + inputSplit[1] + "!");
+
+                    try
+                    {
+                        File.Delete(cd + inputSplit[1]);
+                    } catch (Exception e)
+                    {
+                        Console.WriteLine("Error deleting file!");
+                        Console.WriteLine(e);
+                    }
                     Console.WriteLine("Success!");
                 }
                 else
                 {
-                    Console.WriteLine("Invalid Syntax!");
+                    Console.WriteLine("Invalid Syntax! delfile [name]");
+                }
+            }
+            else if (input.Split(" ")[0] == "deldir")
+            {
+                String[] inputSplit = input.Split(" ");
+                if (inputSplit.Length == 2)
+                {
+                    if (!Directory.Exists(cd + inputSplit[1]))
+                    {
+                        Console.WriteLine("Directory does not exist!");
+                        return;
+                    }
+                    if (cd == @"0:\" && inputSplit[1] == "SYS")
+                    {
+                        Console.WriteLine("You cannot delete the system folder!");
+                        return;
+                    }
+                    fs.DeleteDirectory(fs.GetDirectory(cd + inputSplit[1] + @"\"));
+                    Console.WriteLine("Success!");
+                }
+                else
+                {
+                    Console.WriteLine("Invalid syntax! deldir [name] ");
                 }
             }
             else if (input.Split(" ")[0] == "rdfile")

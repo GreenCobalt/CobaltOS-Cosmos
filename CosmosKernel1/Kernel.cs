@@ -66,6 +66,7 @@ namespace CobaltOS
                     try
                     {
                         fs.Format(@"0:\", "FAT32", true);
+                        Directory.CreateDirectory(@"0:\SYS\");
                         Console.WriteLine("Successfully Formatted!");
                         WaitSeconds(1);
                         Console.WriteLine("Adding fs.cfg file");
@@ -291,27 +292,6 @@ namespace CobaltOS
                 {
                     Console.WriteLine("Invalid syntax! cd [dir] ");
                 }
-            }
-            else if (input.Split(" ")[0] == "format")
-            {
-                Console.WriteLine("Formatting...");
-                fs.Format(@"0:\", "FAT32", true);
-                Console.WriteLine("Successfully Formatted!");
-                WaitSeconds(1);
-                Console.WriteLine("Adding fs.cfg file");
-                File.Create(@"0:\SYS\fs.cfg");
-                FileStream writeStream = File.OpenWrite(@"0:\SYS\fs.cfg");
-                Console.WriteLine("Added");
-                WaitSeconds(1);
-
-                byte[] toWrite = Encoding.ASCII.GetBytes("true");
-                writeStream.Write(toWrite, 0, toWrite.Length);
-                writeStream.Close();
-                Console.WriteLine("Regenerating network config files...");
-                Network.NetworkInit.Init();
-                Network.NetworkInit.Enable();
-                Network.NetworkInterfaces.Init();
-                Console.WriteLine("Done!");
             }
             else if (input.Split(" ")[0] == "mkdir")
             {

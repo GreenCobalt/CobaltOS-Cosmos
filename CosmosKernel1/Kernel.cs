@@ -59,20 +59,19 @@ namespace CobaltOS
                 Console.WriteLine("WARNING: THIS WILL DELETE ALL DATA.\n");
                 if (Console.ReadLine() == "y")
                 {
-                    Console.WriteLine("\nFormatting");
+                    Console.WriteLine("\nFormatting...");
                     try
                     {
                         fs.Format(@"0:\", "FAT32", true);
-                        Console.WriteLine("Successfully Formatted!");
-                        fs.CreateDirectory(cd + "SYS");
                         FileStream writeStream = File.Create(@"0:\SYS\fs.cfg");
-
                         byte[] toWrite = Encoding.ASCII.GetBytes("true");
                         writeStream.Write(toWrite, 0, toWrite.Length);
                         writeStream.Close();
+                        Console.WriteLine("Done!");
                     }
                     catch
                     {
+                        WaitSeconds(5);
                         deathScreen("0x0100 Error formatting and initalizing drive!");
                     }
                 }

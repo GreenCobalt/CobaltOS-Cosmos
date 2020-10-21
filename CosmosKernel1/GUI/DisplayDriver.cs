@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CobaltOS.Font;
+using System;
 using System.Drawing;
 
 namespace CobaltOS.GUI
@@ -18,17 +19,30 @@ namespace CobaltOS.GUI
             else CanvasDisplayDriver.initScreen();
         }
 
+        public static void setPixel(int x, int y, Color c)
+        {
+            if (newGraphics) VMDisplayDriver.setPixel(x, y, c);
+            else CanvasDisplayDriver.setPixel(x, y, c);
+        }
+
         public static void changeRes(int x, int y)
         {
             if (newGraphics) VMDisplayDriver.changeRes(x, y);
             else CanvasDisplayDriver.changeRes(x, y);
         }
 
-        public static int addText(int x, int y, Color c, String s)
+        public static int addText(int x, int y, Color c, String s, Boolean newfont)
         {
-            if (newGraphics) return VMDisplayDriver.addText(x, y, c, s);
-            else return CanvasDisplayDriver.addText(x, y, c, s);
+            if (newfont)
+            {
+                return FontDrawer.WriteText(s, x, y + 8, c);
+            } else
+            {
+                if (newGraphics) return VMDisplayDriver.addText(x, y, c, s);
+                else return CanvasDisplayDriver.addText(x, y, c, s);
+            }
         }
+
         public static int typeChar(int x, int y, Color c, Char s)
         {
             if (newGraphics) return VMDisplayDriver.typeChar(x, y, c, s);

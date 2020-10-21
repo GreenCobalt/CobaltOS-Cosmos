@@ -59,6 +59,7 @@ namespace CobaltOS.GUI
         private static List<Char> calcChars = new List<Char>();
         private static List<int> notePadCharSizes = new List<int>();
         private static CosmosVFS fs;
+        private static Boolean newFont = true;
 
         private static int screenW;
         private static int screenH;
@@ -169,7 +170,7 @@ namespace CobaltOS.GUI
                 DisplayDriver.setFullBuffer(backgroundColor);
                 DisplayDriver.addFilledRectangle(0, screenH - taskBarHeight, screenW, taskBarHeight, Color.FromArgb(255, 50, 50, 50));
                 DisplayDriver.addFilledRectangle(10, screenH - taskBarHeight + 10, 30, taskBarHeight - 20, Color.Red);
-                DisplayDriver.addText((timeFormat ? screenW - 125 : screenW - 175), screenH - 40, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")));
+                DisplayDriver.addText((timeFormat ? screenW - 125 : screenW - 175), screenH - 40, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")), newFont);
             }
 
             //DisplayDriver.addImage(@"0:\TRAVIS.BMP", 10, 10);
@@ -196,11 +197,11 @@ namespace CobaltOS.GUI
                 DisplayDriver.addFilledRectangle(notepadLocX, notepadLocY, notepadSizeX, notepadSizeY, Color.White);
 
                 DisplayDriver.addFilledRectangle(notepadLocX, notepadLocY, notepadSizeX, 36, Color.Gray);
-                DisplayDriver.addText(notepadLocX + 5, notepadLocY + 3, Color.White, "Notepad");
+                DisplayDriver.addText(notepadLocX + 5, notepadLocY + 3, Color.White, "Notepad", newFont);
 
                 DisplayDriver.addFilledRectangle(notepadLocX, notepadLocY + 36, notepadSizeX, 36, Color.LightGray);
                 DisplayDriver.addFilledRectangle(notepadLocX, notepadLocY + 36, 80, 36, (notepadFileMenu ? Color.DarkGray : Color.LightGray));
-                DisplayDriver.addText(notepadLocX + 5, notepadLocY + 39, Color.Black, "File");
+                DisplayDriver.addText(notepadLocX + 5, notepadLocY + 39, Color.Black, "File", newFont);
 
                 notePadCharSizes.Clear();
 
@@ -234,21 +235,21 @@ namespace CobaltOS.GUI
                 if (notepadFileMenu)
                 {
                     DisplayDriver.addFilledRectangle(notepadLocX, notepadLocY + 72, 80, 100, Color.Gray);
-                    DisplayDriver.addText(notepadLocX + 5, notepadLocY + 77, Color.Black, "Save");
-                    DisplayDriver.addText(notepadLocX + 5, notepadLocY + 117, Color.Black, "Open");
+                    DisplayDriver.addText(notepadLocX + 5, notepadLocY + 77, Color.Black, "Save", newFont);
+                    DisplayDriver.addText(notepadLocX + 5, notepadLocY + 117, Color.Black, "Open", newFont);
                 }
 
                 if (dirSelectOpen)
                 {
                     DisplayDriver.addFilledRectangle(notepadLocX + 10, notepadLocY + 10, 500, 300, Color.DarkGray);
-                    DisplayDriver.addText(notepadLocX + 40, notepadLocY + 20, Color.White, (dirSelectPurpose == 0 ? "Save" : (dirSelectPurpose == 1 ? "Open" : "")));
+                    DisplayDriver.addText(notepadLocX + 40, notepadLocY + 20, Color.White, (dirSelectPurpose == 0 ? "Save" : (dirSelectPurpose == 1 ? "Open" : "")), newFont);
                     DisplayDriver.addFilledRectangle(notepadLocX + 40, notepadLocY + 50, 460, 50, Color.White);
-                    int dirSize = DisplayDriver.addText(notepadLocX + 50, notepadLocY + 60, Color.Black, new string(dirChars.ToArray()));
+                    int dirSize = DisplayDriver.addText(notepadLocX + 50, notepadLocY + 60, Color.Black, new string(dirChars.ToArray()), newFont);
                     DisplayDriver.addRectangle(dirSize + 4, notepadLocY + 60, dirSize + 6, notepadLocY + 90, Color.Black);
                     DisplayDriver.addFilledRectangle(notepadLocX + 40, notepadLocY + 110, 100, 50, Color.Gray);
                     DisplayDriver.addFilledRectangle(notepadLocX + 190, notepadLocY + 110, 100, 50, Color.Gray);
-                    DisplayDriver.addText(notepadLocX + 50, notepadLocY + 120, Color.White, (dirSelectPurpose == 0 ? "Save" : (dirSelectPurpose == 1 ? "Open" : "")));
-                    DisplayDriver.addText(notepadLocX + 200, notepadLocY + 120, Color.White, "Cancel");
+                    DisplayDriver.addText(notepadLocX + 50, notepadLocY + 120, Color.White, (dirSelectPurpose == 0 ? "Save" : (dirSelectPurpose == 1 ? "Open" : "")), newFont);
+                    DisplayDriver.addText(notepadLocX + 200, notepadLocY + 120, Color.White, "Cancel", newFont);
                 }
             }
 
@@ -258,42 +259,42 @@ namespace CobaltOS.GUI
                 DisplayDriver.addFilledRectangle(settingsLocX, settingsLocY, settingsSizeX, 30, Color.Gray);
                 DisplayDriver.addFilledRectangle(settingsLocX + (settingsSizeX - 25), settingsLocY + 5, 20, 20, Color.Red);
 
-                DisplayDriver.addText(settingsLocX + 10, settingsLocY + 40, Color.Black, "Settings");
+                DisplayDriver.addText(settingsLocX + 10, settingsLocY + 40, Color.Black, "Settings", newFont);
                 DisplayDriver.addFilledRectangle(settingsLocX + 10, settingsLocY + 75, 150, 300, Color.Gray);
 
                 DisplayDriver.addFilledRectangle(settingsLocX + 20, settingsLocY + 85, 130, 40, (settingsPage == 0 ? Color.LightGray : Color.DarkGray));
-                DisplayDriver.addText(settingsLocX + 25, settingsLocY + 90, Color.White, "General");
+                DisplayDriver.addText(settingsLocX + 25, settingsLocY + 90, Color.White, "General", newFont);
 
                 DisplayDriver.addFilledRectangle(settingsLocX + 20, settingsLocY + 125, 130, 40, (settingsPage == 1 ? Color.LightGray : Color.DarkGray));
-                DisplayDriver.addText(settingsLocX + 25, settingsLocY + 130, Color.White, "Colors");
+                DisplayDriver.addText(settingsLocX + 25, settingsLocY + 130, Color.White, "Colors", newFont);
 
                 DisplayDriver.addFilledRectangle(settingsLocX + 20, settingsLocY + 325, 130, 40, (settingsPage == 2 ? Color.LightGray : Color.DarkGray));
-                DisplayDriver.addText(settingsLocX + 25, settingsLocY + 330, Color.White, "Info");
+                DisplayDriver.addText(settingsLocX + 25, settingsLocY + 330, Color.White, "Info", newFont);
 
                 if (settingsPage == 0)
                 {
-                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 120, Color.Black, "Time Format:");
-                    DisplayDriver.addText(settingsLocX + 350, settingsLocY + 120, Color.Black, (timeFormat ? "24 Hour" : "12 Hour"));
-                    timeFormatToggleSize = DisplayDriver.addText(settingsLocX + 480, settingsLocY + 120, Color.Black, "Toggle") + 20;
+                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 120, Color.Black, "Time Format:", newFont);
+                    DisplayDriver.addText(settingsLocX + 350, settingsLocY + 120, Color.Black, (timeFormat ? "24 Hour" : "12 Hour"), newFont);
+                    timeFormatToggleSize = DisplayDriver.addText(settingsLocX + 480, settingsLocY + 120, Color.Black, "Toggle", newFont) + 20;
                     DisplayDriver.addRectangle(settingsLocX + 460, settingsLocY + 100, timeFormatToggleSize, settingsLocY + 170, Color.Black);
 
-                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 200, Color.Black, "Screen Resolution:   " + screenW + "x" + screenH);
-                    resolutionChangeSize = DisplayDriver.addText(settingsLocX + 480, settingsLocY + 260, Color.Black, "Change") + 20;
+                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 200, Color.Black, "Screen Resolution:   " + screenW + "x" + screenH, newFont);
+                    resolutionChangeSize = DisplayDriver.addText(settingsLocX + 480, settingsLocY + 260, Color.Black, "Change", newFont) + 20;
                     DisplayDriver.addRectangle(settingsLocX + 460, settingsLocY + 240, resolutionChangeSize, settingsLocY + 310, Color.Black);
                 }
                 else if (settingsPage == 1)
                 {
-                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 120, Color.Black, "Background Color:");
+                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 120, Color.Black, "Background Color:", newFont);
                     DisplayDriver.addFilledRectangle(settingsLocX + 410, settingsLocY + 120, 30, 30, backgroundColor);
-                    backgroundColorSize = DisplayDriver.addText(settingsLocX + 480, settingsLocY + 120, Color.Black, "Change") + 20;
+                    backgroundColorSize = DisplayDriver.addText(settingsLocX + 480, settingsLocY + 120, Color.Black, "Change", newFont) + 20;
                     DisplayDriver.addRectangle(settingsLocX + 460, settingsLocY + 100, backgroundColorSize, settingsLocY + 170, Color.Black);
                 }
                 else if (settingsPage == 2)
                 {
-                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 120, Color.Black, "System Information:");
-                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 150, Color.Black, " - CobaltOS Version: " + Kernel.osVersion);
-                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 180, Color.Black, " - CPU: " + Kernel.cpuStringShort);
-                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 210, Color.Black, " - RAM: " + (Cosmos.Core.CPU.GetAmountOfRAM() < 1000 ? Cosmos.Core.CPU.GetAmountOfRAM() + " MB" : round(Cosmos.Core.CPU.GetAmountOfRAM() / 1000.00) + " GB"));
+                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 120, Color.Black, "System Information:", newFont);
+                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 150, Color.Black, " - CobaltOS Version: " + Kernel.osVersion, newFont);
+                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 180, Color.Black, " - CPU: " + Kernel.cpuStringShort, newFont);
+                    DisplayDriver.addText(settingsLocX + 180, settingsLocY + 210, Color.Black, " - RAM: " + (Cosmos.Core.CPU.GetAmountOfRAM() < 1000 ? Cosmos.Core.CPU.GetAmountOfRAM() + " MB" : round(Cosmos.Core.CPU.GetAmountOfRAM() / 1000.00) + " GB"), newFont);
                 }
 
                 if (bgColorChangeMenu)
@@ -313,9 +314,9 @@ namespace CobaltOS.GUI
                 if (resolutionChangeMenu)
                 {
                     DisplayDriver.addFilledRectangle(settingsLocX + 300, settingsLocY + 290, 200, 100, Color.LightGray);
-                    DisplayDriver.addText(settingsLocX + 310, settingsLocY + 300, Color.Black, "640x480");
-                    DisplayDriver.addText(settingsLocX + 310, settingsLocY + 330, Color.Black, "800x600");
-                    DisplayDriver.addText(settingsLocX + 310, settingsLocY + 360, Color.Black, "1024x768");
+                    DisplayDriver.addText(settingsLocX + 310, settingsLocY + 300, Color.Black, "640x480", newFont);
+                    DisplayDriver.addText(settingsLocX + 310, settingsLocY + 330, Color.Black, "800x600", newFont);
+                    DisplayDriver.addText(settingsLocX + 310, settingsLocY + 360, Color.Black, "1024x768", newFont);
                 }
             }
 
@@ -329,39 +330,39 @@ namespace CobaltOS.GUI
                 DisplayDriver.addFilledRectangle(calcLocX + (calcSizeX - 25), calcLocY + 5, 20, 20, Color.Red);
 
                 DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 40, 240, 40, Color.White);
-                DisplayDriver.addText(calcLocX + 15, calcLocY + 45, Color.Black, new string(calcChars.ToArray()));
+                DisplayDriver.addText(calcLocX + 15, calcLocY + 45, Color.Black, new string(calcChars.ToArray()), newFont);
 
-                DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 90, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 10 + spacingX, calcLocY + 90 + spacingY, Color.Black, "7");
-                DisplayDriver.addFilledRectangle(calcLocX + 70, calcLocY + 90, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 70 + spacingX, calcLocY + 90 + spacingY, Color.Black, "8");
-                DisplayDriver.addFilledRectangle(calcLocX + 130, calcLocY + 90, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 130 + spacingX, calcLocY + 90 + spacingY, Color.Black, "9");
-                DisplayDriver.addFilledRectangle(calcLocX + 200, calcLocY + 90, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 200 + spacingX, calcLocY + 90 + spacingY, Color.Black, "/");
-                DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 150, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 10 + spacingX, calcLocY + 150 + spacingY, Color.Black, "4");
-                DisplayDriver.addFilledRectangle(calcLocX + 70, calcLocY + 150, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 70 + spacingX, calcLocY + 150 + spacingY, Color.Black, "5");
-                DisplayDriver.addFilledRectangle(calcLocX + 130, calcLocY + 150, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 130 + spacingX, calcLocY + 150 + spacingY, Color.Black, "6");
-                DisplayDriver.addFilledRectangle(calcLocX + 200, calcLocY + 150, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 200 + spacingX, calcLocY + 150 + spacingY - 8, Color.Black, "x");
-                DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 210, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 10 + spacingX, calcLocY + 210 + spacingY, Color.Black, "1");
-                DisplayDriver.addFilledRectangle(calcLocX + 70, calcLocY + 210, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 70 + spacingX, calcLocY + 210 + spacingY, Color.Black, "2");
-                DisplayDriver.addFilledRectangle(calcLocX + 130, calcLocY + 210, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 130 + spacingX, calcLocY + 210 + spacingY, Color.Black, "3");
-                DisplayDriver.addFilledRectangle(calcLocX + 200, calcLocY + 210, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 200 + spacingX, calcLocY + 210 + spacingY, Color.Black, "-");
-                DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 270, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 10 + spacingX, calcLocY + 270 + spacingY, Color.Black, "0");
-                DisplayDriver.addFilledRectangle(calcLocX + 70, calcLocY + 270, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 70 + spacingX, calcLocY + 270 + spacingY, Color.Black, ".");
-                DisplayDriver.addFilledRectangle(calcLocX + 130, calcLocY + 270, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 130 + spacingX, calcLocY + 270 + spacingY, Color.Black, "=");
-                DisplayDriver.addFilledRectangle(calcLocX + 200, calcLocY + 270, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 200 + spacingX, calcLocY + 270 + spacingY, Color.Black, "+");
+                DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 90, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 10 + spacingX, calcLocY + 90 + spacingY, Color.Black, "7", newFont);
+                DisplayDriver.addFilledRectangle(calcLocX + 70, calcLocY + 90, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 70 + spacingX, calcLocY + 90 + spacingY, Color.Black, "8", newFont);
+                DisplayDriver.addFilledRectangle(calcLocX + 130, calcLocY + 90, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 130 + spacingX, calcLocY + 90 + spacingY, Color.Black, "9", newFont);
+                DisplayDriver.addFilledRectangle(calcLocX + 200, calcLocY + 90, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 200 + spacingX, calcLocY + 90 + spacingY, Color.Black, "/", newFont);
+                DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 150, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 10 + spacingX, calcLocY + 150 + spacingY, Color.Black, "4", newFont);
+                DisplayDriver.addFilledRectangle(calcLocX + 70, calcLocY + 150, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 70 + spacingX, calcLocY + 150 + spacingY, Color.Black, "5", newFont);
+                DisplayDriver.addFilledRectangle(calcLocX + 130, calcLocY + 150, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 130 + spacingX, calcLocY + 150 + spacingY, Color.Black, "6", newFont);
+                DisplayDriver.addFilledRectangle(calcLocX + 200, calcLocY + 150, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 200 + spacingX, calcLocY + 150 + spacingY - 8, Color.Black, "x", newFont);
+                DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 210, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 10 + spacingX, calcLocY + 210 + spacingY, Color.Black, "1", newFont);
+                DisplayDriver.addFilledRectangle(calcLocX + 70, calcLocY + 210, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 70 + spacingX, calcLocY + 210 + spacingY, Color.Black, "2", newFont);
+                DisplayDriver.addFilledRectangle(calcLocX + 130, calcLocY + 210, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 130 + spacingX, calcLocY + 210 + spacingY, Color.Black, "3", newFont);
+                DisplayDriver.addFilledRectangle(calcLocX + 200, calcLocY + 210, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 200 + spacingX, calcLocY + 210 + spacingY, Color.Black, "-", newFont);
+                DisplayDriver.addFilledRectangle(calcLocX + 10, calcLocY + 270, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 10 + spacingX, calcLocY + 270 + spacingY, Color.Black, "0", newFont);
+                DisplayDriver.addFilledRectangle(calcLocX + 70, calcLocY + 270, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 70 + spacingX, calcLocY + 270 + spacingY, Color.Black, ".", newFont);
+                DisplayDriver.addFilledRectangle(calcLocX + 130, calcLocY + 270, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 130 + spacingX, calcLocY + 270 + spacingY, Color.Black, "=", newFont);
+                DisplayDriver.addFilledRectangle(calcLocX + 200, calcLocY + 270, 50, 50, Color.LightGray); DisplayDriver.addText(calcLocX + 200 + spacingX, calcLocY + 270 + spacingY, Color.Black, "+", newFont);
             }
 
             if (activeApp == OSApp.PowerMenu)
             {
-                cancelSize = DisplayDriver.addText(cancelX, Y + 75, Color.Blue, "Cancel");
+                cancelSize = DisplayDriver.addText(cancelX, Y + 75, Color.Blue, "Cancel", newFont);
                 DisplayDriver.addFilledRectangle(((cancelX + cancelSize) / 2) - 25, Y, 50, 50, Color.Blue);
                 DisplayDriver.addRectangle(cancelX - 10, Y - 10, cancelSize + 10, Y + 125, Color.Blue);
 
                 offX = cancelSize + 50;
-                offSize = DisplayDriver.addText(offX, Y + 75, Color.Red, "Power Off");
+                offSize = DisplayDriver.addText(offX, Y + 75, Color.Red, "Power Off", newFont);
                 DisplayDriver.addFilledRectangle(((offX + offSize) / 2) - 25, Y, 50, 50, Color.Red);
                 DisplayDriver.addRectangle(offX - 10, Y - 10, offSize + 10, Y + 125, Color.Red);
 
                 restartX = offSize + 50;
-                restartSize = DisplayDriver.addText(restartX, Y + 75, Color.Orange, "Restart");
+                restartSize = DisplayDriver.addText(restartX, Y + 75, Color.Orange, "Restart", newFont);
                 DisplayDriver.addFilledRectangle(((restartX + restartSize) / 2) - 25, Y, 50, 50, Color.Orange);
                 DisplayDriver.addRectangle(restartX - 10, Y - 10, restartSize + 10, Y + 125, Color.Orange);
             }
@@ -371,19 +372,19 @@ namespace CobaltOS.GUI
                 DisplayDriver.addFilledRectangle(10, screenH - taskBarHeight - 300, 300, 300, Color.Gray);
 
                 DisplayDriver.addFilledRectangle(20, screenH - taskBarHeight - 290, 20, 20, Color.LightBlue);
-                DisplayDriver.addText(50, screenH - taskBarHeight - 290, Color.White, "Notepad");
+                DisplayDriver.addText(50, screenH - taskBarHeight - 290, Color.White, "Notepad", newFont);
 
                 DisplayDriver.addFilledRectangle(20, screenH - taskBarHeight - 255, 20, 20, Color.SandyBrown);
-                DisplayDriver.addText(50, screenH - taskBarHeight - 255, Color.White, "Calculator");
+                DisplayDriver.addText(50, screenH - taskBarHeight - 255, Color.White, "Calculator", newFont);
 
                 //DisplayDriver.addFilledRectangle(20, screenH - taskBarHeight - 115, 20, 20, Color.Purple);
                 //DisplayDriver.addText(50, screenH - taskBarHeight - 115, Color.White, "Console");
 
                 DisplayDriver.addFilledRectangle(20, screenH - taskBarHeight - 80, 20, 20, Color.DarkGray);
-                DisplayDriver.addText(50, screenH - taskBarHeight - 80, Color.White, "Settings");
+                DisplayDriver.addText(50, screenH - taskBarHeight - 80, Color.White, "Settings", newFont);
 
                 DisplayDriver.addFilledRectangle(20, screenH - taskBarHeight - 45, 20, 20, Color.Red);
-                DisplayDriver.addText(50, screenH - taskBarHeight - 45, Color.White, "Power");
+                DisplayDriver.addText(50, screenH - taskBarHeight - 45, Color.White, "Power", newFont);
             }
         }
 

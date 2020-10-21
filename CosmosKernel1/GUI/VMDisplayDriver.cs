@@ -57,7 +57,7 @@ namespace CobaltOS.GUI
             driver.Update(0,0,(uint)screenW, (uint)screenH);
         }
 
-        private static void setPixel(int x, int y, Color color)
+        public static void setPixel(int x, int y, Color color)
         {
             if (x > screenW - 1 || y > screenH - 1)
             {

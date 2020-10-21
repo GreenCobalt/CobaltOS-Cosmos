@@ -50,7 +50,7 @@ namespace CobaltOS
             }
             WaitSeconds(2);
 
-            if (!File.Exists(@"0:\SYS\fs.cfg"))
+            if (!File.Exists(@"0:\fs.cfg"))
             {
                 printLogoConsole();
 
@@ -63,7 +63,7 @@ namespace CobaltOS
                     try
                     {
                         fs.Format(@"0:\", "FAT32", true);
-                        FileStream writeStream = File.Create(@"0:\SYS\fs.cfg");
+                        FileStream writeStream = File.Create(@"0:\fs.cfg");
                         byte[] toWrite = Encoding.ASCII.GetBytes("true");
                         writeStream.Write(toWrite, 0, toWrite.Length);
                         writeStream.Close();
@@ -83,13 +83,12 @@ namespace CobaltOS
                 }
             }
 
-            printLogoConsole();
-
-            Network.NetworkInit.Init();
-            Network.NetworkInit.Enable();
-            WaitSeconds(1);
-            Network.NetworkInterfaces.Init();
-            WaitSeconds(3);
+            //printLogoConsole();
+            //Network.NetworkInit.Init();
+            //Network.NetworkInit.Enable();
+            //WaitSeconds(1);
+            //Network.NetworkInterfaces.Init();
+            //WaitSeconds(3);
 
             printLogoConsole();
             Console.WriteLine("CPU: " + cpuString);
@@ -141,16 +140,19 @@ namespace CobaltOS
 
         private void processConsole(String input)
         {
+            /*
             if (input.StartsWith("ping "))
             {
                 Network.Ping.c_Ping(input.Split(" ")[1]);
                 return;
-            }
-            else if (input.StartsWith("ipconfig"))
+            } else if (input.StartsWith("ipconfig"))
             {
                 Network.IPConfig.c_IPConfig(input);
+                return;
             }
-            else if (input == "gui")
+            */
+
+            if (input == "gui")
             {
                 initGUI();
                 return;

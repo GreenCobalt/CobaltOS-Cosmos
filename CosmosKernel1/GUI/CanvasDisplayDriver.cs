@@ -94,7 +94,7 @@ namespace CobaltOS.GUI
             }
         }
 
-        private static void setPixel(int x, int y, Color color)
+        public static void setPixel(int x, int y, Color color)
         {
             if (x > screenW || y > screenH) return;
             SBuffer[(y * screenW) + x] = color;

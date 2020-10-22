@@ -59,7 +59,9 @@ namespace CobaltOS.GUI
         private static List<Char> calcChars = new List<Char>();
         private static List<int> notePadCharSizes = new List<int>();
         private static CosmosVFS fs;
-        private static Boolean newFont = true;
+
+        //fix settings box before reenabling
+        private static Boolean newFont = false;
 
         private static int screenW;
         private static int screenH;

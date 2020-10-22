@@ -6,8 +6,6 @@ namespace CobaltOS.Font
 {
     public static class FontDrawer
     {
-        #region textmaker
-
         private static void DrawTextChar(int x, int y, byte[] Data, Color color)
         {
             int c = 0;
@@ -310,12 +308,12 @@ namespace CobaltOS.Font
                 }
                 else if (a == '.')
                 {
-                    DrawTextChar(Textx, Texty, Font8x8.Dote, Color);
+                    DrawTextChar(Textx, Texty, Font8x8.Period, Color);
                     Textx = Textx + 6;
                 }
                 else if (a == '!')
                 {
-                    DrawTextChar(Textx, Texty, Font8x8.Utro, Color);
+                    DrawTextChar(Textx, Texty, Font8x8.Exclamation, Color);
                     Textx = Textx + 6;
                 }
                 else if (a == ' ')
@@ -378,11 +376,13 @@ namespace CobaltOS.Font
                     DrawTextChar(Textx, Texty, Font8x8.Colon, Color);
                     Textx = Textx + 6;
                 }
+                else if (a == '-')
+                {
+                    DrawTextChar(Textx, Texty, Font8x8.Dash, Color);
+                    Textx = Textx + 6;
+                }
             }
-            return Textx;
+            return Textx + 40;
         }
-
-        #endregion
-
     }
 }

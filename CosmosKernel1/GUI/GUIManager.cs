@@ -61,7 +61,7 @@ namespace CobaltOS.GUI
         private static CosmosVFS fs;
 
         //fix settings box before reenabling
-        private static Boolean newFont = false;
+        private static Boolean newFont = true;
 
         private static int screenW;
         private static int screenH;
@@ -424,7 +424,7 @@ namespace CobaltOS.GUI
                     calcChars.Clear();
                     return;
                 }
-                if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 70 && y < screenH - taskBarHeight - 40))
+                if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 80 && y < screenH - taskBarHeight - 40))
                 {
                     startMenuOpen = false;
                     activeApp = OSApp.Settings;

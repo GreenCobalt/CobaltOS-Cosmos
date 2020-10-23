@@ -4,12 +4,12 @@ using System.IO;
 using Console = System.Console;
 using Cosmos.System.FileSystem;
 using CobaltOS.GUI;
-using System.Text;
-using CobaltOS.Utilities;
+using Util = CobaltOS.Utilities;
 using Cosmos.HAL;
 using System.Collections.Generic;
 using Cosmos.System.FileSystem.Listing;
 using System.Linq.Expressions;
+using CobaltOS.Utilities;
 
 namespace CobaltOS
 {
@@ -26,66 +26,26 @@ namespace CobaltOS
         private static String cd = @"0:\";
 
         public static Boolean graphicsMode = false;
-        private static Boolean fsMode = false;
         public static Boolean newGraphics = false;
+
+        private static Boolean fsMode = false;
         public static Boolean enableFs = false;
 
         public static Boolean systemExists = true;
-
-        public static List<string> networkInterfaces = new List<string>();
 
         protected override void BeforeRun()
         {
             enableFs = true;
             fs = new Sys.FileSystem.CosmosVFS();
             Sys.FileSystem.VFS.VFSManager.RegisterVFS(fs);
-            printLogoConsole();
-            Console.Write("<FS> Detected Drives: ");
-            Console.WriteLine(DriveInfo.GetDrives().Length);
-            foreach (DriveInfo d in DriveInfo.GetDrives())
-            {
-                Console.WriteLine("<FS> - " + d.Name + " (" + d.GetType() + ") " + (d.TotalSize / 1048576) + "MB");
-            }
-            PCI.Init();
-            WaitSeconds(4);
 
-            if (!File.Exists(@"0:\fs.cfg"))
-            {
-                printLogoConsole();
-
-                Console.WriteLine(@"The filesystem was not formatted with CobaltOS, so it cannot be used.");
-                Console.WriteLine(@"Would you like to format it? (y/n)");
-                Console.WriteLine("WARNING: THIS WILL DELETE ALL DATA.\n");
-                if (Console.ReadLine() == "y")
-                {
-                    Console.WriteLine("\nFormatting...");
-                    try
-                    {
-                        fs.Format(@"0:\", "FAT32", true);
-                        FileStream writeStream = File.Create(@"0:\fs.cfg");
-                        byte[] toWrite = Encoding.ASCII.GetBytes("true");
-                        writeStream.Write(toWrite, 0, toWrite.Length);
-                        writeStream.Close();
-                        Console.WriteLine("Done!");
-                    }
-                    catch
-                    {
-                        WaitSeconds(5);
-                        deathScreen("0x0100 Error formatting and initalizing drive!");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("\nThe filesystem is being disabled as it was not formatted with CobaltOS.");
-                    enableFs = false;
-                    WaitSeconds(2);
-                }
-            }
+            Util.PCI.Init();
+            Util.Filesystem.Init();
 
             printLogoConsole();
             Console.WriteLine("CPU: " + cpuString);
-            Console.WriteLine("RAM: " + Memory.getTotalRAM() + " MB");
-            Console.WriteLine("Real Hardware: " + Hardware.onRealHardware());
+            Console.WriteLine("RAM: " + Util.Memory.getTotalRAM() + " MB");
+            Console.WriteLine("Real Hardware: " + Util.Hardware.onRealHardware());
 
             if (enableFs)
             {
@@ -95,7 +55,7 @@ namespace CobaltOS
             //initGUI();
         }
 
-        private static void printLogoConsole()
+        public static void printLogoConsole()
         {
             Console.Clear();
             Console.WriteLine("    ##### ##### ####  ##### #  #######  ##### #####    ");
@@ -126,7 +86,7 @@ namespace CobaltOS
         private void initGUI()
         {
             graphicsMode = true;
-            DisplayDriver.init(!Hardware.onRealHardware());
+            DisplayDriver.init(!Util.Hardware.onRealHardware());
             DisplayDriver.initScreen();
         }
 
@@ -171,7 +131,7 @@ namespace CobaltOS
             }
             else if (input == "miv")
             {
-                MIV.StartMIV();
+                Util.MIV.StartMIV();
             }
             else if (input == "fs")
             {
@@ -339,13 +299,7 @@ namespace CobaltOS
                 String[] inputSplit = input.Split(" ");
                 if (inputSplit.Length == 2)
                 {
-                    FileStream s = File.OpenRead(inputSplit[1]);
-                    byte[] a = new byte[s.Length];
-                    s.Read(a, 0, a.Length);
-                    foreach (Byte b in a)
-                    {
-                        Console.Write((char)b);
-                    }
+                    Console.Write(Filesystem.readFile(inputSplit[1]));
                     Console.Write("\n");
                 }
                 else
@@ -355,7 +309,7 @@ namespace CobaltOS
             }
             else
             {
-                Console.WriteLine("Unknown");
+                Console.WriteLine("Unknown command!");
             }
         }
 

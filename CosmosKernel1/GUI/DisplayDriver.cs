@@ -99,5 +99,34 @@ namespace CobaltOS.GUI
                 else CanvasDisplayDriver.exitGUI();
             }
         }
+
+
+        // ---------------- EXPERIMENTAL SECTION -------------------------------
+
+        private static double rainbowR, rainbowG, rainbowB, rainbowIndex = 0;
+        private static double freq = 0.05;
+
+        public static void addFilledRectangleR(int x, int y, int w, int h)
+        {
+            DisplayDriver.addFilledRectangle(x, y, w, h, Color.FromArgb((int)rainbowR, (int)rainbowG, (int)rainbowB));
+        }
+        public static void addRectangleR(int x, int y, int w, int h)
+        {
+            DisplayDriver.addRectangle(x, y, x + w, y + h, Color.FromArgb((int)rainbowR, (int)rainbowG, (int)rainbowB));
+        }
+
+        public static void tickRainbow()
+        {
+            if (rainbowIndex == 129) rainbowIndex = 0;
+
+            rainbowR = Math.Sin(freq * rainbowIndex + 0) * 127 + 128;
+            rainbowG = Math.Sin(freq * rainbowIndex + 2) * 127 + 128;
+            rainbowB = Math.Sin(freq * rainbowIndex + 4) * 127 + 128;
+
+            rainbowIndex++;
+        }
+
+
+        // -----------------------------------------------------------------------  
     }
 }

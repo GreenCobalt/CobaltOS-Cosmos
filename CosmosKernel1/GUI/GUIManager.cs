@@ -164,6 +164,8 @@ namespace CobaltOS.GUI
 
         public static void tick()
         {
+            DisplayDriver.tickRainbow();
+
             if (activeApp == OSApp.PowerMenu)
             {
                 DisplayDriver.setFullBuffer(Color.DarkGray);
@@ -185,6 +187,9 @@ namespace CobaltOS.GUI
             FontDrawer.DrawArray(10, 10, Font8x8.Logo2, Color.Red, 16, 16);
 
             DisplayDriver.addMouse(Convert.ToInt32(Cosmos.System.MouseManager.X), Convert.ToInt32(Cosmos.System.MouseManager.Y));
+
+            DisplayDriver.addFilledRectangleR(10, 10, 40, 40);
+
             DisplayDriver.drawScreen();
         }
 
@@ -217,7 +222,7 @@ namespace CobaltOS.GUI
 
                 for (int i = 0; i < notePadChars.Count; i++)
                 {
-                    int size = DisplayDriver.typeChar(typeLocX, typeLocY, Color.Black, notePadChars[i], true);
+                    int size = DisplayDriver.typeChar(typeLocX, typeLocY, Color.Black, notePadChars[i], false);
                     typeLocX = typeLocX + size;
 
                     notePadCharSizes.Add(size);
@@ -488,23 +493,17 @@ namespace CobaltOS.GUI
                     {
                         if (dirSelectPurpose == 0)
                         {
-                            FileStream f = File.Create(new string(dirChars.ToArray()));
-                            byte[] toWrite = Encoding.ASCII.GetBytes(dirSelectContent);
-                            f.Write(toWrite, 0, toWrite.Length);
-
+                            Filesystem.writeFile(new string(dirChars.ToArray()), true, dirSelectContent);
                             dirSelectOpen = false;
                         }
                         else if (dirSelectPurpose == 1)
                         {
                             if (File.Exists(new string(dirChars.ToArray())))
                             {
-                                FileStream f = File.OpenRead(new string(dirChars.ToArray()));
-                                byte[] toRead = new byte[f.Length];
-                                f.Read(toRead, 0, (int)f.Length);
-                                notePadChars.Clear();
-                                for (int i = 0; i < toRead.Length; i++)
+                                String read = Filesystem.readFile(new string(dirChars.ToArray()));
+                                for (int i = 0; i < read.Length; i++)
                                 {
-                                    notePadChars.Add(Encoding.ASCII.GetString(toRead)[i]);
+                                    notePadChars.Add(read[i]);
                                 }
                             }
                             else
@@ -545,17 +544,10 @@ namespace CobaltOS.GUI
 
                         if (Kernel.enableFs)
                         {
-                            FileStream readStream = File.OpenRead(@"0:\config.cfg");
-                            byte[] toRead = new byte[readStream.Length];
-                            readStream.Read(toRead, 0, (int)readStream.Length);
-                            String s = timeFormat.ToString() + "," + ListUtils.byteListToString(toRead).Split(',')[1] + "," + ListUtils.byteListToString(toRead).Split(',')[2];
-                            readStream.Close();
+                            String[] read = Filesystem.readFile(@"0:\config.cfg").Split(',');
+                            String s = timeFormat.ToString() + "," + read[1] + "," + read[2];
 
-                            File.Delete(@"0:\config.cfg");
-                            FileStream writeStream = File.Create(@"0:\config.cfg");
-                            byte[] toWrite = Encoding.ASCII.GetBytes(s);
-                            writeStream.Write(toWrite, 0, toWrite.Length);
-                            writeStream.Close();
+                            Filesystem.writeFile(@"0:\config.cfg", true, s);
                         }
                     }
                     else if (settingsPage == 1 && (x > settingsLocX + 460 && x < backgroundColorSize) && (y > settingsLocY + 100 && y < settingsLocY + 170) && !bgColorChangeMenu)
@@ -625,17 +617,10 @@ namespace CobaltOS.GUI
 
                         if (Kernel.enableFs)
                         {
-                            FileStream readStream = File.OpenRead(@"0:\config.cfg");
-                            byte[] toRead = new byte[readStream.Length];
-                            readStream.Read(toRead, 0, (int)readStream.Length);
-                            String s = ListUtils.byteListToString(toRead).Split(',')[0] + "," + getIntFromColor(backgroundColor) + "," + ListUtils.byteListToString(toRead).Split(',')[2];
-                            readStream.Close();
+                            String[] read = Filesystem.readFile(@"0:\config.cfg").Split(',');
+                            String s = read[0] + "," + getIntFromColor(backgroundColor) + "," + read[2];
 
-                            File.Delete(@"0:\config.cfg");
-                            FileStream writeStream = File.Create(@"0:\config.cfg");
-                            byte[] toWrite = Encoding.ASCII.GetBytes(s);
-                            writeStream.Write(toWrite, 0, toWrite.Length);
-                            writeStream.Close();
+                            Filesystem.writeFile(@"0:\config.cfg", true, s);
                         }
                     }
                     else if (resolutionChangeMenu)
@@ -649,17 +634,10 @@ namespace CobaltOS.GUI
 
                         if (Kernel.enableFs)
                         {
-                            FileStream readStream = File.OpenRead(@"0:\config.cfg");
-                            byte[] toRead = new byte[readStream.Length];
-                            readStream.Read(toRead, 0, (int)readStream.Length);
-                            String s = ListUtils.byteListToString(toRead).Split(',')[0] + "," + ListUtils.byteListToString(toRead).Split(',')[1] + "," + getIntFromRes(screenW);
-                            readStream.Close();
+                            String[] read = Filesystem.readFile(@"0:\config.cfg").Split(',');
+                            String s = read[0] + "," + read[1] + "," + getIntFromRes(screenW);
 
-                            File.Delete(@"0:\config.cfg");
-                            FileStream writeStream = File.Create(@"0:\config.cfg");
-                            byte[] toWrite = Encoding.ASCII.GetBytes(s);
-                            writeStream.Write(toWrite, 0, toWrite.Length);
-                            writeStream.Close();
+                            Filesystem.writeFile(@"0:\config.cfg", true, s);
                         }
                     }
                 }

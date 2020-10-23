@@ -15,15 +15,15 @@ namespace CobaltOS.Font
                 {
                     if (Data[c] == 1)
                     {
-                        DisplayDriver.setPixel(x + i*2-1, y + p*2-1, color);
-                        DisplayDriver.setPixel(x + i*2, y + p*2, color);
+                        DisplayDriver.setPixel(x + i * 2, y + p * 2, color);
                     }
 
                     c = c + 1;
                 }
             }
         }
-        private static void DrawArray(int x, int y, byte[] Data, Color color, int w, int h)
+
+        public static void DrawArray(int x, int y, byte[] Data, Color color, int w, int h)
         {
             int c = 0;
             for (int p = y; p < y + w; p++)
@@ -32,13 +32,14 @@ namespace CobaltOS.Font
                 {
                     if (Data[c] == 1)
                     {
-                        DisplayDriver.setPixel(i, p, color);
+                        DisplayDriver.setPixel(x + i, y + p, color);
                     }
 
                     c = c + 1;
                 }
             }
         }
+
         public static int WriteText(String Text, int Textx, int Texty, Color Color)
         {
             int spacing = 12;

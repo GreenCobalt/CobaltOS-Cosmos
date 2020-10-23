@@ -6,6 +6,7 @@ using Cosmos.System;
 using Cosmos.System.FileSystem;
 using System.IO;
 using CobaltOS.Utilities;
+using CobaltOS.Font;
 
 namespace CobaltOS.GUI
 {
@@ -181,6 +182,8 @@ namespace CobaltOS.GUI
             addShapes();
             checkMouse();
 
+            FontDrawer.DrawArray(10, 10, Font8x8.Logo2, Color.Red, 16, 16);
+
             DisplayDriver.addMouse(Convert.ToInt32(Cosmos.System.MouseManager.X), Convert.ToInt32(Cosmos.System.MouseManager.Y));
             DisplayDriver.drawScreen();
         }
@@ -214,7 +217,7 @@ namespace CobaltOS.GUI
 
                 for (int i = 0; i < notePadChars.Count; i++)
                 {
-                    int size = DisplayDriver.typeChar(typeLocX, typeLocY, Color.Black, notePadChars[i]);
+                    int size = DisplayDriver.typeChar(typeLocX, typeLocY, Color.Black, notePadChars[i], true);
                     typeLocX = typeLocX + size;
 
                     notePadCharSizes.Add(size);

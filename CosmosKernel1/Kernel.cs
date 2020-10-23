@@ -8,7 +8,6 @@ using System.Text;
 using CobaltOS.Utilities;
 using Cosmos.HAL;
 using System.Collections.Generic;
-using CobaltOS.Network;
 using Cosmos.System.FileSystem.Listing;
 using System.Linq.Expressions;
 
@@ -32,7 +31,6 @@ namespace CobaltOS
         public static Boolean enableFs = false;
 
         public static Boolean systemExists = true;
-        public static CobaltOS.Network.IPV4.Config LocalNetworkConfig;
 
         public static List<string> networkInterfaces = new List<string>();
 
@@ -42,13 +40,14 @@ namespace CobaltOS
             fs = new Sys.FileSystem.CosmosVFS();
             Sys.FileSystem.VFS.VFSManager.RegisterVFS(fs);
             printLogoConsole();
-            Console.Write("Detected Drives: ");
+            Console.Write("<FS> Detected Drives: ");
             Console.WriteLine(DriveInfo.GetDrives().Length);
             foreach (DriveInfo d in DriveInfo.GetDrives())
             {
-                Console.WriteLine(" - " + d.Name + " (" + d.GetType() + ") " + (d.TotalSize / 1048576) + "MB");
+                Console.WriteLine("<FS> - " + d.Name + " (" + d.GetType() + ") " + (d.TotalSize / 1048576) + "MB");
             }
-            WaitSeconds(2);
+            PCI.Init();
+            WaitSeconds(4);
 
             if (!File.Exists(@"0:\fs.cfg"))
             {
@@ -82,13 +81,6 @@ namespace CobaltOS
                     WaitSeconds(2);
                 }
             }
-
-            //printLogoConsole();
-            //Network.NetworkInit.Init();
-            //Network.NetworkInit.Enable();
-            //WaitSeconds(1);
-            //Network.NetworkInterfaces.Init();
-            //WaitSeconds(3);
 
             printLogoConsole();
             Console.WriteLine("CPU: " + cpuString);
@@ -140,18 +132,6 @@ namespace CobaltOS
 
         private void processConsole(String input)
         {
-            /*
-            if (input.StartsWith("ping "))
-            {
-                Network.Ping.c_Ping(input.Split(" ")[1]);
-                return;
-            } else if (input.StartsWith("ipconfig"))
-            {
-                Network.IPConfig.c_IPConfig(input);
-                return;
-            }
-            */
-
             if (input == "gui")
             {
                 initGUI();
@@ -181,7 +161,13 @@ namespace CobaltOS
                 Console.WriteLine("    gui: Activates the GUI.");
                 Console.WriteLine("    help: Returns this message.");
                 Console.WriteLine("    miv: Activates the MIV text editor.");
+                Console.WriteLine("    pci <lsdev / lsven>: lists devices and device vendors.");
                 return;
+            }
+            else if (input.StartsWith("pci"))
+            {
+                String[] args = input.Split(" ");
+                Utilities.PCI.PCICommand(args);
             }
             else if (input == "miv")
             {

@@ -31,9 +31,9 @@ namespace CobaltOS.GUI
             else CanvasDisplayDriver.changeRes(x, y);
         }
 
-        public static int addText(int x, int y, Color c, String s, Boolean newfont)
+        public static int addText(int x, int y, Color c, String s, Boolean newFont)
         {
-            if (newfont)
+            if (newFont)
             {
                 return FontDrawer.WriteText(s, x, y + 8, c);
             } else
@@ -43,10 +43,16 @@ namespace CobaltOS.GUI
             }
         }
 
-        public static int typeChar(int x, int y, Color c, Char s)
+        public static int typeChar(int x, int y, Color c, Char s, Boolean newFont)
         {
-            if (newGraphics) return VMDisplayDriver.typeChar(x, y, c, s);
-            else return CanvasDisplayDriver.typeChar(x, y, c, s);
+            if (newFont)
+            {
+                return FontDrawer.WriteText(s.ToString(), x, y, c);
+            } else
+            {
+                if (newGraphics) return VMDisplayDriver.typeChar(x, y, c, s);
+                else return CanvasDisplayDriver.typeChar(x, y, c, s);
+            }
         }
 
         public static void setFullBuffer(Color c)

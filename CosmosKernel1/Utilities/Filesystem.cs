@@ -33,7 +33,7 @@ namespace CobaltOS.Utilities
                 Console.WriteLine(@"The filesystem was not formatted with CobaltOS, so it cannot be used.");
                 Console.WriteLine(@"Would you like to format it? (y/n)");
                 Console.WriteLine("WARNING: THIS WILL DELETE ALL DATA.\n");
-                if (Console.ReadLine() == "y")
+                if (Console.ReadLine().ToLower() == "y" || Console.ReadLine().ToLower() == "yes")
                 {
                     Console.WriteLine("\nFormatting...");
                     try

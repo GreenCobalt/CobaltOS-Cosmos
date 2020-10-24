@@ -10,6 +10,12 @@ namespace CobaltOS.Utilities
 {
     class Filesystem
     {
+        private static String lastDirFolderPath = "";
+        private static List<DirectoryEntry> lastDirFolder = new List<DirectoryEntry>();
+
+        private static String lastDirFilePath = "";
+        private static List<DirectoryEntry> lastDirFile = new List<DirectoryEntry>();
+
         public static void Init()
         {
             Kernel.printLogoConsole();
@@ -124,6 +130,10 @@ namespace CobaltOS.Utilities
 
         public static List<DirectoryEntry> getDirFolders(String path)
         {
+            if (path == lastDirFolderPath)
+            {
+                return lastDirFolder;
+            }
             List<DirectoryEntry> l = new List<DirectoryEntry>();
             foreach (DirectoryEntry d in Kernel.fs.GetDirectoryListing(path))
             {
@@ -132,11 +142,17 @@ namespace CobaltOS.Utilities
                     l.Add(d);
                 }
             }
+            lastDirFolderPath = path;
+            lastDirFolder = l;
             return l;
         }
 
         public static List<DirectoryEntry> getDirFiles(String path)
         {
+            if (path == lastDirFilePath)
+            {
+                return lastDirFile;
+            }
             List<DirectoryEntry> l = new List<DirectoryEntry>();
             foreach (DirectoryEntry d in Kernel.fs.GetDirectoryListing(path))
             {
@@ -145,6 +161,8 @@ namespace CobaltOS.Utilities
                     l.Add(d);
                 }
             }
+            lastDirFilePath = path;
+            lastDirFile = l;
             return l;
         }
     }

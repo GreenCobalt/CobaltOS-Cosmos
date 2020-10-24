@@ -15,6 +15,16 @@ namespace CobaltOS.Utilities
             return r;
         }
 
+        public static List<char> stringToCharList(String input)
+        {
+            List<char> l = new List<char>();
+            foreach (Char c in input)
+            {
+                l.Add(c);
+            }
+            return l;
+        }
+
         public static String byteListToString(byte[] input)
         {
             String r = "";

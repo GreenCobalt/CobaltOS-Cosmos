@@ -8,6 +8,7 @@ using System.IO;
 using CobaltOS.Utilities;
 using CobaltOS.Font;
 using Cosmos.System.FileSystem.Listing;
+using System.Linq;
 
 namespace CobaltOS.GUI
 {
@@ -66,8 +67,14 @@ namespace CobaltOS.GUI
         private static List<Char> calcChars = new List<Char>();
         private static List<int> notePadCharSizes = new List<int>();
         private static CosmosVFS fs;
+
         private static String fileExpCD = @"0:\";
         private static List<Tuple<int, int, int, int, String>> fileExpDirs = new List<Tuple<int, int, int, int, String>>();
+        private static List<Tuple<int, int, int, int, String>> fileExpFiles = new List<Tuple<int, int, int, int, String>>();
+
+        private static Boolean fileExpCtxMenu = false;
+        private static String fileExpCtxTarget = "";
+        private static uint fileExpCtxX, fileExpCtxY = 0;
 
         private static Boolean newFont = true;
 
@@ -342,30 +349,34 @@ namespace CobaltOS.GUI
             {
                 DisplayDriver.addFilledRectangle(explorerLocX, explorerLocY, explorerSizeX, explorerSizeY, Color.White);
                 DisplayDriver.addFilledRectangle(explorerLocX, explorerLocY, explorerSizeX, 30, Color.Gray);
+                DisplayDriver.addText(explorerLocX + 5, explorerLocY, Color.Black, "File Explorer", true);
                 DisplayDriver.addFilledRectangle(explorerLocX + (explorerSizeX - 25), explorerLocY + 5, 20, 20, Color.Red);
 
                 int locY = explorerLocY + 80;
-                int i = 0;
 
                 DisplayDriver.addRectangle(explorerLocX + 20, explorerLocY + 40, explorerLocX + 40, explorerLocY + 60, Color.Black);
+                FontDrawer.DrawArray(explorerLocX + 22, explorerLocY + 42, Font8x8.Bkrw, Color.Black);
                 DisplayDriver.addText(explorerLocX + 60, explorerLocY + 40, Color.Black, fileExpCD, newFont);
 
                 foreach (DirectoryEntry d in Filesystem.getDirFolders(fileExpCD))
                 {
-                    DisplayDriver.addRectangle(explorerLocX + 15, locY, explorerLocX + 250, locY + 25, Color.Black);
                     FontDrawer.DrawArray(explorerLocX + 20, locY + 5, Font8x8.FSFolder, Color.Black);
                     DisplayDriver.addText(explorerLocX + 45, locY, Color.Black, d.mName, true);
                     locY += 27;
-
                     fileExpDirs.Add(new Tuple<int, int, int, int, String>(explorerLocX + 15, locY, explorerLocX + 250, locY + 25, d.mFullPath));
-                    i++;
                 }
-
                 foreach (DirectoryEntry d in Filesystem.getDirFiles(fileExpCD))
                 {
                     FontDrawer.DrawArray(explorerLocX + 20, locY + 5, Font8x8.FSFile, Color.Black);
                     DisplayDriver.addText(explorerLocX + 45, locY, Color.Black, d.mName, true);
                     locY += 27;
+                    fileExpFiles.Add(new Tuple<int, int, int, int, String>(explorerLocX + 15, locY, explorerLocX + 250, locY + 25, d.mFullPath));
+                }
+
+                if (fileExpCtxMenu)
+                {
+                    DisplayDriver.addFilledRectangle(Convert.ToInt32(fileExpCtxX), Convert.ToInt32(fileExpCtxY), 300, 50, Color.DarkGray);
+                    DisplayDriver.addText(Convert.ToInt32(fileExpCtxX) + 5, Convert.ToInt32(fileExpCtxY + 5), Color.White, "Open with Notepad", true);
                 }
             }
 
@@ -497,16 +508,19 @@ namespace CobaltOS.GUI
                     if ((x > explorerLocX + 575 && x < explorerLocX + 595) && (y > explorerLocY + 5 && y < explorerLocY + 25))
                     {
                         activeApp = 0;
+                        fileExpCD = @"0:\";
                         bgColorChangeMenu = false;
+                        fileExpCtxMenu = false;
                     }
                     if ((x > explorerLocX + 20 && x < explorerLocX + 40) && (y > explorerLocY + 40 && y < explorerLocY + 60))
                     {
-                        String[] a = fileExpCD.Split(@"\");
+                        fileExpCtxMenu = false;
+                        String[] a = (fileExpCD + (fileExpCD.EndsWith(@"\") ? "" : @"\")).Split(@"\");
                         if (a.Length == 2 && a[1] == "")
                         {
                             return;
                         }
-                        Array.Resize(ref a, a.Length - 1);
+                        Array.Resize(ref a, a.Length - 2);
                         String s = "";
                         foreach (String st in a)
                         {
@@ -514,14 +528,28 @@ namespace CobaltOS.GUI
                         }
                         fileExpCD = s;
                     }
-                    foreach(Tuple<int, int, int, int, String> t in fileExpDirs)
+                    foreach (Tuple<int, int, int, int, String> t in fileExpDirs)
                     {
                         if ((x > t.Item1 && x < t.Item3 && (y > t.Item2 - 20 && y < t.Item4 - 20)))
                         {
                             fileExpCD = t.Item5;
+                            fileExpCtxMenu = false;
                         }
                     }
-
+                    if (fileExpCtxMenu)
+                    {
+                        if (x > fileExpCtxX && x < fileExpCtxX + 200 && y > fileExpCtxY && y < fileExpCtxY + 50)
+                        {
+                            fileExpCtxMenu = false;
+                            fileExpCD = @"0:\";
+                            notePadChars = Utilities.ListUtils.stringToCharList(Filesystem.readFile(fileExpCtxTarget));
+                            activeApp = OSApp.Notepad;
+                        }
+                        else
+                        {
+                            //fileExpCtxMenu = false;
+                        }
+                    }
                 }
 
                 if (activeApp == OSApp.Notepad)
@@ -876,6 +904,33 @@ namespace CobaltOS.GUI
                 }
 
                 while (MouseManager.MouseState == MouseState.Left)
+                {
+                    ;
+                }
+            }
+            else if (MouseManager.MouseState == MouseState.Right)
+            {
+                uint x = Cosmos.System.MouseManager.X;
+                uint y = Cosmos.System.MouseManager.Y;
+
+                if (activeApp == OSApp.FileExplorer)
+                {
+                    foreach (Tuple<int, int, int, int, String> t in fileExpFiles)
+                    {
+                        if ((x > t.Item1 && x < t.Item3 && (y > t.Item2 - 20 && y < t.Item4 - 20)))
+                        {
+                            fileExpCtxMenu = true;
+                            fileExpCtxTarget = t.Item5;
+                            fileExpCtxX = x;
+                            fileExpCtxY = y;
+
+                            return;
+                        }
+                    }
+                    fileExpCtxMenu = false;
+                }
+
+                while (MouseManager.MouseState == MouseState.Right)
                 {
                     ;
                 }

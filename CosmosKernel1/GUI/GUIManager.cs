@@ -7,6 +7,7 @@ using Cosmos.System.FileSystem;
 using System.IO;
 using CobaltOS.Utilities;
 using CobaltOS.Font;
+using Cosmos.System.FileSystem.Listing;
 
 namespace CobaltOS.GUI
 {
@@ -32,6 +33,11 @@ namespace CobaltOS.GUI
         private static int settingsLocY = 10;
         private static int settingsSizeX = 600;
         private static int settingsSizeY = 400;
+
+        private static int explorerLocX = 10;
+        private static int explorerLocY = 10;
+        private static int explorerSizeX = 600;
+        private static int explorerSizeY = 400;
 
         private static int calcLocX = 10;
         private static int calcLocY = 10;
@@ -60,8 +66,9 @@ namespace CobaltOS.GUI
         private static List<Char> calcChars = new List<Char>();
         private static List<int> notePadCharSizes = new List<int>();
         private static CosmosVFS fs;
+        private static String fileExpCD = @"0:\";
+        private static List<Tuple<int, int, int, int, String>> fileExpDirs = new List<Tuple<int, int, int, int, String>>();
 
-        //fix settings box before reenabling
         private static Boolean newFont = true;
 
         private static int screenW;
@@ -75,6 +82,7 @@ namespace CobaltOS.GUI
             Notepad = 1,
             Settings = 2,
             Calculator = 3,
+            FileExplorer = 4,
             PowerMenu = 99
         }
 
@@ -86,6 +94,7 @@ namespace CobaltOS.GUI
         private static String dirSelectContent;
         private static Boolean dirSelectOpen;
         private static Boolean newGraphics;
+        private static Boolean fullScreen = false;
 
         public static void init()
         {
@@ -173,22 +182,21 @@ namespace CobaltOS.GUI
             else
             {
                 DisplayDriver.setFullBuffer(backgroundColor);
-                DisplayDriver.addFilledRectangle(0, screenH - taskBarHeight, screenW, taskBarHeight, Color.FromArgb(255, 50, 50, 50));
-                DisplayDriver.addFilledRectangle(10, screenH - taskBarHeight + 10, 30, taskBarHeight - 20, Color.Red);
-                DisplayDriver.addText((timeFormat ? screenW - 125 : screenW - 175), screenH - 40, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")), newFont);
+                if (!fullScreen)
+                {
+                    DisplayDriver.addFilledRectangle(0, screenH - taskBarHeight, screenW, taskBarHeight, Color.FromArgb(255, 50, 50, 50));
+                    DisplayDriver.addFilledRectangle(10, screenH - taskBarHeight + 10, 30, taskBarHeight - 20, Color.Red);
+                    DisplayDriver.addText((timeFormat ? screenW - 125 : screenW - 175), screenH - 40, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")), newFont);
+                }
             }
-
-            //DisplayDriver.addImage(@"0:\TRAVIS.BMP", 10, 10);
 
             checkKeyboard();
             addShapes();
             checkMouse();
 
-            FontDrawer.DrawArray(10, 10, Font8x8.Logo2, Color.Red, 16, 16);
-
             DisplayDriver.addMouse(Convert.ToInt32(Cosmos.System.MouseManager.X), Convert.ToInt32(Cosmos.System.MouseManager.Y));
 
-            DisplayDriver.addFilledRectangleR(10, 10, 40, 40);
+            //DisplayDriver.addFilledRectangleR(10, 10, 40, 40);
 
             DisplayDriver.drawScreen();
         }
@@ -330,6 +338,37 @@ namespace CobaltOS.GUI
                 }
             }
 
+            if (activeApp == OSApp.FileExplorer)
+            {
+                DisplayDriver.addFilledRectangle(explorerLocX, explorerLocY, explorerSizeX, explorerSizeY, Color.White);
+                DisplayDriver.addFilledRectangle(explorerLocX, explorerLocY, explorerSizeX, 30, Color.Gray);
+                DisplayDriver.addFilledRectangle(explorerLocX + (explorerSizeX - 25), explorerLocY + 5, 20, 20, Color.Red);
+
+                int locY = explorerLocY + 80;
+                int i = 0;
+
+                DisplayDriver.addRectangle(explorerLocX + 20, explorerLocY + 40, explorerLocX + 40, explorerLocY + 60, Color.Black);
+                DisplayDriver.addText(explorerLocX + 60, explorerLocY + 40, Color.Black, fileExpCD, newFont);
+
+                foreach (DirectoryEntry d in Filesystem.getDirFolders(fileExpCD))
+                {
+                    DisplayDriver.addRectangle(explorerLocX + 15, locY, explorerLocX + 250, locY + 25, Color.Black);
+                    FontDrawer.DrawArray(explorerLocX + 20, locY + 5, Font8x8.FSFolder, Color.Black);
+                    DisplayDriver.addText(explorerLocX + 45, locY, Color.Black, d.mName, true);
+                    locY += 27;
+
+                    fileExpDirs.Add(new Tuple<int, int, int, int, String>(explorerLocX + 15, locY, explorerLocX + 250, locY + 25, d.mFullPath));
+                    i++;
+                }
+
+                foreach (DirectoryEntry d in Filesystem.getDirFiles(fileExpCD))
+                {
+                    FontDrawer.DrawArray(explorerLocX + 20, locY + 5, Font8x8.FSFile, Color.Black);
+                    DisplayDriver.addText(explorerLocX + 45, locY, Color.Black, d.mName, true);
+                    locY += 27;
+                }
+            }
+
             if (activeApp == OSApp.Calculator)
             {
                 int spacingX = 16;
@@ -387,8 +426,8 @@ namespace CobaltOS.GUI
                 DisplayDriver.addFilledRectangle(20, screenH - taskBarHeight - 255, 20, 20, Color.SandyBrown);
                 DisplayDriver.addText(50, screenH - taskBarHeight - 255, Color.White, "Calculator", newFont);
 
-                //DisplayDriver.addFilledRectangle(20, screenH - taskBarHeight - 115, 20, 20, Color.Purple);
-                //DisplayDriver.addText(50, screenH - taskBarHeight - 115, Color.White, "Console");
+                DisplayDriver.addFilledRectangle(20, screenH - taskBarHeight - 115, 20, 20, Color.Yellow);
+                DisplayDriver.addText(50, screenH - taskBarHeight - 115, Color.White, "File Explorer", newFont);
 
                 DisplayDriver.addFilledRectangle(20, screenH - taskBarHeight - 80, 20, 20, Color.DarkGray);
                 DisplayDriver.addText(50, screenH - taskBarHeight - 80, Color.White, "Settings", newFont);
@@ -444,15 +483,46 @@ namespace CobaltOS.GUI
                     activeApp = OSApp.PowerMenu;
                     return;
                 }
-                /*
                 if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 115 && y < screenH - taskBarHeight - 80))
                 {
-                    DisplayDriver.exitGUI();
+                    startMenuOpen = false;
+                    fileExpCD = @"0:\";
+                    activeApp = OSApp.FileExplorer;
                     return;
                 }
-                */
                 //---------------------------------------
 
+                if (activeApp == OSApp.FileExplorer)
+                {
+                    if ((x > explorerLocX + 575 && x < explorerLocX + 595) && (y > explorerLocY + 5 && y < explorerLocY + 25))
+                    {
+                        activeApp = 0;
+                        bgColorChangeMenu = false;
+                    }
+                    if ((x > explorerLocX + 20 && x < explorerLocX + 40) && (y > explorerLocY + 40 && y < explorerLocY + 60))
+                    {
+                        String[] a = fileExpCD.Split(@"\");
+                        if (a.Length == 2 && a[1] == "")
+                        {
+                            return;
+                        }
+                        Array.Resize(ref a, a.Length - 1);
+                        String s = "";
+                        foreach (String st in a)
+                        {
+                            s = s + st + @"\";
+                        }
+                        fileExpCD = s;
+                    }
+                    foreach(Tuple<int, int, int, int, String> t in fileExpDirs)
+                    {
+                        if ((x > t.Item1 && x < t.Item3 && (y > t.Item2 - 20 && y < t.Item4 - 20)))
+                        {
+                            fileExpCD = t.Item5;
+                        }
+                    }
+
+                }
 
                 if (activeApp == OSApp.Notepad)
                 {

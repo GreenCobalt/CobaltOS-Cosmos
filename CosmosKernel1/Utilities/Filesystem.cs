@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Cosmos.System.FileSystem.Listing;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using Sys = Cosmos.System;
 
@@ -64,11 +66,13 @@ namespace CobaltOS.Utilities
                         st += (char)b;
                     }
                     return st;
-                } catch
+                }
+                catch
                 {
                     return null;
                 }
-            } else
+            }
+            else
             {
                 return null;
             }
@@ -77,16 +81,19 @@ namespace CobaltOS.Utilities
         public static Boolean writeFile(String path, Boolean overwrite, String writing)
         {
             FileStream writeStream;
-            if (File.Exists(path)) {
+            if (File.Exists(path))
+            {
                 if (overwrite)
                 {
                     File.Delete(path);
                     writeStream = File.Create(path);
-                } else
+                }
+                else
                 {
                     return false;
                 }
-            } else
+            }
+            else
             {
                 writeStream = File.Create(path);
             }
@@ -96,7 +103,8 @@ namespace CobaltOS.Utilities
                 byte[] toWrite = Encoding.ASCII.GetBytes(writing);
                 writeStream.Write(toWrite, 0, toWrite.Length);
                 writeStream.Close();
-            } catch
+            }
+            catch
             {
                 return false;
             }
@@ -112,6 +120,32 @@ namespace CobaltOS.Utilities
                 return true;
             }
             return false;
+        }
+
+        public static List<DirectoryEntry> getDirFolders(String path)
+        {
+            List<DirectoryEntry> l = new List<DirectoryEntry>();
+            foreach (DirectoryEntry d in Kernel.fs.GetDirectoryListing(path))
+            {
+                if (d.mEntryType == Sys.FileSystem.Listing.DirectoryEntryTypeEnum.Directory)
+                {
+                    l.Add(d);
+                }
+            }
+            return l;
+        }
+
+        public static List<DirectoryEntry> getDirFiles(String path)
+        {
+            List<DirectoryEntry> l = new List<DirectoryEntry>();
+            foreach (DirectoryEntry d in Kernel.fs.GetDirectoryListing(path))
+            {
+                if (d.mEntryType == Sys.FileSystem.Listing.DirectoryEntryTypeEnum.File)
+                {
+                    l.Add(d);
+                }
+            }
+            return l;
         }
     }
 }

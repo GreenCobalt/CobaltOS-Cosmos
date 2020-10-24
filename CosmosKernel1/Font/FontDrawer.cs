@@ -23,18 +23,17 @@ namespace CobaltOS.Font
             }
         }
 
-        public static void DrawArray(int x, int y, byte[] Data, Color color, int w, int h)
+        public static void DrawArray(int x, int y, byte[] Data, Color color)
         {
             int c = 0;
-            for (int p = y; p < y + w; p++)
+            for (int p = 0; p < 16; p++)
             {
-                for (int i = x; i < x + h; i++)
+                for (int i = 0; i < 16; i++)
                 {
                     if (Data[c] == 1)
                     {
                         DisplayDriver.setPixel(x + i, y + p, color);
                     }
-
                     c = c + 1;
                 }
             }

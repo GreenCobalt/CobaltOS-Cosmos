@@ -369,6 +369,7 @@ namespace CobaltOS.GUI
                 {
                     FontDrawer.DrawArray(explorerLocX + 20, locY + 5, Font8x8.FSFile, Color.Black);
                     DisplayDriver.addText(explorerLocX + 45, locY, Color.Black, d.mName, true);
+                    DisplayDriver.addText(explorerLocX + 205, locY, Color.Black, (d.mSize > 999 ? (d.mSize / 1024).ToString() + "KB" : d.mSize.ToString() + "B"), true);
                     locY += 27;
                     fileExpFiles.Add(new Tuple<int, int, int, int, String>(explorerLocX + 15, locY, explorerLocX + 250, locY + 25, d.mFullPath));
                 }
@@ -915,19 +916,22 @@ namespace CobaltOS.GUI
 
                 if (activeApp == OSApp.FileExplorer)
                 {
-                    foreach (Tuple<int, int, int, int, String> t in fileExpFiles)
+                    if (fileExpFiles.Count != 0)
                     {
-                        if ((x > t.Item1 && x < t.Item3 && (y > t.Item2 - 20 && y < t.Item4 - 20)))
+                        foreach (Tuple<int, int, int, int, String> t in fileExpFiles)
                         {
-                            fileExpCtxMenu = true;
-                            fileExpCtxTarget = t.Item5;
-                            fileExpCtxX = x;
-                            fileExpCtxY = y;
+                            if ((x > t.Item1 && x < t.Item3 && (y > t.Item2 - 20 && y < t.Item4 - 20)))
+                            {
+                                fileExpCtxMenu = true;
+                                fileExpCtxTarget = t.Item5;
+                                fileExpCtxX = x;
+                                fileExpCtxY = y;
 
-                            return;
+                                return;
+                            }
                         }
+                        fileExpCtxMenu = false;
                     }
-                    fileExpCtxMenu = false;
                 }
 
                 while (MouseManager.MouseState == MouseState.Right)

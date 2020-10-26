@@ -200,18 +200,17 @@ namespace CobaltOS
                 return;
             }
 
-            var directory_list = fs.GetDirectoryListing(cd);
             if (input == "ls")
             {
-                foreach (var directoryEntry in directory_list)
+                foreach (DirectoryEntry d in fs.GetDirectoryListing(cd))
                 {
-                    if (directoryEntry.mEntryType == Sys.FileSystem.Listing.DirectoryEntryTypeEnum.File)
+                    if (d.mEntryType == DirectoryEntryTypeEnum.File)
                     {
-                        Console.WriteLine(" - " + directoryEntry.mName);
+                        Console.WriteLine(" - " + d.mName);
                     }
                     else
                     {
-                        Console.WriteLine(" > " + directoryEntry.mName);
+                        Console.WriteLine(" > " + d.mName);
                     }
                 }
             }

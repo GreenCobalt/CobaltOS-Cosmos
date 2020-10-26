@@ -128,6 +128,22 @@ namespace CobaltOS.Utilities
             return false;
         }
 
+        public static Boolean deleteDir(String path)
+        {
+            if (Directory.Exists(path))
+            {
+                try
+                {
+                    Directory.Delete(path, true);
+                } catch
+                {
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public static List<DirectoryEntry> getDirFolders(String path)
         {
             if (path == lastDirFolderPath)
@@ -164,6 +180,12 @@ namespace CobaltOS.Utilities
             lastDirFilePath = path;
             lastDirFile = l;
             return l;
+        }
+
+        public static void refreshDir(String path)
+        {
+            lastDirFilePath = "";
+            lastDirFolderPath = "";
         }
     }
 }

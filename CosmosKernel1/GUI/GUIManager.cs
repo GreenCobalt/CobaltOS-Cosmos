@@ -72,9 +72,18 @@ namespace CobaltOS.GUI
         private static List<Tuple<int, int, int, int, String>> fileExpDirs = new List<Tuple<int, int, int, int, String>>();
         private static List<Tuple<int, int, int, int, String>> fileExpFiles = new List<Tuple<int, int, int, int, String>>();
 
+        enum fileExpPage
+        {
+            explorerPage,
+            infoPage
+        }
+
         private static Boolean fileExpCtxMenu = false;
         private static String fileExpCtxTarget = "";
         private static uint fileExpCtxX, fileExpCtxY = 0;
+        private static DirectoryEntryTypeEnum fileExpCtxType = DirectoryEntryTypeEnum.File;
+        private static fileExpPage fileExpCurrentPage = fileExpPage.explorerPage;
+        private static int fileExpSideBarSize = 150;
 
         private static Boolean newFont = true;
 
@@ -348,37 +357,58 @@ namespace CobaltOS.GUI
             if (activeApp == OSApp.FileExplorer)
             {
                 DisplayDriver.addFilledRectangle(explorerLocX, explorerLocY, explorerSizeX, explorerSizeY, Color.White);
-                DisplayDriver.addFilledRectangle(explorerLocX, explorerLocY, explorerSizeX, 30, Color.Gray);
+                DisplayDriver.addFilledRectangle(explorerLocX, explorerLocY, explorerSizeX, 30, Color.FromArgb(255, 128, 128, 128));
                 DisplayDriver.addText(explorerLocX + 5, explorerLocY, Color.Black, "File Explorer", true);
                 DisplayDriver.addFilledRectangle(explorerLocX + (explorerSizeX - 25), explorerLocY + 5, 20, 20, Color.Red);
 
                 int locY = explorerLocY + 80;
 
-                DisplayDriver.addRectangle(explorerLocX + 20, explorerLocY + 40, explorerLocX + 40, explorerLocY + 60, Color.Black);
-                FontDrawer.DrawArray(explorerLocX + 22, explorerLocY + 42, Font8x8.Bkrw, Color.Black);
-                DisplayDriver.addText(explorerLocX + 60, explorerLocY + 40, Color.Black, fileExpCD, newFont);
+                DisplayDriver.addFilledRectangle(explorerLocX + 10, explorerLocY + 40, fileExpSideBarSize - 15, explorerSizeY - 50, Color.FromArgb(255, 150, 150, 150));
+                DisplayDriver.addFilledRectangle(explorerLocX + 10, explorerSizeY - 90, fileExpSideBarSize - 15, 20, (fileExpCurrentPage == fileExpPage.explorerPage ? Color.FromArgb(255, 100, 100, 100) : Color.FromArgb(255, 115, 115, 115)));
+                DisplayDriver.addFilledRectangle(explorerLocX + 10, explorerSizeY - 70, fileExpSideBarSize - 15, 20, (fileExpCurrentPage == fileExpPage.infoPage ? Color.FromArgb(255, 100, 100, 100) : Color.FromArgb(255, 115, 115, 115)));
 
-                foreach (DirectoryEntry d in Filesystem.getDirFolders(fileExpCD))
+                if (fileExpCurrentPage == fileExpPage.explorerPage)
                 {
-                    FontDrawer.DrawArray(explorerLocX + 20, locY + 5, Font8x8.FSFolder, Color.Black);
-                    DisplayDriver.addText(explorerLocX + 45, locY, Color.Black, d.mName, true);
-                    locY += 27;
-                    fileExpDirs.Add(new Tuple<int, int, int, int, String>(explorerLocX + 15, locY, explorerLocX + 250, locY + 25, d.mFullPath));
-                }
-                foreach (DirectoryEntry d in Filesystem.getDirFiles(fileExpCD))
-                {
-                    FontDrawer.DrawArray(explorerLocX + 20, locY + 5, Font8x8.FSFile, Color.Black);
-                    DisplayDriver.addText(explorerLocX + 45, locY, Color.Black, d.mName, true);
-                    DisplayDriver.addText(explorerLocX + 205, locY, Color.Black, (d.mSize > 999 ? (d.mSize / 1024).ToString() + "KB" : d.mSize.ToString() + "B"), true);
-                    locY += 27;
-                    fileExpFiles.Add(new Tuple<int, int, int, int, String>(explorerLocX + 15, locY, explorerLocX + 250, locY + 25, d.mFullPath));
-                }
+                    DisplayDriver.addRectangle(explorerLocX + 20 + fileExpSideBarSize, explorerLocY + 40, explorerLocX + 40 + fileExpSideBarSize, explorerLocY + 60, Color.Black);
+                    FontDrawer.DrawArray(explorerLocX + 22 + fileExpSideBarSize, explorerLocY + 42, Font8x8.Bkrw, Color.Black);
+                    DisplayDriver.addText(explorerLocX + 60 + fileExpSideBarSize, explorerLocY + 40, Color.Black, fileExpCD, newFont);
 
-                if (fileExpCtxMenu)
-                {
-                    DisplayDriver.addFilledRectangle(Convert.ToInt32(fileExpCtxX), Convert.ToInt32(fileExpCtxY), 300, 50, Color.DarkGray);
-                    DisplayDriver.addText(Convert.ToInt32(fileExpCtxX) + 5, Convert.ToInt32(fileExpCtxY + 5), Color.White, "Open with Notepad", true);
+                    foreach (DirectoryEntry d in Filesystem.getDirFolders(fileExpCD))
+                    {
+                        FontDrawer.DrawArray(explorerLocX + 20 + fileExpSideBarSize, locY + 5, Font8x8.FSFolder, Color.Black);
+                        DisplayDriver.addText(explorerLocX + 45 + fileExpSideBarSize, locY, Color.Black, d.mName, true);
+                        locY += 27;
+                        fileExpDirs.Add(new Tuple<int, int, int, int, String>(explorerLocX + 15 + fileExpSideBarSize, locY, explorerLocX + 250 + fileExpSideBarSize, locY + 25, d.mFullPath));
+                    }
+                    foreach (DirectoryEntry d in Filesystem.getDirFiles(fileExpCD))
+                    {
+                        FontDrawer.DrawArray(explorerLocX + 20 + fileExpSideBarSize, locY + 5, Font8x8.FSFile, Color.Black);
+                        DisplayDriver.addText(explorerLocX + 45 + fileExpSideBarSize, locY, Color.Black, d.mName, true);
+                        DisplayDriver.addText(explorerLocX + 205 + fileExpSideBarSize, locY, Color.Black, (d.mSize > 999 ? (d.mSize / 1024).ToString() + "KB" : d.mSize.ToString() + "B"), true);
+                        locY += 27;
+                        fileExpFiles.Add(new Tuple<int, int, int, int, String>(explorerLocX + 15 + fileExpSideBarSize, locY, explorerLocX + 250 + fileExpSideBarSize, locY + 25, d.mFullPath));
+                    }
+
+                    if (fileExpCtxMenu)
+                    {
+                        if (fileExpCtxType == DirectoryEntryTypeEnum.File)
+                        {
+                            DisplayDriver.addFilledRectangle(Convert.ToInt32(fileExpCtxX), Convert.ToInt32(fileExpCtxY), 300, 80, Color.DarkGray);
+                            DisplayDriver.addText(Convert.ToInt32(fileExpCtxX) + 5, Convert.ToInt32(fileExpCtxY + 5), Color.White, "Open with Notepad", true);
+                            DisplayDriver.addText(Convert.ToInt32(fileExpCtxX) + 5, Convert.ToInt32(fileExpCtxY + 45), Color.White, "Delete", true);
+                        }
+                        else
+                        {
+                            DisplayDriver.addFilledRectangle(Convert.ToInt32(fileExpCtxX), Convert.ToInt32(fileExpCtxY), 300, 40, Color.DarkGray);
+                            DisplayDriver.addText(Convert.ToInt32(fileExpCtxX) + 5, Convert.ToInt32(fileExpCtxY + 5), Color.White, "Delete", true);
+                        }
+                    }
                 }
+                else if (fileExpCurrentPage == fileExpPage.infoPage)
+                {
+
+                }
+                else { }
             }
 
             if (activeApp == OSApp.Calculator)
@@ -513,43 +543,86 @@ namespace CobaltOS.GUI
                         bgColorChangeMenu = false;
                         fileExpCtxMenu = false;
                     }
-                    if ((x > explorerLocX + 20 && x < explorerLocX + 40) && (y > explorerLocY + 40 && y < explorerLocY + 60))
+                    if (fileExpCurrentPage == fileExpPage.explorerPage)
                     {
-                        fileExpCtxMenu = false;
-                        String[] a = (fileExpCD + (fileExpCD.EndsWith(@"\") ? "" : @"\")).Split(@"\");
-                        if (a.Length == 2 && a[1] == "")
-                        {
-                            return;
-                        }
-                        Array.Resize(ref a, a.Length - 2);
-                        String s = "";
-                        foreach (String st in a)
-                        {
-                            s = s + st + @"\";
-                        }
-                        fileExpCD = s;
-                    }
-                    foreach (Tuple<int, int, int, int, String> t in fileExpDirs)
-                    {
-                        if ((x > t.Item1 && x < t.Item3 && (y > t.Item2 - 20 && y < t.Item4 - 20)))
-                        {
-                            fileExpCD = t.Item5;
-                            fileExpCtxMenu = false;
-                        }
-                    }
-                    if (fileExpCtxMenu)
-                    {
-                        if (x > fileExpCtxX && x < fileExpCtxX + 200 && y > fileExpCtxY && y < fileExpCtxY + 50)
+                        if ((x > explorerLocX + 20 && x < explorerLocX + 40) && (y > explorerLocY + 40 && y < explorerLocY + 60))
                         {
                             fileExpCtxMenu = false;
-                            fileExpCD = @"0:\";
-                            notePadChars = Utilities.ListUtils.stringToCharList(Filesystem.readFile(fileExpCtxTarget));
-                            activeApp = OSApp.Notepad;
+                            String[] a = (fileExpCD + (fileExpCD.EndsWith(@"\") ? "" : @"\")).Split(@"\");
+                            if (a.Length == 2 && a[1] == "")
+                            {
+                                return;
+                            }
+                            Array.Resize(ref a, a.Length - 2);
+                            String s = "";
+                            foreach (String st in a)
+                            {
+                                s = s + st + @"\";
+                            }
+                            fileExpCD = s;
                         }
-                        else
+                        foreach (Tuple<int, int, int, int, String> t in fileExpDirs)
                         {
-                            //fileExpCtxMenu = false;
+                            if ((x > t.Item1 && x < t.Item3 && (y > t.Item2 - 20 && y < t.Item4 - 20)))
+                            {
+                                fileExpCD = t.Item5;
+                                fileExpCtxMenu = false;
+                            }
                         }
+
+                        if (fileExpCtxMenu)
+                        {
+                            if (fileExpCtxType == DirectoryEntryTypeEnum.File)
+                            {
+                                if (x > fileExpCtxX && x < fileExpCtxX + 200 && y > fileExpCtxY && y < fileExpCtxY + 40)
+                                {
+                                    fileExpCtxMenu = false;
+                                    fileExpCD = @"0:\";
+                                    notePadChars = Utilities.ListUtils.stringToCharList(Filesystem.readFile(fileExpCtxTarget));
+                                    activeApp = OSApp.Notepad;
+                                }
+                                else if (x > fileExpCtxX && x < fileExpCtxX + 200 && y > fileExpCtxY + 40 && y < fileExpCtxY + 80)
+                                {
+                                    fileExpCtxMenu = false;
+                                    Filesystem.deleteFile(fileExpCtxTarget);
+                                    Filesystem.refreshDir(fileExpCD);
+                                }
+                                else
+                                {
+                                    fileExpCtxMenu = false;
+                                }
+                            }
+                            else if (fileExpCtxType == DirectoryEntryTypeEnum.Directory)
+                            {
+                                if (x > fileExpCtxX && x < fileExpCtxX + 200 && y > fileExpCtxY && y < fileExpCtxY + 40)
+                                {
+                                    fileExpCtxMenu = false;
+                                    Filesystem.deleteDir(fileExpCtxTarget);
+                                    Filesystem.refreshDir(fileExpCD);
+                                }
+                                else
+                                {
+                                    fileExpCtxMenu = false;
+                                }
+                            }
+                        }
+                    }
+                    else if (fileExpCurrentPage == fileExpPage.infoPage)
+                    {
+
+                    }
+                    else
+                    {
+                        ;
+                    }
+
+                    if ((x > explorerLocX + 10 && x < explorerLocX + fileExpSideBarSize - 15) && (y > explorerSizeY - 90 && y < explorerSizeY - 70))
+                    {
+                        fileExpCurrentPage = fileExpPage.explorerPage;
+                    }
+                    else if ((x > explorerLocX + 10 && x < explorerLocX + fileExpSideBarSize - 15) && (y > explorerSizeY - 70 && y < explorerSizeY - 50))
+                    {
+                        fileExpCurrentPage = fileExpPage.infoPage;
                     }
                 }
 
@@ -916,21 +989,38 @@ namespace CobaltOS.GUI
 
                 if (activeApp == OSApp.FileExplorer)
                 {
-                    if (fileExpFiles.Count != 0)
+                    if (fileExpCurrentPage == fileExpPage.explorerPage)
                     {
-                        foreach (Tuple<int, int, int, int, String> t in fileExpFiles)
+                        if (fileExpFiles.Count != 0)
                         {
-                            if ((x > t.Item1 && x < t.Item3 && (y > t.Item2 - 20 && y < t.Item4 - 20)))
+                            foreach (Tuple<int, int, int, int, String> t in fileExpDirs)
                             {
-                                fileExpCtxMenu = true;
-                                fileExpCtxTarget = t.Item5;
-                                fileExpCtxX = x;
-                                fileExpCtxY = y;
+                                if ((x > t.Item1 && x < t.Item3 && (y > t.Item2 - 20 && y < t.Item4 - 20)))
+                                {
+                                    fileExpCtxMenu = true;
+                                    fileExpCtxType = DirectoryEntryTypeEnum.Directory;
+                                    fileExpCtxTarget = t.Item5;
+                                    fileExpCtxX = x;
+                                    fileExpCtxY = y;
 
-                                return;
+                                    return;
+                                }
                             }
+                            foreach (Tuple<int, int, int, int, String> t in fileExpFiles)
+                            {
+                                if ((x > t.Item1 && x < t.Item3 && (y > t.Item2 - 20 && y < t.Item4 - 20)))
+                                {
+                                    fileExpCtxMenu = true;
+                                    fileExpCtxType = DirectoryEntryTypeEnum.File;
+                                    fileExpCtxTarget = t.Item5;
+                                    fileExpCtxX = x;
+                                    fileExpCtxY = y;
+
+                                    return;
+                                }
+                            }
+                            fileExpCtxMenu = false;
                         }
-                        fileExpCtxMenu = false;
                     }
                 }
 

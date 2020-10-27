@@ -403,6 +403,16 @@ namespace CobaltOS.Font
                     DrawTextChar(Textx, Texty, Font8x8.Dash, Color);
                     Textx = Textx + spacing;
                 }
+                else if (a == '(')
+                {
+                    DrawTextChar(Textx, Texty, Font8x8.FwPs, Color);
+                    Textx = Textx + spacing;
+                }
+                else if (a == ')')
+                {
+                    DrawTextChar(Textx, Texty, Font8x8.BkPs, Color);
+                    Textx = Textx + spacing;
+                }
             }
             return Textx;
         }

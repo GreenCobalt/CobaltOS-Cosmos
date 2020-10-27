@@ -120,9 +120,9 @@ namespace CobaltOS.Utilities
 
         public static Boolean deleteFile(String path)
         {
-            if (File.Exists(path))
+            if (File.Exists(path.ToUpper()))
             {
-                File.Delete(path);
+                File.Delete(path.ToUpper());
                 return true;
             }
             return false;
@@ -130,15 +130,9 @@ namespace CobaltOS.Utilities
 
         public static Boolean deleteDir(String path)
         {
-            if (Directory.Exists(path))
+            if (Directory.Exists(path.ToUpper()))
             {
-                try
-                {
-                    Directory.Delete(path, true);
-                } catch
-                {
-                    return false;
-                }
+                Directory.Delete(path.ToUpper(), true);
                 return true;
             }
             return false;
@@ -151,7 +145,7 @@ namespace CobaltOS.Utilities
                 return lastDirFolder;
             }
             List<DirectoryEntry> l = new List<DirectoryEntry>();
-            foreach (DirectoryEntry d in Kernel.fs.GetDirectoryListing(path))
+            foreach (DirectoryEntry d in Kernel.fs.GetDirectoryListing(path.ToUpper()))
             {
                 if (d.mEntryType == Sys.FileSystem.Listing.DirectoryEntryTypeEnum.Directory)
                 {
@@ -170,7 +164,7 @@ namespace CobaltOS.Utilities
                 return lastDirFile;
             }
             List<DirectoryEntry> l = new List<DirectoryEntry>();
-            foreach (DirectoryEntry d in Kernel.fs.GetDirectoryListing(path))
+            foreach (DirectoryEntry d in Kernel.fs.GetDirectoryListing(path.ToUpper()))
             {
                 if (d.mEntryType == Sys.FileSystem.Listing.DirectoryEntryTypeEnum.File)
                 {
@@ -186,6 +180,15 @@ namespace CobaltOS.Utilities
         {
             lastDirFilePath = "";
             lastDirFolderPath = "";
+        }
+
+        public static Boolean isValidDirName(String input)
+        {
+            if (input.Contains(".") || input.Contains(" "))
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

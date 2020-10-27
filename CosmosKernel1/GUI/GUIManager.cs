@@ -86,6 +86,9 @@ namespace CobaltOS.GUI
         private static fileExpPage fileExpCurrentPage = fileExpPage.explorerPage;
         private static int fileExpSideBarSize = 165;
 
+        private static bool fileExpTxtEnt = false;
+        private static List<char> fileExpTxtEntTxt = new List<char>();
+
         private static Boolean newFont = true;
 
         private static int screenW;
@@ -365,7 +368,7 @@ namespace CobaltOS.GUI
                 int locY = explorerLocY + 80;
 
                 DisplayDriver.addFilledRectangle(explorerLocX + 10, explorerLocY + 40, fileExpSideBarSize - 15, explorerSizeY - 50, Color.FromArgb(255, 150, 150, 150));
-                
+
                 DisplayDriver.addFilledRectangle(explorerLocX + 10, explorerSizeY - 100, fileExpSideBarSize - 15, 50, (fileExpCurrentPage == fileExpPage.explorerPage ? Color.FromArgb(255, 100, 100, 100) : Color.FromArgb(255, 115, 115, 115)));
                 DisplayDriver.addText(explorerLocX + 15, explorerSizeY - 85, Color.White, "Explorer", true);
                 DisplayDriver.addFilledRectangle(explorerLocX + 10, explorerSizeY - 50, fileExpSideBarSize - 15, 50, (fileExpCurrentPage == fileExpPage.infoPage ? Color.FromArgb(255, 100, 100, 100) : Color.FromArgb(255, 115, 115, 115)));
@@ -373,8 +376,11 @@ namespace CobaltOS.GUI
 
                 if (fileExpCurrentPage == fileExpPage.explorerPage)
                 {
+                    DisplayDriver.addFilledRectangle(explorerLocX + 10, explorerLocY + 40, fileExpSideBarSize - 15, 50, (fileExpCurrentPage == fileExpPage.infoPage ? Color.FromArgb(255, 100, 100, 100) : Color.FromArgb(255, 115, 115, 115)));
+                    DisplayDriver.addText(explorerLocX + 15, explorerLocY + 50, Color.White, "Make Dir", true);
+
                     DisplayDriver.addRectangle(explorerLocX + 20 + fileExpSideBarSize, explorerLocY + 40, explorerLocX + 40 + fileExpSideBarSize, explorerLocY + 60, Color.Black);
-                    FontDrawer.DrawArray(explorerLocX + 22 + fileExpSideBarSize, explorerLocY + 42, Font8x8.Bkrw, Color.Black);
+                    FontDrawer.DrawArray(explorerLocX + 22 + fileExpSideBarSize, explorerLocY + 42, Font8x8.FSBackArrow, Color.Black);
                     DisplayDriver.addText(explorerLocX + 60 + fileExpSideBarSize, explorerLocY + 40, Color.Black, fileExpCD, newFont);
 
                     foreach (DirectoryEntry d in Filesystem.getDirFolders(fileExpCD))
@@ -404,8 +410,17 @@ namespace CobaltOS.GUI
                         else
                         {
                             DisplayDriver.addFilledRectangle(Convert.ToInt32(fileExpCtxX), Convert.ToInt32(fileExpCtxY), 300, 40, Color.DarkGray);
-                            DisplayDriver.addText(Convert.ToInt32(fileExpCtxX) + 5, Convert.ToInt32(fileExpCtxY + 5), Color.White, "Delete", true);
+                            DisplayDriver.addText(Convert.ToInt32(fileExpCtxX) + 5, Convert.ToInt32(fileExpCtxY + 5), Color.White, "Delete", newFont);
                         }
+                    }
+
+                    if (fileExpTxtEnt)
+                    {
+                        DisplayDriver.addFilledRectangle(explorerLocX + 75, explorerLocY + 100, 300, 120, Color.Gray);
+                        DisplayDriver.addFilledRectangle(explorerLocX + 85, explorerLocY + 110, 280, 50, Color.White);
+                        DisplayDriver.addText(explorerLocX + 95, explorerLocY + 115, Color.Black, ListUtils.charListToString(fileExpTxtEntTxt), true);
+                        DisplayDriver.addFilledRectangle(explorerLocX + 85, explorerLocY + 165, 90, 50, Color.White);
+                        DisplayDriver.addText(explorerLocX + 95, explorerLocY + 170, Color.Black, "Save", true);
                     }
                 }
                 else if (fileExpCurrentPage == fileExpPage.infoPage)
@@ -415,7 +430,7 @@ namespace CobaltOS.GUI
                     currentY = currentY + 30;
                     foreach (DriveInfo d in DriveInfo.GetDrives())
                     {
-                        DisplayDriver.addText(explorerLocX + 25 + fileExpSideBarSize, currentY, Color.Black, " - " + d.Name + " (" + d.GetType() + ") " + (d.TotalSize / 1048576) + "MB", true);
+                        DisplayDriver.addText(explorerLocX + 25 + fileExpSideBarSize, currentY, Color.Black, " - " + d.Name + " (" + (d.TotalSize / 1048576) + "MB" + ")", true);
                         currentY = currentY + 30;
                     }
                 }
@@ -556,7 +571,27 @@ namespace CobaltOS.GUI
                     }
                     if (fileExpCurrentPage == fileExpPage.explorerPage)
                     {
-                        if ((x > explorerLocX + 20 && x < explorerLocX + 40) && (y > explorerLocY + 40 && y < explorerLocY + 60))
+                        if ((x > explorerLocX + 10 && x < explorerLocX + fileExpSideBarSize - 5) && (y > explorerLocY + 40 && y < explorerLocY + 90))
+                        {
+                            fileExpTxtEnt = true;
+                            fileExpTxtEntTxt.Clear();
+                            fileExpTxtEntTxt.Add('0');
+                            fileExpTxtEntTxt.Add(':');
+                            fileExpTxtEntTxt.Add('\\');
+                        }
+
+                        if (fileExpTxtEnt && ((x > explorerLocX + 95 && x < explorerLocX + 195) && (y > explorerLocY + 175 && y < explorerLocY + 225)))
+                        {
+                            if (Filesystem.isValidDirName(ListUtils.charListToString(fileExpTxtEntTxt).ToUpper()))
+                            {
+                                fileExpTxtEnt = false;
+                                Directory.CreateDirectory(ListUtils.charListToString(fileExpTxtEntTxt).ToUpper());
+                                fileExpTxtEntTxt.Clear();
+                                Filesystem.refreshDir(fileExpCD);
+                            }
+                        }
+
+                        if ((x > explorerLocX + 20 + fileExpSideBarSize && x < explorerLocX + 40 + fileExpSideBarSize) && (y > explorerLocY + 40 && y < explorerLocY + 60))
                         {
                             fileExpCtxMenu = false;
                             String[] a = (fileExpCD + (fileExpCD.EndsWith(@"\") ? "" : @"\")).Split(@"\");
@@ -1273,6 +1308,20 @@ namespace CobaltOS.GUI
                         {
                             dirChars.Add(currentChar);
                         }
+                    }
+                }
+                else if (activeApp == OSApp.FileExplorer && fileExpTxtEnt)
+                {
+                    if (currentChar == '◄')
+                    {
+                        if (fileExpTxtEntTxt.Count > 0)
+                        {
+                            fileExpTxtEntTxt.RemoveAt(fileExpTxtEntTxt.Count - 1);
+                        }
+                    }
+                    else
+                    {
+                        fileExpTxtEntTxt.Add(currentChar);
                     }
                 }
             }

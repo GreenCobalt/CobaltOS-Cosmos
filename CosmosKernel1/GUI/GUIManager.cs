@@ -410,7 +410,14 @@ namespace CobaltOS.GUI
                 }
                 else if (fileExpCurrentPage == fileExpPage.infoPage)
                 {
-                    DisplayDriver.addText(explorerLocX + 25 + fileExpSideBarSize, explorerLocY + 50, Color.White, "Information", true);
+                    int currentY = explorerLocY + 50;
+                    DisplayDriver.addText(explorerLocX + 25 + fileExpSideBarSize, currentY, Color.Black, "Drives: ", true);
+                    currentY = currentY + 30;
+                    foreach (DriveInfo d in DriveInfo.GetDrives())
+                    {
+                        DisplayDriver.addText(explorerLocX + 25 + fileExpSideBarSize, currentY, Color.Black, " - " + d.Name + " (" + d.GetType() + ") " + (d.TotalSize / 1048576) + "MB", true);
+                        currentY = currentY + 30;
+                    }
                 }
                 else { }
             }

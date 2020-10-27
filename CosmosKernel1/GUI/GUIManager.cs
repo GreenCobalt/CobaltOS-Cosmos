@@ -9,6 +9,7 @@ using CobaltOS.Utilities;
 using CobaltOS.Font;
 using Cosmos.System.FileSystem.Listing;
 using System.Linq;
+using Console = System.Console;
 
 namespace CobaltOS.GUI
 {
@@ -83,7 +84,7 @@ namespace CobaltOS.GUI
         private static uint fileExpCtxX, fileExpCtxY = 0;
         private static DirectoryEntryTypeEnum fileExpCtxType = DirectoryEntryTypeEnum.File;
         private static fileExpPage fileExpCurrentPage = fileExpPage.explorerPage;
-        private static int fileExpSideBarSize = 150;
+        private static int fileExpSideBarSize = 165;
 
         private static Boolean newFont = true;
 
@@ -364,8 +365,11 @@ namespace CobaltOS.GUI
                 int locY = explorerLocY + 80;
 
                 DisplayDriver.addFilledRectangle(explorerLocX + 10, explorerLocY + 40, fileExpSideBarSize - 15, explorerSizeY - 50, Color.FromArgb(255, 150, 150, 150));
-                DisplayDriver.addFilledRectangle(explorerLocX + 10, explorerSizeY - 90, fileExpSideBarSize - 15, 20, (fileExpCurrentPage == fileExpPage.explorerPage ? Color.FromArgb(255, 100, 100, 100) : Color.FromArgb(255, 115, 115, 115)));
-                DisplayDriver.addFilledRectangle(explorerLocX + 10, explorerSizeY - 70, fileExpSideBarSize - 15, 20, (fileExpCurrentPage == fileExpPage.infoPage ? Color.FromArgb(255, 100, 100, 100) : Color.FromArgb(255, 115, 115, 115)));
+                
+                DisplayDriver.addFilledRectangle(explorerLocX + 10, explorerSizeY - 100, fileExpSideBarSize - 15, 50, (fileExpCurrentPage == fileExpPage.explorerPage ? Color.FromArgb(255, 100, 100, 100) : Color.FromArgb(255, 115, 115, 115)));
+                DisplayDriver.addText(explorerLocX + 15, explorerSizeY - 85, Color.White, "Explorer", true);
+                DisplayDriver.addFilledRectangle(explorerLocX + 10, explorerSizeY - 50, fileExpSideBarSize - 15, 50, (fileExpCurrentPage == fileExpPage.infoPage ? Color.FromArgb(255, 100, 100, 100) : Color.FromArgb(255, 115, 115, 115)));
+                DisplayDriver.addText(explorerLocX + 15, explorerSizeY - 35, Color.White, "Information", true);
 
                 if (fileExpCurrentPage == fileExpPage.explorerPage)
                 {
@@ -406,7 +410,7 @@ namespace CobaltOS.GUI
                 }
                 else if (fileExpCurrentPage == fileExpPage.infoPage)
                 {
-
+                    DisplayDriver.addText(explorerLocX + 25 + fileExpSideBarSize, explorerLocY + 50, Color.White, "Information", true);
                 }
                 else { }
             }
@@ -616,11 +620,11 @@ namespace CobaltOS.GUI
                         ;
                     }
 
-                    if ((x > explorerLocX + 10 && x < explorerLocX + fileExpSideBarSize - 15) && (y > explorerSizeY - 90 && y < explorerSizeY - 70))
+                    if ((x > explorerLocX + 10 && x < explorerLocX + fileExpSideBarSize - 15) && (y > explorerSizeY - 100 && y < explorerSizeY - 60))
                     {
                         fileExpCurrentPage = fileExpPage.explorerPage;
                     }
-                    else if ((x > explorerLocX + 10 && x < explorerLocX + fileExpSideBarSize - 15) && (y > explorerSizeY - 70 && y < explorerSizeY - 50))
+                    else if ((x > explorerLocX + 10 && x < explorerLocX + fileExpSideBarSize - 15) && (y > explorerSizeY - 50 && y < explorerSizeY - 10))
                     {
                         fileExpCurrentPage = fileExpPage.infoPage;
                     }

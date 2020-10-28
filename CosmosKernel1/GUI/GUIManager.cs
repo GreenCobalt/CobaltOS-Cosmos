@@ -16,7 +16,6 @@ namespace CobaltOS.GUI
     class GUIManager
     {
         private static OSApp activeApp = OSApp.None;
-        private static List<int> openApps = new List<int>();
 
         /*
          * 0 = General
@@ -72,6 +71,10 @@ namespace CobaltOS.GUI
         private static String fileExpCD = @"0:\";
         private static List<Tuple<int, int, int, int, String>> fileExpDirs = new List<Tuple<int, int, int, int, String>>();
         private static List<Tuple<int, int, int, int, String>> fileExpFiles = new List<Tuple<int, int, int, int, String>>();
+
+        static DateTime _lastTime;
+        static int _framesRendered;
+        static int _fps;
 
         enum fileExpPage
         {
@@ -195,19 +198,17 @@ namespace CobaltOS.GUI
         {
             DisplayDriver.tickRainbow();
 
+            DisplayDriver.setFullBuffer(backgroundColor);
+            if (!fullScreen)
+            {
+                DisplayDriver.addFilledRectangle(0, screenH - taskBarHeight, screenW, taskBarHeight, Color.FromArgb(255, 50, 50, 50));
+                DisplayDriver.addFilledRectangle(10, screenH - taskBarHeight + 10, 30, taskBarHeight - 20, Color.Red);
+                DisplayDriver.addText((timeFormat ? screenW - 125 : screenW - 175), screenH - 40, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")), newFont);
+            }
+
             if (activeApp == OSApp.PowerMenu)
             {
                 DisplayDriver.setFullBuffer(Color.DarkGray);
-            }
-            else
-            {
-                DisplayDriver.setFullBuffer(backgroundColor);
-                if (!fullScreen)
-                {
-                    DisplayDriver.addFilledRectangle(0, screenH - taskBarHeight, screenW, taskBarHeight, Color.FromArgb(255, 50, 50, 50));
-                    DisplayDriver.addFilledRectangle(10, screenH - taskBarHeight + 10, 30, taskBarHeight - 20, Color.Red);
-                    DisplayDriver.addText((timeFormat ? screenW - 125 : screenW - 175), screenH - 40, Color.White, (timeFormat ? Cosmos.HAL.RTC.Hour : (Cosmos.HAL.RTC.Hour > 12 ? Cosmos.HAL.RTC.Hour - 12 : (Cosmos.HAL.RTC.Hour == 0 ? 12 : Cosmos.HAL.RTC.Hour))).ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Minute.ToString().PadLeft(2, '0') + ":" + Cosmos.HAL.RTC.Second.ToString().PadLeft(2, '0') + (timeFormat ? "" : (Cosmos.HAL.RTC.Hour > 12 ? " PM" : " AM")), newFont);
-                }
             }
 
             checkKeyboard();
@@ -216,7 +217,14 @@ namespace CobaltOS.GUI
 
             DisplayDriver.addMouse(Convert.ToInt32(Cosmos.System.MouseManager.X), Convert.ToInt32(Cosmos.System.MouseManager.Y));
 
-            //DisplayDriver.addFilledRectangleR(10, 10, 40, 40);
+            _framesRendered++;
+            if ((DateTime.Now - _lastTime).TotalSeconds >= 1)
+            {
+                _fps = _framesRendered;
+                _framesRendered = 0;
+                _lastTime = DateTime.Now;
+            }
+            DisplayDriver.addText(10, 10, Color.Black, _fps + " FPS", true);
 
             DisplayDriver.drawScreen();
         }
@@ -518,7 +526,7 @@ namespace CobaltOS.GUI
                 uint x = Cosmos.System.MouseManager.X;
                 uint y = Cosmos.System.MouseManager.Y;
 
-                if ((x > 10 && x < 40) && (y > screenH - (taskBarHeight - 10) && y < screenH - 10))
+                if (activeApp != OSApp.PowerMenu && (x > 10 && x < 40) && (y > screenH - (taskBarHeight - 10) && y < screenH - 10))
                 {
                     startMenuOpen = !startMenuOpen;
                 }
@@ -549,6 +557,7 @@ namespace CobaltOS.GUI
                 {
                     startMenuOpen = false;
                     activeApp = OSApp.PowerMenu;
+                    fullScreen = true;
                     return;
                 }
                 if (startMenuOpen && (x > 20 && x < 280) && (y > screenH - taskBarHeight - 115 && y < screenH - taskBarHeight - 80))
@@ -1012,6 +1021,7 @@ namespace CobaltOS.GUI
                     if ((x > cancelX - 10 && x < cancelSize + 10) && (y > Y - 10 && y < Y + 125))
                     {
                         activeApp = 0;
+                        fullScreen = false;
                     }
                     if ((x > offX - 10 && x < offSize + 10) && (y > Y - 10 && y < Y + 125))
                     {
@@ -1081,18 +1091,13 @@ namespace CobaltOS.GUI
         {
             if (System.Console.KeyAvailable == true)
             {
-
                 ConsoleKeyInfo key = System.Console.ReadKey(true);
                 Boolean caps = false;
                 Char currentChar;
 
-                if (KeyboardManager.ShiftPressed || KeyboardManager.CapsLock)
+                if (KeyboardManager.ShiftPressed || KeyboardManager.CapsLock && !(KeyboardManager.ShiftPressed && KeyboardManager.CapsLock))
                 {
                     caps = true;
-                    if (KeyboardManager.ShiftPressed && KeyboardManager.CapsLock)
-                    {
-                        caps = false;
-                    }
                 }
                 if (key.Key == ConsoleKey.A)
                 {

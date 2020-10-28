@@ -16,12 +16,6 @@ namespace CobaltOS.GUI
     class GUIManager
     {
         private static OSApp activeApp = OSApp.None;
-
-        /*
-         * 0 = General
-         * 1 = Personalization
-         */
-        private static int settingsPage = 0;
         private static Boolean startMenuOpen = false;
 
         private static int notepadLocX = 10;
@@ -34,6 +28,7 @@ namespace CobaltOS.GUI
         private static int settingsLocY = 10;
         private static int settingsSizeX = 600;
         private static int settingsSizeY = 400;
+        private static settingsPages settingsPage = settingsPages.general;
 
         private static int explorerLocX = 10;
         private static int explorerLocY = 10;
@@ -72,16 +67,6 @@ namespace CobaltOS.GUI
         private static List<Tuple<int, int, int, int, String>> fileExpDirs = new List<Tuple<int, int, int, int, String>>();
         private static List<Tuple<int, int, int, int, String>> fileExpFiles = new List<Tuple<int, int, int, int, String>>();
 
-        static DateTime _lastTime;
-        static int _framesRendered;
-        static int _fps;
-
-        enum fileExpPage
-        {
-            explorerPage,
-            infoPage
-        }
-
         private static Boolean fileExpCtxMenu = false;
         private static String fileExpCtxTarget = "";
         private static uint fileExpCtxX, fileExpCtxY = 0;
@@ -99,6 +84,12 @@ namespace CobaltOS.GUI
 
         private static int taskBarHeight = 50;
 
+        private static int dirSelectPurpose;
+        private static String dirSelectContent;
+        private static Boolean dirSelectOpen;
+        private static Boolean newGraphics;
+        private static Boolean fullScreen = false;
+
         enum OSApp
         {
             None = 0,
@@ -108,16 +99,17 @@ namespace CobaltOS.GUI
             FileExplorer = 4,
             PowerMenu = 99
         }
-
-        /*
-         * 0 = Save
-         * 1 = Open
-         */
-        private static int dirSelectPurpose;
-        private static String dirSelectContent;
-        private static Boolean dirSelectOpen;
-        private static Boolean newGraphics;
-        private static Boolean fullScreen = false;
+        enum fileExpPage
+        {
+            explorerPage,
+            infoPage
+        }
+        enum settingsPages
+        {
+            general,
+            personalization,
+            info
+        }
 
         public static void init()
         {
@@ -149,51 +141,6 @@ namespace CobaltOS.GUI
             }
         }
 
-        private static Color getColorFromInt(int c)
-        {
-            switch (c)
-            {
-                case 1: return Color.DarkBlue;
-                case 2: return Color.DarkRed;
-                case 3: return Color.DarkGreen;
-                case 4: return Color.Blue;
-                case 5: return Color.Red;
-                case 6: return Color.Green;
-                case 7: return Color.Orange;
-                case 8: return Color.Yellow;
-                case 9: return Color.Purple;
-                default: return Color.Black;
-            }
-        }
-        private static int getIntFromColor(Color c)
-        {
-            if (c == Color.DarkBlue) return 1;
-            if (c == Color.DarkRed) return 2;
-            if (c == Color.DarkGreen) return 3;
-            if (c == Color.Blue) return 4;
-            if (c == Color.Red) return 5;
-            if (c == Color.Green) return 6;
-            if (c == Color.Orange) return 7;
-            if (c == Color.Yellow) return 8;
-            if (c == Color.Purple) return 9;
-            return 0;
-        }
-        private static int getIntFromRes(int x)
-        {
-            if (x == 640) return 1;
-            if (x == 800) return 2;
-            if (x == 1024) return 3;
-            return 0;
-        }
-        private static int[] getResFromInt(int i)
-        {
-            if (i == 1) return new int[] { 640, 480 };
-            if (i == 2) return new int[] { 800, 600 };
-            if (i == 3) return new int[] { 1024, 768 };
-            return new int[] { 160, 120 };
-        }
-
-
         public static void tick()
         {
             DisplayDriver.tickRainbow();
@@ -216,15 +163,7 @@ namespace CobaltOS.GUI
             checkMouse();
 
             DisplayDriver.addMouse(Convert.ToInt32(Cosmos.System.MouseManager.X), Convert.ToInt32(Cosmos.System.MouseManager.Y));
-
-            _framesRendered++;
-            if ((DateTime.Now - _lastTime).TotalSeconds >= 1)
-            {
-                _fps = _framesRendered;
-                _framesRendered = 0;
-                _lastTime = DateTime.Now;
-            }
-            DisplayDriver.addText(10, 10, Color.Black, _fps + " FPS", true);
+            DisplayDriver.addText(10, 10, Color.Black, FPSCounter.FPS + " FPS", true);
 
             DisplayDriver.drawScreen();
         }
@@ -308,13 +247,13 @@ namespace CobaltOS.GUI
                 DisplayDriver.addText(settingsLocX + 10, settingsLocY + 40, Color.Black, "Settings", newFont);
                 DisplayDriver.addFilledRectangle(settingsLocX + 10, settingsLocY + 75, 150, 300, Color.Gray);
 
-                DisplayDriver.addFilledRectangle(settingsLocX + 20, settingsLocY + 85, 130, 40, (settingsPage == 0 ? Color.LightGray : Color.DarkGray));
+                DisplayDriver.addFilledRectangle(settingsLocX + 20, settingsLocY + 85, 130, 40, (settingsPage == settingsPages.general ? Color.LightGray : Color.DarkGray));
                 DisplayDriver.addText(settingsLocX + 25, settingsLocY + 90, Color.White, "General", newFont);
 
-                DisplayDriver.addFilledRectangle(settingsLocX + 20, settingsLocY + 125, 130, 40, (settingsPage == 1 ? Color.LightGray : Color.DarkGray));
+                DisplayDriver.addFilledRectangle(settingsLocX + 20, settingsLocY + 125, 130, 40, (settingsPage == settingsPages.personalization ? Color.LightGray : Color.DarkGray));
                 DisplayDriver.addText(settingsLocX + 25, settingsLocY + 130, Color.White, "Colors", newFont);
 
-                DisplayDriver.addFilledRectangle(settingsLocX + 20, settingsLocY + 325, 130, 40, (settingsPage == 2 ? Color.LightGray : Color.DarkGray));
+                DisplayDriver.addFilledRectangle(settingsLocX + 20, settingsLocY + 325, 130, 40, (settingsPage == settingsPages.info ? Color.LightGray : Color.DarkGray));
                 DisplayDriver.addText(settingsLocX + 25, settingsLocY + 330, Color.White, "Info", newFont);
 
                 if (settingsPage == 0)
@@ -328,14 +267,14 @@ namespace CobaltOS.GUI
                     resolutionChangeSize = DisplayDriver.addText(settingsLocX + 480, settingsLocY + 260, Color.Black, "Change", newFont) + 20;
                     DisplayDriver.addRectangle(settingsLocX + 460, settingsLocY + 240, resolutionChangeSize, settingsLocY + 310, Color.Black);
                 }
-                else if (settingsPage == 1)
+                else if (settingsPage == settingsPages.personalization)
                 {
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 120, Color.Black, "Background Color:", newFont);
                     DisplayDriver.addFilledRectangle(settingsLocX + 410, settingsLocY + 120, 30, 30, backgroundColor);
                     backgroundColorSize = DisplayDriver.addText(settingsLocX + 480, settingsLocY + 120, Color.Black, "Change", newFont) + 20;
                     DisplayDriver.addRectangle(settingsLocX + 460, settingsLocY + 100, backgroundColorSize, settingsLocY + 170, Color.Black);
                 }
-                else if (settingsPage == 2)
+                else if (settingsPage == settingsPages.info)
                 {
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 120, Color.Black, "System Information:", newFont);
                     DisplayDriver.addText(settingsLocX + 180, settingsLocY + 150, Color.Black, " - CobaltOS Version: " + Kernel.osVersion, newFont);
@@ -777,22 +716,22 @@ namespace CobaltOS.GUI
                             Filesystem.writeFile(@"0:\config.cfg", true, s);
                         }
                     }
-                    else if (settingsPage == 1 && (x > settingsLocX + 460 && x < backgroundColorSize) && (y > settingsLocY + 100 && y < settingsLocY + 170) && !bgColorChangeMenu)
+                    else if (settingsPage == settingsPages.personalization && (x > settingsLocX + 460 && x < backgroundColorSize) && (y > settingsLocY + 100 && y < settingsLocY + 170) && !bgColorChangeMenu)
                     {
                         bgColorChangeMenu = true;
                     }
                     else if ((x > settingsLocX + 20 && x < settingsLocX + 150) && (y > settingsLocY + 85 && y < settingsLocY + 125))
                     {
-                        settingsPage = 0;
+                        settingsPage = settingsPages.general;
                         bgColorChangeMenu = false;
                     }
                     else if ((x > settingsLocX + 20 && x < settingsLocX + 150) && (y > settingsLocY + 125 && y < settingsLocY + 165))
                     {
-                        settingsPage = 1;
+                        settingsPage = settingsPages.personalization;
                     }
                     else if ((x > settingsLocX + 20 && x < settingsLocX + 150) && (y > settingsLocY + 325 && y < settingsLocY + 365))
                     {
-                        settingsPage = 2;
+                        settingsPage = settingsPages.info;
                     }
                     else if (bgColorChangeMenu)
                     {
@@ -1330,6 +1269,50 @@ namespace CobaltOS.GUI
                     }
                 }
             }
+        }
+
+        private static Color getColorFromInt(int c)
+        {
+            switch (c)
+            {
+                case 1: return Color.DarkBlue;
+                case 2: return Color.DarkRed;
+                case 3: return Color.DarkGreen;
+                case 4: return Color.Blue;
+                case 5: return Color.Red;
+                case 6: return Color.Green;
+                case 7: return Color.Orange;
+                case 8: return Color.Yellow;
+                case 9: return Color.Purple;
+                default: return Color.Black;
+            }
+        }
+        private static int getIntFromColor(Color c)
+        {
+            if (c == Color.DarkBlue) return 1;
+            if (c == Color.DarkRed) return 2;
+            if (c == Color.DarkGreen) return 3;
+            if (c == Color.Blue) return 4;
+            if (c == Color.Red) return 5;
+            if (c == Color.Green) return 6;
+            if (c == Color.Orange) return 7;
+            if (c == Color.Yellow) return 8;
+            if (c == Color.Purple) return 9;
+            return 0;
+        }
+        private static int getIntFromRes(int x)
+        {
+            if (x == 640) return 1;
+            if (x == 800) return 2;
+            if (x == 1024) return 3;
+            return 0;
+        }
+        private static int[] getResFromInt(int i)
+        {
+            if (i == 1) return new int[] { 640, 480 };
+            if (i == 2) return new int[] { 800, 600 };
+            if (i == 3) return new int[] { 1024, 768 };
+            return new int[] { 160, 120 };
         }
     }
 }

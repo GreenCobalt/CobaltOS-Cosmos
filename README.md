@@ -5,3 +5,5 @@ CobaltOS is a GUI-Based open source OS developed with the Cosmos user kit. It in
  - Settings Menu
  - Power Menu
  - Mouse Support & Keyboard Support
+
+Contains open source software from MIV and AuraOS
